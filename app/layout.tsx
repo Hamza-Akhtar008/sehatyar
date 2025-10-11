@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -13,12 +13,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["300","400","500","600","700","800"],
+});
+
 export const metadata: Metadata = {
   title: "Sehat Yar",
   description: "A medical plateform",
 };
 
 import { ReactNode } from "react";
+import Header from "@/components/ui/header";
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,7 +34,7 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}>
         <head />
         <body>
           <ThemeProvider
@@ -36,7 +43,8 @@ export default function RootLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <Header />
+            <main>{children}</main>
           </ThemeProvider>
         </body>
       </html>

@@ -44,6 +44,44 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
+  /* Compatibility alias used by some components */
+  --bg: var(--background);
+  /* Brand palette (from Figma) */
+  --brand-green-900: #03493a; /* deep */
+  --brand-green-700: #01684f; /* primary dark */
+  --brand-green-500: #00c97a; /* primary */
+  --brand-green-300: #bff6d8; /* light */
+  --brand-light-green: #b9f6c8;
+  --white: #ffffff;
+  --grey-900: #1f2933;
+  --grey-700: #4b5563;
+  --grey-500: #9ca3af;
+  --black: #000000;
+
+  /* Typography tokens */
+  --font-family-sans: var(--font-montserrat, "Montserrat"), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  --type-scale-ratio: 1.25;
+  --text-xs: 0.8rem; /* 13px */
+  --text-sm: 0.9375rem; /* 15px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --h6: 1.125rem; /* 18px */
+  --h5: 1.5rem; /* 24px */
+  --h4: 2rem; /* 32px */
+  --h3: 2.625rem; /* 42px */
+  --h2: 3.75rem; /* 60px */
+  --h1: 5rem; /* 80px */
+
+  /* Elevation & shadow */
+  --shadow-sm: 0 1px 2px rgba(16,24,40,0.05);
+  --shadow-md: 0 6px 18px rgba(16,24,40,0.08);
+  --shadow-lg: 0 20px 40px rgba(16,24,40,0.12);
+
+  /* Buttons */
+  --btn-padding-y: 0.5rem;
+  --btn-padding-x: 1rem;
+
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -116,5 +154,66 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family-sans);
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Central container used by many components */
+  .container {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Headings scale that map to Figma typographic sizes */
+  h1 { font-size: var(--h1); line-height: 1; margin: 0 0 0.5rem 0; }
+  h2 { font-size: var(--h2); line-height: 1.05; margin: 0 0 0.5rem 0; }
+  h3 { font-size: var(--h3); line-height: 1.08; margin: 0 0 0.5rem 0; }
+  h4 { font-size: var(--h4); line-height: 1.1; margin: 0 0 0.5rem 0; }
+  h5 { font-size: var(--h5); line-height: 1.15; margin: 0 0 0.5rem 0; }
+  h6 { font-size: var(--h6); line-height: 1.2; margin: 0 0 0.5rem 0; }
+
+  /* Logo helper */
+  .logo {
+    font-weight: 700;
+    color: var(--brand-green-700);
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  /* Simple button variant used across app */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: var(--btn-padding-y) var(--btn-padding-x);
+    border-radius: calc(var(--radius) - 2px);
+    box-shadow: var(--shadow-sm);
+    transition: all 160ms ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg,var(--brand-green-700),var(--brand-green-500));
+    color: var(--white);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--brand-green-700);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    color: var(--card-foreground);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
   }
 }
