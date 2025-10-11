@@ -1,3 +1,159 @@
+
+/* Remove shadcn navigation menu border and shadow */
+.navigation-menu-content,
+[data-slot="navigation-menu-content"],
+.navigation-menu-viewport,
+[data-slot="navigation-menu-viewport"] {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+/* Doctor dropdown styles (Figma spec) */
+
+.doctor-dropdown {
+  width: 394px;
+  min-width: 394px;
+  max-width: 394px;
+  background: #fff;
+  border-radius: 32px;
+  padding: 22px;
+  box-shadow: 0px 30px 50px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doctor-dropdown-title {
+  font-family: var(--font-family-sans);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  color: #616161;
+  margin-bottom: 12px;
+  width: 221px;
+}
+
+.doctor-specialty-btn {
+  width: 100%;
+  font-family: var(--font-family-sans);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  color: #616161;
+  background: none;
+  border: none;
+  outline: none;
+  text-align: left;
+  padding: 0;
+  margin-bottom: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+.doctor-specialty-btn.expanded {
+  font-weight: 500;
+}
+.doctor-specialty-btn:hover {
+  background: #F4F4F4;
+}
+
+.doctor-cities-list {
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+.doctor-city-item {
+  font-family: var(--font-family-sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #616161;
+  padding: 6px 0 6px 16px;
+  border-bottom: 1px solid #E0E0E0;
+  width: 100%;
+}
+.doctor-city-item:last-child {
+  border-bottom: none;
+}
+
+/* Header action buttons typography (Figma specs) */
+.header-desktop-actions .btn-primary {
+  font-family: var(--font-family-sans); /* Montserrat */
+  font-weight: 600; /* SemiBold */
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #000000; /* explicit text color */
+}
+  .lang-dropdown-trigger {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 24px;
+    color: #000000;
+  }
+
+  .lang-dropdown-content {
+    /* ensure the dropdown content items inherit the typography */
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #000000;
+  }
+
+  .lang-dropdown-item {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+
+.header-desktop-actions .btn-ghost {
+  font-family: var(--font-plusjakarta); /* Plus Jakarta Sans */
+  font-weight: 500; /* Medium */
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #000000;
+}
+
+/* Exact sizing and layout for Login / Sign Up (ghost) */
+.header-desktop-actions .btn-ghost {
+  box-sizing: border-box;
+  width: 159px;
+  height: 48px;
+  border-radius: 99px;
+  border: 1px solid rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 22px; /* top/right/bottom/left */
+  background: transparent;
+}
+
+/* Exact sizing and layout for Join As Doctor (primary) */
+.header-desktop-actions .btn-primary {
+  box-sizing: border-box;
+  width: 185px;
+  height: 52px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 4px 4px 22px; /* top right bottom left */
+  background: #5FE089;
+  color: #000000;
+  border: none;
+}
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -43,7 +199,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #FFFFFF;
+  /* Compatibility alias used by some components */
   --bg: var(--background);
   /* Brand palette (from Figma) */
   --brand-green-900: #03493a; /* deep */
@@ -51,6 +208,8 @@
   --brand-green-500: #00c97a; /* primary */
   --brand-green-300: #bff6d8; /* light */
   --brand-light-green: #b9f6c8;
+  /* Accent requested by user */
+  --accent-green: #5FE089;
   --white: #ffffff;
   --grey-900: #1f2933;
   --grey-700: #4b5563;
@@ -59,6 +218,8 @@
 
   /* Typography tokens */
   --font-family-sans: var(--font-montserrat, "Montserrat"), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-plusjakarta: var(--font-plusjakarta, "Plus Jakarta Sans");
+  --font-inter: var(--font-inter, "Inter");
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   --type-scale-ratio: 1.25;
   --text-xs: 0.8rem; /* 13px */
@@ -69,8 +230,8 @@
   --h5: 1.5rem; /* 24px */
   --h4: 2rem; /* 32px */
   --h3: 2.625rem; /* 42px */
-  --h2: 3.75rem; /* 60px */
-  --h1: 5rem; /* 80px */
+  --h2: 3.875rem; /* 62px (approx) */
+  --h1: 3.875rem; /* 62px */
 
   /* Elevation & shadow */
   --shadow-sm: 0 1px 2px rgba(16,24,40,0.05);
@@ -82,8 +243,8 @@
   --btn-padding-x: 1rem;
 
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card: #F4F4F4;
+  --card-foreground: var(--grey-900);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -147,16 +308,52 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Final overrides for header action buttons to ensure exact Figma sizing
+   Placed at end of file and using !important so Tailwind utility imports
+   earlier in the file don't accidentally override these values. */
+.header-desktop-actions .btn-ghost {
+  width: 159px !important;
+  height: 48px !important;
+  padding: 12px 22px !important;
+  border-radius: 99px !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  background: transparent !important;
+  color: #000 !important;
+}
+
+.header-desktop-actions .btn-primary {
+  width: 185px !important;
+  height: 52px !important;
+  padding: 4px 4px 4px 22px !important;
+  border-radius: 99px !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  background: #5FE089 !important;
+  color: #000 !important;
+  border: none !important;
+}
+
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+  /* Reset and sensible defaults */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, #__next { height: 100%; }
+
   body {
-    @apply bg-background text-foreground;
+    background: var(--background);
+    color: var(--foreground);
     font-family: var(--font-family-sans);
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
   }
 
   /* Central container used by many components */
@@ -169,12 +366,12 @@
   }
 
   /* Headings scale that map to Figma typographic sizes */
-  h1 { font-size: var(--h1); line-height: 1; margin: 0 0 0.5rem 0; }
-  h2 { font-size: var(--h2); line-height: 1.05; margin: 0 0 0.5rem 0; }
-  h3 { font-size: var(--h3); line-height: 1.08; margin: 0 0 0.5rem 0; }
-  h4 { font-size: var(--h4); line-height: 1.1; margin: 0 0 0.5rem 0; }
-  h5 { font-size: var(--h5); line-height: 1.15; margin: 0 0 0.5rem 0; }
-  h6 { font-size: var(--h6); line-height: 1.2; margin: 0 0 0.5rem 0; }
+  h1 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h2 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h3 { font-size: 42px; line-height: 48px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h4 { font-size: 32px; line-height: 38px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h5 { font-size: 24px; line-height: 30px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h6 { font-size: 18px; line-height: 22px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
 
   /* Logo helper */
   .logo {
@@ -184,6 +381,15 @@
     text-decoration: none;
   }
 
+  /* Body text global style per user */
+  body, p, li, a, input, button { font-family: var(--font-plusjakarta); font-weight: 500; font-size: 16px; line-height: 24px; color: #000000; }
+
+  /* Paragraphs / descriptions (Inter) */
+  .description, p.description { font-family: var(--font-inter); font-weight: 400; font-size: 18px; line-height: 26px; color: #52525B; }
+
+  /* Small text under icons (Montserrat) */
+  .icon-text { font-family: var(--font-montserrat); font-weight: 500; font-size: 18px; line-height: 100%; text-align: center; vertical-align: middle; color: #52525B; }
+
   /* Simple button variant used across app */
   .btn {
     display: inline-flex;
@@ -192,13 +398,20 @@
     gap: 0.5rem;
     padding: var(--btn-padding-y) var(--btn-padding-x);
     border-radius: calc(var(--radius) - 2px);
+
+
+/* Small helper styles for placeholders */
+.hero-title { font-size: var(--h2); margin: 12px 0; }
+.hero-accent { color: var(--accent-green); }
+.hero-search-placeholder { margin-top: 24px; background: #fff; padding: 14px; border-radius: 28px; width: 70%; }
+
     box-shadow: var(--shadow-sm);
     transition: all 160ms ease;
     cursor: pointer;
     user-select: none;
   }
   .btn-primary {
-    background: linear-gradient(180deg,var(--brand-green-700),var(--brand-green-500));
+    background: var(--accent-green);
     color: var(--white);
   }
   .btn-ghost {
@@ -215,6 +428,232 @@
     padding: 1rem;
     box-shadow: var(--shadow-md);
   }
+
+  /* Header specific styles */
+  .site-header {
+    background: var(--background);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+
+  /* Apply Figma drop-shadow and sticky behavior to the main header container */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    /* Figma shadow: X:0 Y:4 Blur:75.8 Spread:0 Color: #000000 10% */
+    box-shadow: 0px 4px 75.8px rgba(0,0,0,0.1);
+    backdrop-filter: saturate(120%) blur(4px);
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+   
+    gap: 80px;
+  }
+
+  .site-logo { display: inline-flex; align-items: center; }
+
+  .nav-list { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; align-items: center; }
+  .nav-list a { color: var(--grey-900); text-decoration: none; font-weight: 500; padding: 6px 4px; }
+  .nav-list a:hover, .nav-list a:focus { color: var(--brand-green-700); }
+
+  /* Nav option typography per spec */
+  .nav-menu a, .nav-list a {
+    font-family: var(--font-plusjakarta);
+    font-weight: 500;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0px;
+    color: #000000;
+    text-decoration: none;
+  }
+
+  /* Nav menu exact spec */
+  .nav-menu {
+    width: 429px;
+    height: 24px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    position: relative;
+    top: 8.5px;
+  }
+
+  .header-actions { display: flex; gap: 12px; align-items: center; }
+
+  .mobile-toggle { display: none; background: transparent; border: none; }
+
+  @media (max-width: 980px) {
+    .site-header { padding-left: 24px; padding-right: 24px; }
+    .nav-list { display: none; }
+    .mobile-toggle { display: inline-flex; }
+  }
+
+  /* Nav group dimension per design spec */
+  .nav-group {
+    width: 665px;
+    height: 41px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  /* Span accent color and selected option helpers */
+  span { color: var(--accent-green); }
+
+  /* When an option is selected */
+  .selected, .option.selected {
+    background: var(--accent-green);
+    color: var(--white);
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+
+  /* Header-specific styles */
+  /* Mobile menu */
+  .mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  /* Navigation menu alignment and styles */
+  .site-header :is(.navigation-menu-trigger, [data-state="open"] > .navigation-menu-trigger) {
+    font-family: var(--font-plusjakarta);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #000000;
+    background: transparent;
+  }
+
+  /* Make sure dropdown menu items have correct styles */
+  .site-header :is(.dropdown-menu-content, .navigation-menu-content) {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 8px;
+    min-width: 220px;
+  }
+
+  /* Specialist/location dropdown items */
+  .specialist-item {
+    padding: 10px 16px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+  }
+  
+  .specialist-item:hover {
+    background-color: rgba(0,0,0,0.04);
+  }
+
+  /* City sub-items */
+  .city-item {
+    padding: 8px 16px 8px 24px;
+    display: block;
+    border-radius: 4px;
+  }
+  
+  .city-item:hover {
+    background-color: rgba(0,0,0,0.04);
+  }
+
+  /* Fix language selector */
+  .site-header .dropdown-menu-trigger {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.3rem;
+    background: transparent;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* Adjust buttons */
+  .site-header .btn-primary {
+    background: var(--accent-green);
+    color: white;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .site-header .btn-ghost {
+    border: 1px solid rgba(0,0,0,0.1);
+    background: transparent;
+    border-radius: 9999px;
+  }
+  
+  /* Nested dropdown menu styles */
+  .specialist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 280px;
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: 8px;
+    background-color: #F4F4F4;
+    font-family: var(--font-inter);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .specialist-item:hover {
+    background-color: #E9E9E9;
+  }
+  
+  .city-item {
+    font-family: var(--font-inter);
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px 12px;
+  }
+  
+  /* Navigation menu content width */
+  .navigation-menu-content {
+    min-width: 320px;
+  }
+  
+  /* Hero section styles */
+  .hero-card {
+    border: none !important;
+  }
+  
+  .hero-input:focus-visible {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-color: transparent !important;
+  }
+  
+  /* Remove input focus styles */
+  .no-focus-ring:focus-visible {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-color: transparent !important;
+  }
 }
-
-

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -19,6 +19,20 @@ const montserrat = Montserrat({
   weight: ["300","400","500","600","700","800"],
 });
 
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plusjakarta",
+  subsets: ["latin"],
+  weight: ["500", "800"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Sehat Yar",
   description: "A medical plateform",
@@ -34,12 +48,12 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}>
+  <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${plusJakarta.variable} ${inter.variable}`}>
         <head />
         <body>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
