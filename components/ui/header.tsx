@@ -118,12 +118,13 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="header-container flex items-center w-full">
-        <div className="site-logo">
-          <Link href="/">
-            <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={160} height={48} priority />
-          </Link>
-        </div>
-        <div className="desktop-nav-group flex items-center gap-[80px]">
+      <div className="site-logo -ml-22">
+  <Link href="/">
+    <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={156} height={41} priority />
+  </Link>
+</div>
+
+  <div className="desktop-nav-group flex items-center w-[428px] h-[20px]  flex-none  grow-0">
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="nav-menu">
               <NavigationMenuItem>
@@ -204,22 +205,39 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="header-desktop-actions ml-auto flex items-center gap-[12px] ">
+        <div className="header-desktop-actions ml-auto -mr-[100px] flex items-center gap-[12px] ">
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 lang-dropdown-trigger">
-              EN <ChevronDownIcon className="w-4 h-4" />
+            <DropdownMenuTrigger className="flex items-center  gap-1 lang-dropdown-trigger">
+             <span className="font-plus-jakarta font-medium text-[14px] leading-[24px] text-black flex items-center gap-1">
+             EN  </span> <ChevronDownIcon className="w-4 h-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="lang-dropdown-content">
+            <DropdownMenuContent className="lang-dropdown-content z-[9999]">
               <DropdownMenuItem className="lang-dropdown-item">English</DropdownMenuItem>
               <DropdownMenuItem className="lang-dropdown-item">اردو</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href="/login" className="btn btn-ghost text-black px-4 py-2 rounded-full">Login / Sign Up</Link>
+       <Link
+  href="/login"
+  className="flex flex-row justify-center items-center px-[22px] py-[12px] gap-[10px] w-[159px] h-[48px] border border-black rounded-[99px]"
+>
+<span className="font-jakarta font-semibold text-[14px] leading-[24px] text-black">
+  Login / Sign Up
+</span>
+</Link>
 
-          <Link href="/register" className="btn btn-primary flex items-center gap-1 px-4 py-2 rounded-full">
-            Join As Doctor <ArrowRight className="w-4 h-4" />
-          </Link>
+
+
+         <Link
+  href="/register"
+  className="btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center  px-4 py-2 rounded-full"
+>
+  Join As Doctor
+  <div className="icon-container rounded-full bg-white p-[13px] gap-[10px] flex justify-center items-center">
+    <ArrowRight className="w-4 h-4 rotate-[-25deg]" />
+  </div>
+</Link>
+
         </div>
 
         {/* Mobile navigation toggle */}

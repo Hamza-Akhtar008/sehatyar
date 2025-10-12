@@ -217,7 +217,7 @@
   --black: #000000;
 
   /* Typography tokens */
-  --font-family-sans: var(--font-montserrat, "Montserrat"), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: var(--font-montserrat), sans-serif;
   --font-plusjakarta: var(--font-plusjakarta, "Plus Jakarta Sans");
   --font-inter: var(--font-inter, "Inter");
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;

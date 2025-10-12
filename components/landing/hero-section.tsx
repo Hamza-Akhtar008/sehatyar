@@ -2,11 +2,13 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
-export default function HeroSection() {
+export default function 
+HeroSection() {
   return (
-    <section aria-label="Hero section" className="bg-[#F8F8F8] py-8 md:py-12 px-4">
-      <Card className="hero-card max-w-[1200px] mx-auto bg-white p-8 md:p-10 rounded-3xl shadow-sm relative overflow-hidden">
+    <section aria-label="Hero section" className="p-10">
+      <Card className="hero-card max-w-[1620px] height-[740px] mx-auto bg-[#F4F4F4] p-8 md:p-10 rounded-3xl shadow-sm relative overflow-hidden">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 space-y-6">
             <div className="flex items-center gap-2">
@@ -52,8 +54,8 @@ export default function HeroSection() {
             </div>
           </div>
           
-          <div className="flex-1 relative">
-            <div className="relative h-[300px] md:h-[400px]">
+          <div className="relative flex">
+            <div className="relative h-[560px] w-[480px]">
               <Image 
                 src="/assets/Hero.svg" 
                 alt="Doctor on call" 
@@ -62,20 +64,32 @@ export default function HeroSection() {
               />
             </div>
             
-            <div className="absolute top-[15%] right-[10%] bg-white rounded-xl p-4 shadow-lg">
-              <h3 className="font-medium text-gray-800">Consult Online Now</h3>
-              <p className="text-sm text-gray-500 mt-1">Instantly connect with Specialists through Video call.</p>
-              <Button className="mt-2 rounded-lg bg-transparent border border-gray-200 hover:bg-gray-50 text-gray-800 w-full justify-between group">
-                <span>→</span>
-              </Button>
-            </div>
             
-            <div className="absolute bottom-[10%] right-[15%] bg-white rounded-xl p-2 shadow-lg flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-sm">In Clinic Appointment</span>
-              <span>→</span>
-            </div>
           </div>
+            <div className="absolute top-[50%] right-[15%] w-[426px] h-[145px] bg-white rounded-3xl p-3 shadow-lg">
+  <div className="flex items-center justify-between p-1">
+    <h3 className="font-semibold text-[23px] text-gray-800">
+      Consult Online Now
+    </h3>
+
+    <div className="icon-container flex justify-center items-center gap-[10px] p-[20px] rounded-3xl bg-[#5FE089]">
+      <ArrowRight className="w-6 h-6 rotate-[-25deg] text-white" />
+    </div>
+  </div>
+
+  <p className="text-[16px] font-medium text-[#929292] -p-2 text-gray-500">
+    Instantly connect with Specialists through Video call.
+  </p>
+</div>
+            <div className="absolute flex flex-justify bottom-[9%] right-[4%] w-[286px] h-[46.9px] bg-[#FFFFFFCC] backdrop-blur-[42.11px] rounded-xl p-2 shadow-lg flex items-center gap-[13.61px]">
+  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+  <span className="text-sm text-gray-800 font-medium">In Clinic Appointment</span>
+   <div className="icon-container rounded-full ml-5  p-[13px] gap-[10px] flex justify-center items-center">
+    <ArrowRight className="w-4 h-4 rotate-[-25deg]" />
+  </div>
+</div>
+
+
         </div>
       </Card>
     </section>
