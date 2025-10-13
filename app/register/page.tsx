@@ -10,7 +10,7 @@ const roles = [
 	{ label: 'Patient', value: 'patient' },
 ]
 
-const page = () => {
+const ResgisterPage = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirm, setShowConfirm] = useState(false)
 	const [form, setForm] = useState({
@@ -257,4 +257,4 @@ const page = () => {
 	)
 }
 
-export default page
+export default ResgisterPage

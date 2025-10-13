@@ -6,7 +6,7 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 const primaryColor = '#5FE089'
 const cardBg = '#F4F4F4'
 
-const page = () => {
+const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
@@ -119,4 +119,4 @@ const page = () => {
   )
 }
 
-export default page
+export default LoginPage

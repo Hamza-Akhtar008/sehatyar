@@ -190,7 +190,7 @@ export default function Header() {
               <NavigationMenuItem>
                   <NavigationMenuLink asChild>
                     <Link href="/how-it-works" className={navigationMenuTriggerStyle()}>
-                      How It's Work
+                      How It&apos;s Work
                     </Link>
                   </NavigationMenuLink>
               </NavigationMenuItem>
@@ -259,7 +259,7 @@ export default function Header() {
               <Link href="/clinics" className="block py-2">Clinics</Link>
             </li>
             <li>
-              <Link href="/how-it-works" className="block py-2">How It's Work</Link>
+              <Link href="/how-it-works" className="block py-2">How It&apos;s Work</Link>
             </li>
             <li>
               <Link href="/about" className="block py-2">About Us</Link>
