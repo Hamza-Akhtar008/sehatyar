@@ -1,8 +1,3 @@
-// Placeholder Conditions component for the landing page
-
-import { JSX } from "react";
-
-// File: components/landing/conditions.tsx
-export default function Conditions(): JSX.Element {
+export default function Conditions() {
   return <section aria-label="Conditions section" />;
 }
