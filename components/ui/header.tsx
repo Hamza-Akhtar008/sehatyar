@@ -118,7 +118,7 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="header-container flex items-center w-full">
-      <div className="site-logo -ml-22">
+      <div className="site-logo -ml-14">
   <Link href="/">
     <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={156} height={41} priority />
   </Link>
@@ -205,7 +205,7 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="header-desktop-actions ml-auto -mr-[100px] flex items-center gap-[12px] ">
+        <div className="header-desktop-actions ml-auto -mr-[60px] flex items-center gap-[12px] ">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center  gap-1 lang-dropdown-trigger">
              <span className="font-plus-jakarta font-medium text-[14px] leading-[24px] text-black flex items-center gap-1">
