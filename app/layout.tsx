@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 import { ReactNode } from "react";
-import Header from "@/components/ui/header";
+
 
 interface LayoutProps {
   children: ReactNode;
