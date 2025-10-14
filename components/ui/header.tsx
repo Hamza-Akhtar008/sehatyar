@@ -115,17 +115,20 @@ export default function Header() {
     },
   ];
 
+  const [mobileDoctorsOpen, setMobileDoctorsOpen] = useState<boolean>(false);
+  const [mobileClinicsOpen, setMobileClinicsOpen] = useState<boolean>(false);
+
   return (
     <header className="site-header">
       <div className="header-container flex items-center w-full">
-      <div className="site-logo -ml-14">
+      <div className="site-logo ml-0 lg:-ml-14">
   <Link href="/">
     <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={156} height={41} priority />
   </Link>
 </div>
 
-  <div className="desktop-nav-group flex items-center w-[428px] h-[20px]  flex-none  grow-0">
-          <NavigationMenu className="hidden md:flex">
+  <div className="desktop-nav-group hidden md:flex items-center flex-1 min-w-0">
+          <NavigationMenu>
             <NavigationMenuList className="nav-menu">
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-black">Doctors</NavigationMenuTrigger>
@@ -205,7 +208,7 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="header-desktop-actions ml-auto -mr-[60px] flex items-center gap-[12px] ">
+        <div className="header-desktop-actions ml-auto flex items-center gap-2 md:gap-3 lg:gap-[12px] ">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center  gap-1 lang-dropdown-trigger">
              <span className="font-plus-jakarta font-medium text-[14px] leading-[24px] text-black flex items-center gap-1">
@@ -219,7 +222,7 @@ export default function Header() {
 
        <Link
   href="/login"
-  className="flex flex-row justify-center items-center px-[22px] py-[12px] gap-[10px] w-[159px] h-[48px] border border-black rounded-[99px]"
+  className="hide-on-mobile flex flex-row justify-center items-center px-4 py-2 gap-[10px] lg:px-[22px] lg:py-[12px] w-auto h-10 lg:w-[159px] lg:h-[48px] border border-black rounded-[99px] whitespace-nowrap"
 >
 <span className="font-jakarta font-semibold text-[14px] leading-[24px] text-black">
   Login / Sign Up
@@ -230,7 +233,7 @@ export default function Header() {
 
          <Link
   href="/register"
-  className="btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center  px-4 py-2 rounded-full"
+  className="hide-on-mobile btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center  px-4 py-2 rounded-full whitespace-nowrap"
 >
   Join As Doctor
   <div className="icon-container rounded-full bg-white p-[13px] gap-[10px] flex justify-center items-center">
@@ -251,24 +254,97 @@ export default function Header() {
       {/* Mobile menu (shown when open state is true) */}
       {open && (
         <div className="md:hidden mobile-menu bg-white p-4">
-          <ul className="flex flex-col space-y-4">
+          <ul className="flex flex-col space-y-2">
+            {/* Doctors collapsible */}
             <li>
-              <Link href="/doctors" className="block py-2">Doctors</Link>
+              <button
+                className="w-full flex items-center justify-between py-3 text-left"
+                onClick={() => setMobileDoctorsOpen(!mobileDoctorsOpen)}
+                aria-expanded={mobileDoctorsOpen}
+                aria-controls="mobile-doctors-panel"
+                type="button"
+              >
+                <span>Doctors</span>
+                <ChevronDownIcon className={`w-4 h-4 transition-transform ${mobileDoctorsOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {mobileDoctorsOpen && (
+                <div id="mobile-doctors-panel" className="pl-3 pb-2 space-y-1">
+                  {specialties.map((spec) => (
+                    <div key={spec.name}>
+                      <button
+                        className={`w-full flex items-center justify-between py-2 text-left text-sm text-gray-600 ${expanded === spec.name ? 'font-medium' : ''}`}
+                        onClick={() => setExpanded(expanded === spec.name ? null : spec.name)}
+                        type="button"
+                      >
+                        <span>{spec.name}</span>
+                        <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${expanded === spec.name ? 'rotate-180' : ''}`} />
+                      </button>
+                      {expanded === spec.name && (
+                        <div className="pl-3 py-1 space-y-1">
+                          {spec.cities.map((city) => (
+                            <Link key={city} href="#" className="block py-1 text-sm text-gray-500">
+                              {city}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+
+            {/* Clinics collapsible */}
+            <li>
+              <button
+                className="w-full flex items-center justify-between py-3 text-left"
+                onClick={() => setMobileClinicsOpen(!mobileClinicsOpen)}
+                aria-expanded={mobileClinicsOpen}
+                aria-controls="mobile-clinics-panel"
+                type="button"
+              >
+                <span>Clinics</span>
+                <ChevronDownIcon className={`w-4 h-4 transition-transform ${mobileClinicsOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {mobileClinicsOpen && (
+                <div id="mobile-clinics-panel" className="pl-3 pb-2 space-y-1">
+                  {clinics.map((city) => (
+                    <div key={city.name}>
+                      <button
+                        className={`w-full flex items-center justify-between py-2 text-left text-sm text-gray-600 ${expanded === city.name ? 'font-medium' : ''}`}
+                        onClick={() => setExpanded(expanded === city.name ? null : city.name)}
+                        type="button"
+                      >
+                        <span>{city.name}</span>
+                        <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${expanded === city.name ? 'rotate-180' : ''}`} />
+                      </button>
+                      {expanded === city.name && (
+                        <div className="pl-3 py-1 space-y-1">
+                          {city.hospitals.map((hospital) => (
+                            <Link key={hospital} href="#" className="block py-1 text-sm text-gray-500">
+                              {hospital}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+
+            <li>
+              <Link href="/how-it-works" className="block py-3">How It&apos;s Work</Link>
             </li>
             <li>
-              <Link href="/clinics" className="block py-2">Clinics</Link>
+              <Link href="/about" className="block py-3">About Us</Link>
             </li>
-            <li>
-              <Link href="/how-it-works" className="block py-2">How It&apos;s Work</Link>
+            {/* Hide auth actions on tablet/laptop since they are in top header there */}
+            <li className="sm:hidden">
+              <Link href="/login" className="block py-3">Login / Sign Up</Link>
             </li>
-            <li>
-              <Link href="/about" className="block py-2">About Us</Link>
-            </li>
-            <li>
-              <Link href="/login" className="block py-2">Login / Sign Up</Link>
-            </li>
-            <li>
-              <Link href="/join-doctor" className="block py-2">Join As Doctor</Link>
+            <li className="sm:hidden">
+              <Link href="/register" className="block py-3">Join As Doctor</Link>
             </li>
           </ul>
         </div>

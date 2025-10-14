@@ -4,8 +4,7 @@ import { Input } from "../ui/input";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-export default function 
-HeroSection() {
+export default function HeroSection() {
   return (
   <section
     aria-label="Hero section"
@@ -188,97 +187,52 @@ HeroSection() {
       </div>
 
 
-        {/* Floating Badge (In Clinic Appointment) */}
-        <div
-          style={{
-            position: 'absolute',
-            right: '-40px',
-            bottom: '10px',
-            width: '294.3435974121094px',
-            height: '46.89992141723633px',
-            borderRadius: '134.69px',
-            paddingTop: '4.21px',
-            paddingRight: '23.16px',
-            paddingBottom: '4.21px',
-            paddingLeft: '23.16px',
-            gap: '13.61px',
-            background: '#FFFFFFCC',
-            backdropFilter: 'blur(42.10526657104492px)',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 8px 20px rgba(0,0,0,0.06)'
-          }}
-        >
-          <div style={{ width: 10, height: 10, borderRadius: 9999, background: '#00c97a', marginRight: 12 }} />
-          <span
-            style={{
-              fontFamily: 'var(--font-montserrat)',
-              fontWeight: 500,
-              fontSize: '16.33px',
-              lineHeight: '38.09px',
-              color: '#414141'
-            }}
-          >
-            In Clinic Appointment
-          </span>
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-            <ArrowRight className="w-4 h-4 rotate-[-25deg] text-gray-700" />
-          </div>
-        </div>
+            {/* Floating Badge (In Clinic Appointment) */}
+            <div className="hero-floating-badge">
+              <div className="hero-floating-badge-dot" />
+              <span className="hero-floating-badge-text">In Clinic Appointment</span>
+              <div className="ml-4 flex items-center">
+                <ArrowRight className="w-4 h-4 -rotate-12 text-gray-700" />
+              </div>
+            </div>
+            
+            {/* Stacked badge for small screens */}
+            <div className="hero-floating-badge-mobile">
+              <div className="hero-floating-badge-inner">
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                <span className="font-medium text-sm text-[#414141]">In Clinic Appointment</span>
+              </div>
+            </div>
 
-
-        {/* Consult Online Now card positioned inside the right container */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '304.21px', /* 384.21 - container top (80px) */
-            left: '70px',
-            width: '426.3157958984375px',
-            height: '165.87281799316406px',
-            borderRadius: '33.68px',
-            padding: '23.16px',
-            gap: '8.42px',
-            background: '#FFFFFFCC',
-            backdropFilter: 'blur(42.10526657104492px)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
-          }}
-        
-        >
-          <div className="flex items-center justify-between" style={{ gap: '8.42px' }}>
-            <h3
-              style={{
-                fontFamily: 'var(--font-plusjakarta)',
-                fontWeight: 600,
-                fontSize: '23.16px',
-                lineHeight: '29.47px',
-                color: '#363636',
-                margin: 0
-              }}
-            >
-              Consult Online Now
-            </h3>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '8px', borderRadius: '20px', background: '#5FE089' }}>
-              <ArrowRight className="w-5 h-5 rotate-[-25deg] text-white" />
+            {/* Consult Online Now card */}
+            <div className="hero-consult-card">
+              <div className="hero-consult-header">
+                <h3 className="hero-consult-title">Consult Online Now</h3>
+                <div className="hero-consult-icon">
+                  <ArrowRight className="w-5 h-5 -rotate-12 text-white" />
+                </div>
+              </div>
+              <p className="hero-consult-description">
+                Instantly connect with Specialists through Video call.
+              </p>
+            </div>
+            
+            <div className="hero-consult-card-mobile">
+              <div className="hero-consult-card-inner">
+                <div className="hero-consult-header">
+                  <h3 className="hero-consult-title-mobile">Consult Online Now</h3>
+                  <div className="hero-consult-icon-mobile">
+                    <ArrowRight className="w-4 h-4 -rotate-12 text-white" />
+                  </div>
+                </div>
+                <p className="hero-consult-description-mobile">
+                  Instantly connect with Specialists through Video call.
+                </p>
+              </div>
             </div>
           </div>
-          <p
-            style={{
-              marginTop: '8px',
-              fontFamily: 'var(--font-plusjakarta)',
-              fontWeight: 500,
-              fontSize: '18.95px',
-              lineHeight: '100%',
-              color: '#929292'
-            }}
-          >
-            Instantly connect with Specialists through Video call.
-          </p>
         </div>
-      </div>
-    </div>
-  </Card>
-</section>
-
+      </Card>
+    </section>
   );
 }
-
