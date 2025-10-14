@@ -41,7 +41,7 @@ HeroSection() {
     <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center lg:items-start relative z-10">
       
       {/* ---------- Left Content ---------- */}
-      <div className="flex-1 space-y-6 mt-6 md:mt-10 lg:mt-20 w-full max-w-[800px]">
+      <div className="flex-1 space-y-6 mt-6 md:mt-10 lg:mt-50 w-full max-w-[800px]">
         
         {/* Patients Served */}
         <div className="flex items-center gap-2 p-2 bg-white w-fit rounded-3xl shadow-lg mx-auto lg:mx-0">

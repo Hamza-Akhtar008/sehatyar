@@ -90,6 +90,20 @@ const doctors: Doctor[] = [
     consultationFee: 1800,
     imageUrl: '/images/doctors/d6.png',
   },
+  {
+    id: 6,
+    name: 'Arlene McCoy',
+    verified: true,
+    specialties: ['Dermatologist', 'Cosmetologist'],
+    qualifications: 'MBBS, FCPS (Dermatology)',
+    experienceYears: 12,
+    rating: 4.9,
+    reviews: 520,
+    videoConsultation: true,
+    availableToday: true,
+    consultationFee: 1800,
+    imageUrl: '/images/doctors/d6.png',
+  },
 ];
 
 // Doctor Card component
