@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 const sidebarItems = [
-  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "#", active: true },
-  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "#" },
-  { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "#" },
-  { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "#" },
-  { label: "Message", icon: "/assets/sidebar/message.svg", href: "#" },
-  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "#" },
-  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "#" },
+  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard", active: true },
+  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/appointment" },
+  { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/patients" },
+  { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/availability" },
+  { label: "Message", icon: "/assets/sidebar/message.svg", href: "/messages" },
+  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "/analytics" },
+  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/settings" },
 ];
 
 export default function DoctorSidebar() {
