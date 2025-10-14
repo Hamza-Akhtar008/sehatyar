@@ -9,7 +9,7 @@ import { Conditions } from "@/components/landing";
 export default function Home() {
   return (
    <>
-   <Header />
+  
    <HeroSection />
    <Doctors />
    <Hospitals />

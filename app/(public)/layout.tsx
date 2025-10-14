@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 
 const geistSans = Geist({
@@ -39,6 +39,7 @@ export const metadata: Metadata = {
 };
 
 import { ReactNode } from "react";
+import Header from "@/components/ui/header";
 
 
 interface LayoutProps {
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
+            <Header/>
             {/* <Header /> */}
             <main>{children}</main>
           </ThemeProvider>
