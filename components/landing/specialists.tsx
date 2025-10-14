@@ -5,46 +5,38 @@ import { ArrowRight } from "lucide-react";
 
 export default function Specialists() {
   return (
-    <section
-      aria-label="Specialists section"
-      className="ml-[100px] mr-[100px] mt-[50px] relative"
-    >
-  <Card className="max-w-[1620px] bg-[#F4F4F4] md:p-10 rounded-3xl shadow-sm border-0 relative overflow-hidden">
-
+    <section aria-label="Specialists section" className="specialists-section">
+      <Card className="card">
         {/* Title + Description */}
-        <div className="flex items-center justify-between mt-10 relative z-10">
-          <div className="text-left">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-[40px]">
-              Doctors <span className="text-[#5FE089]">Speciality</span>
+        <div className="specialists-header">
+          <div className="specialists-title-container">
+            <h2 className="specialists-title">
+              Doctors <span className="specialists-title-accent">Speciality</span>
             </h2>
-            <p className="text-gray-500 max-w-[600px]">
+            <p className="specialists-description">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vehicula massa in enim luctus. Rutrum arcu.
             </p>
           </div>
 
           {/* View All button opposite the heading */}
-          <div className="ml-6">
-            <Button
-              className="bg-[#01503F] text-white font-medium text-[14px] leading-[24px] px-4 py-2 rounded-full"
-            >
+          <div className="specialists-button-container">
+            <Button className="view-all-button">
               View All
             </Button>
           </div>
         </div>
 
         {/* Specialists image - full width & responsive height */}
-        <div className="mt-10 relative z-10">
-          <div className="relative w-full h-[300px] sm:h-[380px] md:h-[420px] lg:h-[480px]">
+        <div className="specialists-image-container">
+          <div className="specialists-image-wrapper">
             <Image
               src="/assets/Frame.svg"
               alt="Specialists"
               fill
-              style={{ objectFit: 'cover' }}
-              className="select-none"
+              className="specialists-image"
             />
           </div>
         </div>
-          
       </Card>
     </section>
   );
