@@ -1,4 +1,6 @@
+"use client";
 import React from 'react'
+import { useRouter } from 'next/navigation';
 import { Star, User } from 'lucide-react';
 import Image from 'next/image';
 
@@ -108,8 +110,12 @@ const doctors: Doctor[] = [
 
 // Doctor Card component
 const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/doctor-profile`);
+  };
   return (
-    <div className="bg-[#F8F8F8] rounded-4xl p-10">
+    <div className="bg-[#F8F8F8] rounded-4xl p-10 cursor-pointer hover:shadow-lg transition" onClick={handleClick}>
       <div className="flex flex-row items-center">
         {/* Doctor Image and Info */}
         <div className="flex flex-row gap-10 items-center">

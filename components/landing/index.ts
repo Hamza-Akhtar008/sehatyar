@@ -4,3 +4,4 @@ export { default as Hospitals } from './hospitals';
 export { default as Specialists } from './specialists';
 export { default as Conditions } from './conditions';
 export { default as Footer } from './footer';
+export { default as DoctorProfile } from './doctor-profile';
