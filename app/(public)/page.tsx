@@ -5,6 +5,8 @@ import Hospitals from "@/components/landing/hospitals";
 import Doctors from "@/components/landing/doctors";
 import Specialists from "@/components/landing/specialists";
 import { Conditions } from "@/components/landing";
+import Partners from "@/components/landing/partners";
+import DoctorByCondition from "@/components/landing/doctor-by-condition";
 
 export default function Home() {
   return (
@@ -15,6 +17,8 @@ export default function Home() {
    <Hospitals />
    <Specialists />
    <Conditions />
+   <Partners />
+   <DoctorByCondition />
    </>
   );
 }

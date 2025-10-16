@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function Conditions() {
   return (
     <section aria-label="Conditions section" className="conditions-section">
-      <Card className="card">
+      <Card className="card py-25 px-20">
         {/* Title + Description + Button */}
         <div className="conditions-header">
           <div className="conditions-title-container">
@@ -13,7 +13,9 @@ export default function Conditions() {
               Doctor by <span className="conditions-title-accent">condition</span>
             </h2>
             <p className="conditions-description">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vehicula massa in enim luctus. Rutrum arcu.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              <br></br>
+               Vehicula massa in enim luctus. Rutrum arcu.
             </p>
           </div>
 
@@ -27,7 +29,7 @@ export default function Conditions() {
 
         {/* Specialists image - full width & responsive height */}
         <div className="conditions-image-container">
-          <div className="conditions-image-wrapper">
+          <div className="conditions-image-wrapper rounded-4xl">
             <Image
               src="/assets/Frame1.svg"
               alt="Specialists"

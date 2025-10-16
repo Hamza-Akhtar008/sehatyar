@@ -269,7 +269,7 @@
     background: var(--card);
     color: var(--card-foreground);
     border-radius: var(--radius);
-    padding: 1rem;
+    /* padding: 1rem; */
     box-shadow: var(--shadow-md);
   }
 
@@ -277,10 +277,14 @@
   .site-header {
     background: var(--background);
     border-bottom: 1px solid rgba(0,0,0,0.06);
-    padding-top: 30px;
+    /* padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 100px;
-    padding-right: 100px;
+    padding-right: 100px; */
+  padding-top: 1.875rem;    /* 30px = 1.875rem */
+  padding-bottom: 1.875rem; /* 30px = 1.875rem */
+  padding-left: 6.25rem;    /* 100px = 6.25rem */
+  padding-right: 6.25rem;   /* 100px = 6.25rem */
   }
 
   /* Apply Figma drop-shadow and sticky behavior to the main header container */
@@ -294,12 +298,12 @@
   }
 
   .header-container {
-    max-width: 1400px;
+    /* max-width: 1400px; */
     margin: 0 auto;
     display: flex;
     align-items: center;
 
-    gap: 80px;
+    gap: 5rem;
   }
 
   .site-logo { display: inline-flex; align-items: center; }
@@ -685,7 +689,7 @@
 
 .card {
     background-color: #F4F4F4;
-    padding: 1rem;
+    /* padding: 1rem; */
     /* For md:p-10, use media query */
     box-shadow: 0 1px 2px rgba(16,24,40,0.05);
     position: relative;
@@ -694,7 +698,7 @@
     margin-right: auto;
     border: none !important;
     width: 100%;
-    max-width: 1520px;
+    /* max-width: 1520px; */
     min-height: 520px;
     border-radius: 42px;
     
@@ -702,11 +706,11 @@
     margin-right: auto;
   }
   
-  @media (min-width: 768px) {
+  /* @media (min-width: 768px) {
     .card {
       padding: 2.5rem;
     }
-}
+} */
 
 
 /* Common styling */
@@ -917,7 +921,7 @@
 }
 
 .hero-floating-badge {
-  @apply hidden lg:flex absolute right-8 bottom-10 items-center rounded-full px-6 py-2 bg-white/90 backdrop-blur-lg shadow-md;
+  @apply hidden lg:flex absolute right-8 bottom-5 items-center rounded-full px-6 py-2 bg-white/90 backdrop-blur-lg shadow-md;
   gap: 12px;
 }
 
@@ -993,7 +997,7 @@
 
 /* Doctors Section Styles */
 .doctors-section {
-  @apply px-4 sm:px-8 lg:px-[100px] mt-6 relative;
+  @apply  px-25 mt-6 ;
 }
 
 .doctors-bg-decoration {
@@ -1005,7 +1009,7 @@
 }
 
 .doctors-title {
-  @apply text-3xl sm:text-4xl font-bold text-gray-800 mb-[40px];
+  @apply text-[2.63rem] font-bold text-[#323232] mb-10;
 }
 
 .doctors-title-accent {
@@ -1017,7 +1021,7 @@
 }
 
 .doctors-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 mt-10 relative z-10;
+  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-19 mt-10  justify-center;
 }
 
 .doctors-card-item {
@@ -1025,7 +1029,7 @@
 }
 
 .doctors-card-inner {
-  @apply overflow-hidden shadow-md bg-white flex flex-col relative;
+  @apply overflow-hidden shadow-md  flex flex-col relative;
   width: 100%;
   border-radius: 34.04px;
   margin: 0 auto;
@@ -1036,7 +1040,7 @@
 }
 
 .doctors-image-container {
-  @apply w-full flex justify-center items-center;
+  @apply w-full  justify-center items-center;
   min-height: 220px;
 }
 @media (min-width: 640px) { /* sm */
@@ -1099,7 +1103,7 @@
 }
 
 .doctors-pagination {
-  @apply flex justify-center items-center gap-4 mt-12;
+  @apply flex justify-center items-center gap-4 mt-10;
 }
 
 .doctors-pagination-button {
@@ -1126,10 +1130,10 @@
   @apply absolute bottom-0 left-0 w-[180px] sm:w-[250px] md:w-[300px] lg:w-[380px] pointer-events-none;
 }
 .hospitals-header {
-  @apply text-left space-y-3 mt-10 relative z-10;
+  @apply text-left space-y-3 relative z-10;
 }
 .hospitals-title {
-  @apply text-3xl sm:text-4xl font-bold text-gray-800 mb-[40px];
+  @apply text-[2.63rem] sm:text-4xl font-bold text-gray-800 mb-10;
 }
 .hospitals-title-accent {
   @apply text-[#5FE089];
@@ -1256,7 +1260,7 @@
 }
 
 .conditions-image-wrapper {
-  @apply relative w-full h-[220px] sm:h-[300px] md:h-[380px] lg:h-[480px] overflow-hidden shadow-md bg-white;
+  @apply relative w-full h-[180px] sm:h-[300px] md:h-[380px] overflow-hidden shadow-md bg-white;
 }
 
 .conditions-image {

@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 export default function Specialists() {
   return (
     <section aria-label="Specialists section" className="specialists-section">
-      <Card className="card">
+      <Card className="card py-25 px-20 my-25">
         {/* Title + Description */}
         <div className="specialists-header">
           <div className="specialists-title-container">
@@ -14,7 +14,9 @@ export default function Specialists() {
               Doctors <span className="specialists-title-accent">Speciality</span>
             </h2>
             <p className="specialists-description">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vehicula massa in enim luctus. Rutrum arcu.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              <br></br>
+               Vehicula massa in enim luctus. Rutrum arcu.
             </p>
           </div>
 
@@ -27,8 +29,8 @@ export default function Specialists() {
         </div>
 
         {/* Specialists image - full width & responsive height */}
-        <div className="specialists-image-container">
-          <div className="specialists-image-wrapper">
+        <div className="specialists-image-container ">
+          <div className="specialists-image-wrapper rounded-4xl">
             <Image
               src="/assets/Frame.svg"
               alt="Specialists"
