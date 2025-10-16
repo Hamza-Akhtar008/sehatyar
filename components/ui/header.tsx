@@ -121,7 +121,7 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="header-container flex items-center w-full">
-      <div className="site-logo ml-0 lg:-ml-14">
+      <div className="site-logo">
   <Link href="/">
     <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={156} height={41} priority />
   </Link>

@@ -222,7 +222,7 @@ export default function doctorHero() {
     <div className=''>
       <div className='flex flex-col'>
         <p className='text-sm description mb-0'>Home / Pakistan / Abbottabad / Dermatologists in Abbottabad</p>
-        <h1 className='text-[2.5rem] m-0 text-[#323232] my-10'>380 Best Dermatologist in Karachi <span className='text-brand-green-500'> | Top Skin Specialist </span> </h1>
+        <h1 className='text-[2.5rem] m-0 text-[#323232] my-10'>380 Best Dermatologist in Karachi <span className='text-green-400'> | Top Skin Specialist </span> </h1>
         <p className='text-lg description'>Also known as Skin Specialist ,ماہرامراض جلد ,Skin Doctor and Mahir-e-imraz-e-jild</p>
         <div className='mt-10 flex flex-wrap gap-3'>
           {filterButtons.map((text, index) => (
