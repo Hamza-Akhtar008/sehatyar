@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -10,6 +11,7 @@ import { Label } from "../ui/label";
 const GREEN = "#5FE089";
 
 export default function ConfirmBooking() {
+  const router = useRouter();
   const [self, setSelf] = useState(true);
   const [payment, setPayment] = useState<"online">("online");
 
@@ -127,10 +129,11 @@ export default function ConfirmBooking() {
 
              
 
-              <div className="mt-5">
+        <div className="mt-5">
                 <Button
                   className="w-full h-10 rounded-full text-[14px] font-medium"
                   style={{ backgroundColor: GREEN, color: "#0A0A0A" }}
+          onClick={() => router.push("/book-appointment/payment")}
                 >
                   Confirm Booking
                 </Button>
