@@ -1,12 +1,17 @@
-
+'use client';
 import React from "react";
 import Image from "next/image";
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function DoctorDashboardHeader() {
+  
+  const { user } = useAuth();
+
+  
   return (
     <header className="flex items-center -ml-2 justify-between h-[64px] px-4 bg-white rounded-[22px] w-full shadow-sm">
       {/* Left: Greeting */}
-      <div className="text-[20px] font-medium text-[#555]">Good Morning, Dr. Adil</div>
+      <div className="text-[20px] font-medium text-[#555]">Good Morning, {user?.fullName || 'Doctor'}</div>
 
       {/* Right: Notification, Chat, Profile */}
       <div className="flex items-center gap-6">
@@ -26,8 +31,8 @@ export default function DoctorDashboardHeader() {
         <div className="flex items-center gap-2">
           <Image src="/assets/Doctor-D-profile.png" alt="Dr. Adil Khan" width={40} height={40} className="rounded-full" />
           <div className="flex flex-col">
-            <span className="font-semibold text-[16px] text-[#222] leading-none">Dr. Adil Khan</span>
-            <span className="text-xs text-[#B0B0B0] leading-none">Cardiologist</span>
+            <span className="font-semibold text-[16px] text-[#222] leading-none">{user?.fullName || 'Dr. Adil Khan'}</span>
+            <span className="text-xs text-[#B0B0B0] leading-none">{user?.role || 'Cardiologist'}</span>
           </div>
         </div>
       </div>

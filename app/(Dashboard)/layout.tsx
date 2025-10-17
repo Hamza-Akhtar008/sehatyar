@@ -1,7 +1,10 @@
+
+"use client";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,25 +36,54 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Sehat Yar",
-  description: "A medical plateform",
-};
 
-import { ReactNode } from "react";
+
+import { ReactNode, useEffect, useState } from "react";
 import Header from "@/components/ui/header";
 import DoctorSidebar from "@/components/Dashboard/Doctor/Sidebar";
 import DoctorDashboardHeader from "@/components/Dashboard/Doctor/Header";
-
+import PatientSidebar from "@/components/Dashboard/Patient/Sidebar";
+import PatientDashboardHeader from "@/components/Dashboard/Patient/Header";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export default function DashboardLayout({ children }: LayoutProps) {
-  return (
-    <>
-  <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+    
+    // Redirect if not authenticated
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    
+    // Check if user is on the correct dashboard page
+    if (!isLoading && isAuthenticated && user) {
+      const currentPath = window.location.pathname;
+      const isOnDoctorDashboard = currentPath.includes('doctor-dashboard');
+      const isOnPatientDashboard = currentPath.includes('patient-dashboard');
+      
+      // If on wrong dashboard, redirect to correct one
+      if (user.role === 'doctor' && isOnPatientDashboard) {
+        router.push('/doctor-dashboard');
+      } else if (user.role === 'patient' && isOnDoctorDashboard) {
+        router.push('/patient-dashboard');
+      }
+    }
+  }, [isLoading, isAuthenticated, user, router]);
+
+  // Show loading state while checking authentication
+  if (isLoading || !isClient) {
+    return (
+      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <head />
         <body>
           <ThemeProvider
@@ -60,15 +92,45 @@ export default function DashboardLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-         
+            <div className="flex items-center justify-center min-h-screen">
+              Loading...
+            </div>
+          </ThemeProvider>
+        </body>
+      </html>
+    );
+  }
+
+  // Only show content if authenticated
+  return (
+    <>
+      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
+        <head />
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
             <div className="min-h-screen bg-[#F4F4F4] flex">
-                      <DoctorSidebar />
-                      <main className="flex-1 flex flex-col gap-6 py-4">
-                          <DoctorDashboardHeader />
-                            {children}
-                         
-                      </main>
-                  </div>
+              {/* Render appropriate sidebar based on user role */}
+              {user?.role === 'doctor' ? (
+                <DoctorSidebar />
+              ) : (
+                <PatientSidebar />
+              )}
+              
+              <main className="flex-1 flex flex-col gap-6 py-4">
+                {/* Render appropriate header based on user role */}
+                {user?.role === 'doctor' ? (
+                  <DoctorDashboardHeader />
+                ) : (
+                  <PatientDashboardHeader />
+                )}
+                {children}
+              </main>
+            </div>
           </ThemeProvider>
         </body>
       </html>

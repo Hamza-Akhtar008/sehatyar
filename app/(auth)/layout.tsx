@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 
 import { ReactNode } from "react";
 import Header from "@/components/ui/header";
+import { Toaster } from "react-hot-toast";
 
 
 interface LayoutProps {
@@ -60,7 +61,11 @@ export default function RootLayout({ children }: LayoutProps) {
           >
         
             {/* <Header /> */}
-            <main>{children}</main>
+            <main>
+              {children}
+               <Toaster position="top-right" />
+            </main>
+            
           </ThemeProvider>
         </body>
       </html>

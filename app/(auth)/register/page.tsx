@@ -1,4 +1,6 @@
 "use client"
+import { registerDoctor } from "@/lib/Api/Auth/api";
+import { toast, Toaster } from "react-hot-toast";
 import { useState, useRef, useEffect, useMemo } from "react"
 import Image from "next/image"
 
@@ -8,13 +10,117 @@ const GENDER_ACTIVE = "#003227"
 const BORDER = "#BDBDBD"
 
 const RegisterPage = () => {
+  // Add state for user fields
+  const [userFields, setUserFields] = useState({
+    fullName: "",
+    gender: "male",
+    country: "",
+    city: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: ""
+  });
+  // Add state for profilePic
+  const [profilePic, setProfilePic] = useState("");
+  // Handler for registration submit
+  const handleRegister = async () => {
+    if (step !== 2) {
+      setStep(2);
+      return;
+    }
+    
+    // Check if we have at least one education entry
+    if (educationList.length === 0 && formData.education) {
+      // Create default education entry from the simple field
+      setEducationList([{
+        degreeName: formData.education,
+        institute: "",
+        fieldOfStudy: ""
+      }]);
+    }
+    
+    // Build payload
+    const payload = {
+      user: {
+        ...userFields,
+        gender: gender // Ensure gender is updated
+      },
+      doctorProfile: {
+        profilePic: profilePic || "https://example.com/profile.jpg", // Replace with actual upload logic
+        yearsOfExperience: Number(formData.yearsOfExperience),
+        primarySpecialization: formData.primarySpecializations,
+        servicesTreatementOffered: formData.servicesTreatment,
+        conditionTreatments: formData.conditionsTreatment,
+        education: educationList.length > 0 ? educationList : [
+          {
+            degreeName: formData.education,
+            institute: "",
+            fieldOfStudy: ""
+          }
+        ]
+      }
+    };
+    
+    try {
+      await registerDoctor(payload);
+      toast.success("Registration successful!");
+      // Optionally redirect or reset form
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
+      console.error("Registration error:", error);
+    }
+  };
+  
+  // Handle adding an education entry
+  const addEducationEntry = () => {
+    if (educationFields.degreeName.trim()) {
+      setEducationList(prev => [...prev, {...educationFields}]);
+      setEducationFields({
+        degreeName: "",
+        institute: "",
+        fieldOfStudy: ""
+      });
+      setShowEducationPopup(false);
+    }
+  };
+  
+  // Handle removing an education entry
+  const removeEducationEntry = (index: number) => {
+    setEducationList(prev => prev.filter((_, i) => i !== index));
+  };
   const [step, setStep] = useState(1)
   const [gender, setGender] = useState<"male" | "female">("male")
+
+  // Add education fields
+  const [showEducationPopup, setShowEducationPopup] = useState(false);
+  const [educationFields, setEducationFields] = useState({
+    degreeName: "",
+    institute: "",
+    fieldOfStudy: ""
+  });
+  
+  // Track the full education array
+  const [educationList, setEducationList] = useState<Array<{
+    degreeName: string;
+    institute: string;
+    fieldOfStudy: string;
+  }>>([]);
+  
+  // Handle user field changes
+  const handleUserFieldChange = (field: string, value: string) => {
+    setUserFields(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const [specializationInput, setSpecializationInput] = useState("")
   const [treatmentInput, setTreatmentInput] = useState("")
   const [conditionInput, setConditionInput] = useState("")
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+
+
 
   const [formData, setFormData] = useState({
     title: "",
@@ -414,6 +520,7 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-white">
+      {/* <Toaster position="top-right" /> */}
       <div className="w-full max-w-[672px] px-4 md:px-0 pt-14 pb-10">
         {/* Header */}
         <div className="mx-auto flex flex-col items-center gap-[30px] w-full max-w-[560px]">
@@ -435,6 +542,8 @@ const RegisterPage = () => {
                 placeholder="Full name"
                 className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                 style={{ borderColor: BORDER }}
+                value={userFields.fullName}
+                onChange={(e) => setUserFields({ ...userFields, fullName: e.target.value })}
               />
             </div>
 
@@ -473,6 +582,8 @@ const RegisterPage = () => {
                   placeholder="Pakistan"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.country}
+                  onChange={(e) => setUserFields({ ...userFields, country: e.target.value })}
                 />
               </div>
               <div>
@@ -484,6 +595,8 @@ const RegisterPage = () => {
                   placeholder="Abbottabad"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.city}
+                  onChange={(e) => setUserFields({ ...userFields, city: e.target.value })}
                 />
               </div>
 
@@ -497,6 +610,8 @@ const RegisterPage = () => {
                   placeholder="lendar@gmail.com"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.email}
+                  onChange={(e) => setUserFields({ ...userFields, email: e.target.value })}
                 />
               </div>
               <div>
@@ -508,6 +623,8 @@ const RegisterPage = () => {
                   placeholder="03100057572"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.phoneNumber}
+                  onChange={(e) => setUserFields({ ...userFields, phoneNumber: e.target.value })}
                 />
               </div>
 
@@ -521,6 +638,8 @@ const RegisterPage = () => {
                   placeholder="Enter the password"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.password}
+                  onChange={(e) => setUserFields({ ...userFields, password: e.target.value })}
                 />
               </div>
               <div>
@@ -532,6 +651,8 @@ const RegisterPage = () => {
                   placeholder="Confirm password"
                   className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
                   style={{ borderColor: BORDER }}
+                  value={userFields.confirmPassword}
+                  onChange={(e) => setUserFields({ ...userFields, confirmPassword: e.target.value })}
                 />
               </div>
             </div>
@@ -641,9 +762,32 @@ const RegisterPage = () => {
               <div>
                 <label className="block text-[12px] font-medium text-[#343434] mb-3">Education</label>
                 <div
-                  className="border rounded-[12px] p-4 min-h-[120px] flex items-center"
+                  className="border rounded-[12px] p-4 min-h-[120px] flex flex-col"
                   style={{ borderColor: BORDER }}
                 >
+                  {/* Display education entries */}
+                  {educationList.length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      {educationList.map((edu, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                          <div>
+                            <div className="font-medium">{edu.degreeName}</div>
+                            <div className="text-xs text-gray-600">
+                              {edu.institute} {edu.fieldOfStudy && `- ${edu.fieldOfStudy}`}
+                            </div>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => removeEducationEntry(index)}
+                            className="text-red-500 text-xs"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <input
                     type="text"
                     placeholder="B.E.M.S. Ayub Medical College, Pakistan, 12"
@@ -651,6 +795,15 @@ const RegisterPage = () => {
                     onChange={(e) => setFormData((prev) => ({ ...prev, education: e.target.value }))}
                     className="w-full outline-none bg-transparent text-sm text-[#343434]"
                   />
+                  
+                  <button
+                    type="button"
+                    onClick={() => setShowEducationPopup(true)}
+                    className="mt-2 self-end text-sm font-medium px-3 py-1 rounded-full"
+                    style={{ background: PRIMARY, color: "#0b3b22" }}
+                  >
+                    Add Details
+                  </button>
                 </div>
               </div>
             </div>
@@ -669,11 +822,89 @@ const RegisterPage = () => {
                 type="button"
                 className="flex-1 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold"
                 style={{ background: PRIMARY }}
+                onClick={handleRegister}
               >
                 Submit
               </button>
             </div>
           </>
+        )}
+        
+        {/* Education popup */}
+        {showEducationPopup && (
+          <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-5 max-w-md w-full">
+              <h3 className="text-lg font-medium mb-4">Education Details</h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Degree Name
+                  </label>
+                  <input
+                    type="text"
+                    value={educationFields.degreeName}
+                    onChange={(e) => setEducationFields(prev => ({
+                      ...prev, 
+                      degreeName: e.target.value
+                    }))}
+                    placeholder="e.g., MBBS, MD, Ph.D."
+                    className="w-full h-10 rounded border px-3 text-sm outline-none"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Institute
+                  </label>
+                  <input
+                    type="text"
+                    value={educationFields.institute}
+                    onChange={(e) => setEducationFields(prev => ({
+                      ...prev, 
+                      institute: e.target.value
+                    }))}
+                    placeholder="e.g., Harvard Medical School"
+                    className="w-full h-10 rounded border px-3 text-sm outline-none"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Field of Study
+                  </label>
+                  <input
+                    type="text"
+                    value={educationFields.fieldOfStudy}
+                    onChange={(e) => setEducationFields(prev => ({
+                      ...prev, 
+                      fieldOfStudy: e.target.value
+                    }))}
+                    placeholder="e.g., Medicine, Cardiology"
+                    className="w-full h-10 rounded border px-3 text-sm outline-none"
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-5 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowEducationPopup(false)}
+                  className="px-4 py-2 border rounded-md text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={addEducationEntry}
+                  className="px-4 py-2 rounded-md text-sm text-white font-medium"
+                  style={{ background: PRIMARY }}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

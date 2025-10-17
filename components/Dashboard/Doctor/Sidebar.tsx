@@ -1,6 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from '@/src/contexts/AuthContext';
+import { useRouter, usePathname } from 'next/navigation';
+
 
 const sidebarItems = [
   { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard", active: true },
@@ -13,6 +16,16 @@ const sidebarItems = [
 ];
 
 export default function DoctorSidebar() {
+   const { logout } = useAuth();
+     const pathname = usePathname();
+     const router = useRouter();
+    
+
+    const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
   return (
     <aside
       className="fixed lg:relative m-4 z-20 bg-white flex flex-col justify-between 
@@ -85,7 +98,10 @@ export default function DoctorSidebar() {
             strokeWidth="1.5"
           />
         </svg>
-        <span className="hidden md:inline">Logout</span>
+        <span className="hidden md:inline"
+        onClick={handleLogout}
+
+      >Logout</span>
       </button>
     </aside>
   );
