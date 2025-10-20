@@ -7,12 +7,12 @@ import { useRouter, usePathname } from 'next/navigation';
 
 const sidebarItems = [
   { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard", active: true },
-  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/appointment" },
-  { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/patients" },
-  { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/availability" },
-  { label: "Message", icon: "/assets/sidebar/message.svg", href: "/messages" },
-  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "/analytics" },
-  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/settings" },
+  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/appointment" },
+  { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/doctor-dashboard/patients" },
+  { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/doctor-dashboard/availability" },
+  { label: "Message", icon: "/assets/sidebar/message.svg", href: "/doctor-dashboard/messages" },
+  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "//doctor-dashboardanalytics" },
+  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
 ];
 
 export default function DoctorSidebar() {
