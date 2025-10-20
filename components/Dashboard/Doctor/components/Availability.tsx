@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { getAvailability, createAvailability, deleteAvailability } from '@/lib/Api/availability';
 import { AvailabilityType, SlotType } from "@/src/types/enums";
+import { cn } from "@/lib/utils";
 
 const daysOfWeek = [
   "Monday",
@@ -34,6 +35,9 @@ const Availability: React.FC = () => {
   const doctorId = 3; // TODO: get from auth context
   const [availabilityType, setAvailabilityType] = useState<AvailabilityType>(AvailabilityType.CLINIC);
   const slotTypes = Object.values(SlotType);
+  const [availability, setAvailability] = useState<Record<string, { active: boolean }>>(
+  Object.fromEntries(daysOfWeek.map(day => [day, { active: true }]))
+);
 
   useEffect(() => {
     setLoading(true);
@@ -145,6 +149,23 @@ const Availability: React.FC = () => {
     }
   };
 
+  const handleToggleSlot = (slot: Slot, checked: boolean, isPending: boolean) => {
+  // Update local state immediately
+  if (isPending) {
+    setPendingSlots(prev =>
+      prev.map(s => (s === slot ? { ...s, active: checked } : s))
+    )
+  } else {
+    setSlots(prev =>
+      prev.map(s => (s.id === slot.id ? { ...s, active: checked } : s))
+    )
+  }
+
+  // Call backend if needed
+  // await updateSlotStatus(slot.id, checked)
+}
+
+
   return (
     <div className="w-full  mx-auto bg-[#f8f9f8] p-8 rounded-[16px]">
       {/* Header */}
@@ -179,102 +200,166 @@ const Availability: React.FC = () => {
       {/* Weekly Schedule */}
       <h3 className="text-lg font-semibold mb-4 text-gray-800">Weekly Schedule</h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {daysOfWeek.map((day) => (
-          <div
-            key={day}
-            className="bg-white rounded-[16px] p-5 shadow-sm border border-gray-100"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="text-gray-800 font-medium">{day}</h4>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {daysOfWeek.map((day) => {
+    const allSlots = [...slots, ...pendingSlots].filter(
+      s => s.dayOfWeek?.toLowerCase() === day.toLowerCase() &&
+           s.availabilityType === availabilityType
+    )
+
+    return (
+      <div
+        key={day}
+        className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-3"
+      >
+        {/* Day Header */}
+      <div className="flex justify-between items-center border-b border-gray-100 pb-1 mb-2">
+  <h4 className="text-gray-800 font-semibold tracking-wide">{day}</h4>
+
+ <Switch
+  checked={availability[day]?.active}
+  onCheckedChange={(checked) => {
+    setAvailability(prev => ({
+      ...prev,
+      [day]: { active: checked }
+    }));
+    handleToggle(day);
+  }}
+  className="
+    relative inline-flex h-6 w-11 items-center rounded-full
+    transition-colors duration-200 ease-in-out
+    data-[state=checked]:bg-[#5fe089]
+    data-[state=unchecked]:bg-gray-300
+    hover:brightness-95
+    hover:cursor-pointer
+  "
+>
+  <span
+    className="
+      pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
+      translate-x-0
+      data-[state=checked]:translate-x-5
+    "
+  />
+</Switch>
+
+</div>
+
+        {/* Slot List */}
+      <div className="space-y-3">
+  {allSlots.length > 0 ? (
+    allSlots.map((slot) => {
+      const isPending = !slot.id
+      const label = slot.slotType.charAt(0).toUpperCase() + slot.slotType.slice(1)
+
+      return (
+        <div
+          key={slot.slotType}
+          className="bg-gray-50 rounded-xl p-3 flex flex-col gap-2 border border-gray-100"
+        >
+          {/* Slot Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <span>{label}</span>
+              {isPending && <span className="text-xs text-orange-500">(new)</span>}
+            </div>
+
+            <div className="flex flex-end gap-2">
+              {/* Use your custom Switch component */}
+
+
               <Switch
-                checked={true} // availability[day].active}
-                onCheckedChange={() => handleToggle(day)}
-                className="data-[state=checked]:bg-[#5fe089]"
+  checked={slot.isActive}
+                onCheckedChange={(checked) => handleToggleSlot(slot, checked, isPending)}
+  className="
+    relative inline-flex h-6 w-11 items-center rounded-full
+    transition-colors duration-200 ease-in-out
+    data-[state=checked]:bg-[#5fe089]
+    data-[state=unchecked]:bg-gray-300
+    hover:brightness-95
+    hover:cursor-pointer
+  "
+>
+  <span
+    className="
+      pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
+      translate-x-0
+      data-[state=checked]:translate-x-5
+    "
+  />
+</Switch>
+            
+            </div>
+
+           
+          </div>
+
+          {/* Time Inputs */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-500">Start:</span>
+              <input
+                type="time"
+                className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
+                defaultValue={slot.startTime || ""}
+                onChange={(e) =>
+                  handleUpdateSlotTimes(slot, e.target.value, slot.endTime || "", isPending)
+                }
               />
             </div>
-
-            {/* Backend-driven slots with time selection */}
-            {slotTypes.map((slotType) => {
-              // Check in both saved and pending slots
-              const allSlots = [...slots, ...pendingSlots];
-              const slot = allSlots.find(s => 
-                s.dayOfWeek?.toLowerCase() === day.toLowerCase() && 
-                s.slotType === slotType && 
-                s.availabilityType === availabilityType
-              );
-              
-              const isPending = !slot?.id; // If no ID, it's a pending slot
-              
-              return slot ? (
-                <div key={slotType} className="flex flex-col mb-3">
-                  <div className="inline-flex items-center bg-[#e6e4e4] text-[#52525B] rounded-full px-4 py-2 text-sm mr-2 mb-2">
-                    {slotType.charAt(0).toUpperCase() + slotType.slice(1)}
-                    {isPending && <span className="ml-2 text-xs text-orange-500">(new)</span>}
-                    <button onClick={() => handleRemoveSlot(slot.id, isPending)} className="ml-2 text-xs text-red-500">×</button>
-                  </div>
-                  
-                  {/* Time selection */}
-                  <div className="flex items-center space-x-2 mt-1">
-                    <div className="flex items-center">
-                      <span className="text-xs text-gray-500 mr-1">Start:</span>
-                      <input
-                        type="time"
-                        className="border rounded px-2 py-1 text-xs"
-                        defaultValue={slot.startTime || undefined}
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            handleUpdateSlotTimes(slot, e.target.value, slot.endTime || "", isPending);
-                          }
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-xs text-gray-500 mr-1">End:</span>
-                      <input
-                        type="time"
-                        className="border rounded px-2 py-1 text-xs"
-                        defaultValue={slot.endTime || undefined}
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            handleUpdateSlotTimes(slot, slot.startTime || "", e.target.value, isPending);
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : null;
-            })}
-
-            {/* Add slotType dropdown */}
-            <div className="mt-2">
-              <select
-                className="border rounded px-2 py-1 text-xs"
-                defaultValue=""
-                onChange={e => {
-                  if (e.target.value) {
-                    handleAddSlot(day, e.target.value as SlotType);
-                    e.target.value = "";
-                  }
-                }}
-              >
-                <option value="" disabled>Add time slot</option>
-                {slotTypes.filter(st => {
-                  const allSlots = [...slots, ...pendingSlots];
-                  return !allSlots.some(s => 
-                    s.dayOfWeek?.toLowerCase() === day.toLowerCase() && 
-                    s.slotType === st && 
-                    s.availabilityType === availabilityType
-                  );
-                }).map(st => (
-                  <option key={st} value={st}>{st.charAt(0).toUpperCase() + st.slice(1)}</option>
-                ))}
-              </select>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-500">End:</span>
+              <input
+                type="time"
+                className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
+                defaultValue={slot.endTime || ""}
+                onChange={(e) =>
+                  handleUpdateSlotTimes(slot, slot.startTime || "", e.target.value, isPending)
+                }
+              />
             </div>
           </div>
-        ))}
+        </div>
+      )
+    })
+  ) : (
+    <p className="text-xs text-gray-400 italic">No slots added yet.</p>
+  )}
+</div>
+
+
+        {/* Add New Slot */}
+        <div className="mt-4">
+          <select
+            className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-600 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
+            defaultValue=""
+            onChange={(e) => {
+              if (e.target.value) {
+                handleAddSlot(day, e.target.value as SlotType)
+                e.target.value = ""
+              }
+            }}
+          >
+            <option value="" disabled>
+              + Add a new slot
+            </option>
+            {slotTypes
+              .filter(
+                (st) =>
+                  !allSlots.some((s) => s.slotType === st)
+              )
+              .map((st) => (
+                <option key={st} value={st}>
+                  {st.charAt(0).toUpperCase() + st.slice(1)}
+                </option>
+              ))}
+          </select>
+        </div>
       </div>
+    )
+  })}
+</div>
+
 
       {/* Action Buttons */}
       <div className="flex justify-end mt-10 gap-3">
