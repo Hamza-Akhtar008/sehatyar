@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getDoctorProfileByDoctorId } from "@/lib/Api/Doctor/doctor_api";
 import DoctorProfileTabs from "@/components/landing/DoctorProfileTabs";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
- import { Star } from "lucide-react";
+import { Star } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,6 +16,36 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+
+interface DoctorProfile {
+  id: number;
+  userId: number;
+  firstName: string;
+  lastName: string;
+  specialization: string;
+  licenseNumber: string;
+  experienceYears: number;
+  consultationFee: number;
+  bio?: string;
+  clinicAddress?: string;
+  clinicName?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  zipCode?: string;
+  phoneNumber?: string;
+  profilePicture?: string;
+  qualifications?: string;
+  languages?: string[];
+  availableForVideoConsultation: boolean;
+  user: {
+    fullName: string;
+  };
+  rating?: number;
+  reviewCount?: number;
+  verified?: boolean;
+  availableToday?: boolean;
+}
 
 type StatProps = { label: string; value: string };
 
@@ -41,6 +74,61 @@ function ProgressRow({ label, value }: { label: string; value: number }) {
 }
 
 export default function DoctorProfile() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const doctorId = searchParams.get("doctorId");
+
+  const [doctor, setDoctor] = useState<DoctorProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDoctorProfile = async () => {
+      if (!doctorId) {
+        setError("No doctor ID provided");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const data = await getDoctorProfileByDoctorId(Number(doctorId));
+        setDoctor(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching doctor profile:", err);
+        setError("Failed to load doctor profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorProfile();
+  }, [doctorId]);
+
+  if (loading) {
+    return (
+      <main className="w-full min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+      </main>
+    );
+  }
+
+  if (error || !doctor) {
+    return (
+      <main className="w-full min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-xl text-red-500 mb-4">{error || "Doctor not found"}</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
+        </div>
+      </main>
+    );
+  }
+
+  const fullName = doctor.user?.fullName || 'Unknown';
+  const displayRating = doctor.rating || 4.5;
+  const displayReviews = doctor.reviewCount || 0;
+
   return (
     <main className="w-full">
      
@@ -60,39 +148,55 @@ export default function DoctorProfile() {
             <Card className="rounded-2xl bg-[#F8F8F8] mb-6">
               <CardHeader className="gap-4 md:gap-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-                  <div className="relative h-24 w-24 md:h-28 md:w-28 rounded-full overflow-hidden ">
-                    <Image
-                      src="/images/doctors/d1.png"
-                      alt="Doctor profile photo"
-                      fill
-                      sizes="112px"
-                      className="object-cover"
-                      priority
-                    />
+                  <div className="relative h-24 w-24 md:h-28 md:w-28 rounded-full overflow-hidden bg-gray-200">
+                    {doctor.profilePicture ? (
+                      <Image
+                        src={doctor.profilePicture}
+                        alt={`Dr. ${fullName}`}
+                        fill
+                        sizes="112px"
+                        className="object-cover"
+                        priority
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full w-full text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col gap-2">
                       <h1 className="font-bold text-[32px] leading-tight text-[#414141]">
-                        Dr. Shazia Humayun Malik
+                        Dr. {fullName}
                       </h1>
                       <span className="bg-[#E8E8E8] text-[#3D3D3D] text-[12px] px-3 py-1 rounded-full font-medium flex items-center gap-1 w-fit min-w-[120px]">
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="inline"><circle cx="10" cy="10" r="10" fill="#5FE089"/><path d="M6 10l2.5 2.5L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                        PMDC Verified
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="inline">
+                          <circle cx="10" cy="10" r="10" fill={doctor.verified !== false ? "#5FE089" : "#9CA3AF"}/>
+                          {doctor.verified !== false && (
+                            <path d="M6 10l2.5 2.5L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          )}
+                        </svg>
+                        {doctor.verified !== false ? 'PMDC Verified' : 'Not Verified'}
                       </span>
                     </div>
                     <div className="text-[#52525B] text-[14px] font-medium mt-2">
-                      General Surgeon, Breast Surgeon, Laparoscopic Surgeon
+                      {doctor.specialization}
                     </div>
-                    <div className="text-[#52525B] text-[14px] mt-1">
-                      MBBS, Diplomate of American Board of Surgery, Fellow of American College
-                    </div>
+                    {doctor.qualifications && (
+                      <div className="text-[#52525B] text-[14px] mt-1">
+                        {doctor.qualifications}
+                      </div>
+                    )}
                     <div className="mt-3 flex gap-8">
                       <div className="flex flex-col items-center">
                         <span className="text-[12px]  text-[#52525B]">Under 15 Min</span>
                         <span className="text-[8px] text-[#52525B] ">Wait Time</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <span className="text-[12px]  text-[#52525B]">36 Years</span>
+                        <span className="text-[12px]  text-[#52525B]">{doctor.experienceYears} Years</span>
                         <span className="text-[8px] text-[#52525B] ">Experience</span>
                       </div>
                       <div className="flex flex-col items-center">
@@ -100,9 +204,9 @@ export default function DoctorProfile() {
                           <svg width="14" height="14" viewBox="0 0 20 20" fill="#FACC15" xmlns="http://www.w3.org/2000/svg" className="inline">
                             <path d="M10 15.27L16.18 18l-1.64-7.03L19 7.24l-7.19-.61L10 0 8.19 6.63 1 7.24l5.46 3.73L4.82 18z"/>
                           </svg>
-                          5.0
+                          {displayRating}
                         </span>
-                        <span className="text-[8px] text-[#52525B] ">75 Reviews</span>
+                        <span className="text-[8px] text-[#52525B] ">{displayReviews} Reviews</span>
                       </div>
                     </div>
                   </div>
@@ -116,91 +220,67 @@ export default function DoctorProfile() {
 
           {/* Right – booking cards */}
           <aside className="space-y-4">
-            <Card className="rounded-xl bg-[#F8F8F8]">
-              <CardHeader>
-                <CardTitle className="text-[#414141] text-[22px]">
-                  Online Video Consultation
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Fee:</span>
-                  <span className="text-[#111827]">Rs. 5,000</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Address:</span>
-                  <span className="text-right text-[#111827]">
-                    Use phone/laptop for video call
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-[#52525B]">
-                  <span>Available </span>
-                  <span>02:00 PM - 03:00 PM</span>
-                </div>
-                <Button
-                  className="w-full bg-[#5FE089] mt-2 py-6 hover:bg-[#51db7f] rounded-full text-black"
-                  asChild
-                >
-                  <a href="/book-appointment">Book an Appointment</a>
-                </Button>
-              </CardContent>
-            </Card>
+            {doctor.availableForVideoConsultation && (
+              <Card className="rounded-xl bg-[#F8F8F8]">
+                <CardHeader>
+                  <CardTitle className="text-[#414141] text-[22px]">
+                    Online Video Consultation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#52525B]">Fee:</span>
+                    <span className="text-[#111827]">Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#52525B]">Address:</span>
+                    <span className="text-right text-[#111827]">
+                      Use phone/laptop for video call
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#52525B]">
+                    <span>Available </span>
+                    <span>02:00 PM - 03:00 PM</span>
+                  </div>
+                  <Button
+                    className="w-full bg-[#5FE089] mt-2 py-6 hover:bg-[#51db7f] rounded-full text-black"
+                    onClick={() => router.push(`/book-appointment?doctorId=${doctor.id}&type=video`)}
+                  >
+                    Book an Appointment
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card className="rounded-xl bg-[#F8F8F8]">
-              <CardHeader>
-                <CardTitle className="text-[#414141] text-[22px]">Doctors Hospital</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Fee:</span>
-                  <span className="text-[#111827]">Rs. 5,000</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Address:</span>
-                  <span className="text-right text-[#111827]">
-                    152 A – G/1, Canal Bank, Johar Town, Lahore
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-[#52525B]">
-                  <span>Available </span>
-                  <span>02:00 PM - 03:00 PM</span>
-                </div>
-                <Button
-                  className="w-full bg-[#01503F] mt-2 hover:bg-[#15803D] py-6 rounded-full text-white"
-                  asChild
-                >
-                  <a href="/book-appointment">Book an Appointment</a>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-xl bg-[#F8F8F8]">
-              <CardHeader>
-                <CardTitle className="text-[#414141] text-[22px]">Cantonment Clinic</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Fee:</span>
-                  <span className="text-[#111827]">Rs. 5,000</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#52525B]">Address:</span>
-                  <span className="text-right text-[#111827]">
-                    152 A – G/1, Canal Bank, Johar Town, Lahore
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-[#52525B]">
-                  <span>Available </span>
-                  <span>02:00 PM - 03:00 PM</span>
-                </div>
-                <Button
-                  className="w-full bg-[#01503F] mt-2 py-6 hover:bg-[#15803D] rounded-full text-white"
-                  asChild
-                >
-                  <a href="/book-appointment">Book an Appointment</a>
-                </Button>
-              </CardContent>
-            </Card>
+            {doctor.clinicName && (
+              <Card className="rounded-xl bg-[#F8F8F8]">
+                <CardHeader>
+                  <CardTitle className="text-[#414141] text-[22px]">{doctor.clinicName}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#52525B]">Fee:</span>
+                    <span className="text-[#111827]">Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#52525B]">Address:</span>
+                    <span className="text-right text-[#111827]">
+                      {doctor.clinicAddress || `${doctor.city || ''}, ${doctor.state || ''}`}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#52525B]">
+                    <span>Available </span>
+                    <span>02:00 PM - 03:00 PM</span>
+                  </div>
+                  <Button
+                    className="w-full bg-[#01503F] mt-2 hover:bg-[#15803D] py-6 rounded-full text-white"
+                    onClick={() => router.push(`/book-appointment?doctorId=${doctor.id}`)}
+                  >
+                    Book an Appointment
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </aside>
         </div>
       </section>

@@ -17,22 +17,33 @@ export default function Page() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
+        setLoading(true)
         const response = await SearchFunction(query, city)
         console.log("Doctors: ", response)
         setDoctors(response)
       } catch (error) {
         console.error("Error fetching doctors:", error)
+        setDoctors([])
       } finally {
         setLoading(false)
       }
     }
 
-    if (query || city) fetchDoctors()
+    if (query || city) {
+      fetchDoctors()
+    } else {
+      setLoading(false)
+    }
   }, [query, city])
 
   return (
    <div className='mx-25 my-18'>
-    <DoctorHero />
+    <DoctorHero 
+      doctors={doctors} 
+      loading={loading}
+      specialization={query}
+      city={city}
+    />
    </div>
   )
 }
