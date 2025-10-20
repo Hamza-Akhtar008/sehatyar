@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { getAvailability, createAvailability, deleteAvailability } from '@/lib/Api/availability';
 import { AvailabilityType, SlotType } from "@/src/types/enums";
 import { cn } from "@/lib/utils";
+import { ChangeDayAvailability, ChangeSlotAvailability } from "@/lib/Api/Doctor/doctor_api";
+import toast from "react-hot-toast";
 
 const daysOfWeek = [
   "Monday",
@@ -35,9 +37,11 @@ const Availability: React.FC = () => {
   const doctorId = 3; // TODO: get from auth context
   const [availabilityType, setAvailabilityType] = useState<AvailabilityType>(AvailabilityType.CLINIC);
   const slotTypes = Object.values(SlotType);
-  const [availability, setAvailability] = useState<Record<string, { active: boolean }>>(
-  Object.fromEntries(daysOfWeek.map(day => [day, { active: true }]))
+  const slotOrder = { morning: 1, afternoon: 2, evening: 3 }
+ const [availability, setAvailability] = useState<Record<string, { active: boolean; showToggle: boolean }>>(
+  Object.fromEntries(daysOfWeek.map(day => [day, { active: true, showToggle: true }]))
 );
+
 
   useEffect(() => {
     setLoading(true);
@@ -45,6 +49,33 @@ const Availability: React.FC = () => {
       .then((data) => setSlots(data))
       .finally(() => setLoading(false));
   }, []);
+
+
+useEffect(() => {
+  const updated = Object.fromEntries(
+    daysOfWeek.map(day => {
+      const daySlots = [...slots, ...pendingSlots].filter(
+        s =>
+          s.dayOfWeek?.toLowerCase() === day.toLowerCase() &&
+          s.availabilityType === availabilityType
+      )
+
+      // Determine day state
+      if (daySlots.length === 0) {
+        return [day, { active: false, showToggle: false }]
+      }
+
+      const allActive = daySlots.every(s => s.isActive)
+      const allInactive = daySlots.every(s => !s.isActive)
+      const shouldShowToggle = allActive || allInactive
+
+      return [day, { active: allActive, showToggle: shouldShowToggle }]
+    })
+  )
+
+  setAvailability(updated as Record<string, { active: boolean; showToggle: boolean }>)
+}, [slots, pendingSlots, availabilityType])
+
 
   const handleToggle = (day: string) => {
     // Toggle functionality if needed
@@ -149,20 +180,51 @@ const Availability: React.FC = () => {
     }
   };
 
-  const handleToggleSlot = (slot: Slot, checked: boolean, isPending: boolean) => {
-  // Update local state immediately
+  function formatTo12Hour(time: string) {
+  if (!time) return ""
+  const [hours, minutes] = time.split(":").map(Number)
+  const period = hours >= 12 ? "PM" : "AM"
+  const adjustedHours = hours % 12 || 12
+  return `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`
+}
+
+const handleToggleSlot = async (slot: Slot, checked: boolean, isPending: boolean) => {
+  // ✅ Optimistic UI update
   if (isPending) {
     setPendingSlots(prev =>
-      prev.map(s => (s === slot ? { ...s, active: checked } : s))
+      prev.map(s => (s === slot ? { ...s, isActive: checked } : s))
     )
   } else {
     setSlots(prev =>
-      prev.map(s => (s.id === slot.id ? { ...s, active: checked } : s))
+      prev.map(s => (s.id === slot.id ? { ...s, isActive: checked } : s))
     )
   }
 
-  // Call backend if needed
-  // await updateSlotStatus(slot.id, checked)
+  // ✅ Call backend only if the slot exists in DB (not pending)
+  if (!isPending && slot.id) {
+    try {
+      
+      
+      const response = await ChangeSlotAvailability(slot.id,checked)
+toast.success(
+  `${formatTo12Hour(slot.startTime||"")} - ${formatTo12Hour(slot.endTime||"")} of ${
+    slot.dayOfWeek
+  } has been updated successfully`
+)
+
+    
+      console.log(`✅ Slot ${slot.id} updated successfully`)
+    } catch (error) {
+      console.error("❌ Error updating slot:", error)
+
+      // Optional rollback if the API fails
+      setSlots(prev =>
+        prev.map(s =>
+          s.id === slot.id ? { ...s, isActive: !checked } : s
+        )
+      )
+    }
+  }
 }
 
 
@@ -176,9 +238,7 @@ const Availability: React.FC = () => {
             Manage your consultation hours and available days easily.
           </p>
         </div>
-        <Button className="bg-[#5fe089] text-black font-medium rounded-full">
-          + Edit Availability
-        </Button>
+       
       </div>
 
       {/* Toggle Buttons */}
@@ -216,116 +276,158 @@ const Availability: React.FC = () => {
       <div className="flex justify-between items-center border-b border-gray-100 pb-1 mb-2">
   <h4 className="text-gray-800 font-semibold tracking-wide">{day}</h4>
 
- <Switch
-  checked={availability[day]?.active}
-  onCheckedChange={(checked) => {
-    setAvailability(prev => ({
-      ...prev,
-      [day]: { active: checked }
-    }));
-    handleToggle(day);
-  }}
-  className="
-    relative inline-flex h-6 w-11 items-center rounded-full
-    transition-colors duration-200 ease-in-out
-    data-[state=checked]:bg-[#5fe089]
-    data-[state=unchecked]:bg-gray-300
-    hover:brightness-95
-    hover:cursor-pointer
-  "
->
-  <span
+{availability[day]?.showToggle && (
+  <Switch
+    checked={availability[day]?.active}
+    onCheckedChange={async (checked) => {
+      const daySlots = [...slots, ...pendingSlots].filter(
+        (s) =>
+          s.dayOfWeek?.toLowerCase() === day.toLowerCase() &&
+          s.availabilityType === availabilityType
+      )
+
+      // Local state updates
+      setSlots((prev) =>
+        prev.map((s) =>
+          s.dayOfWeek?.toLowerCase() === day.toLowerCase() &&
+          s.availabilityType === availabilityType
+            ? { ...s, isActive: checked }
+            : s
+        )
+      )
+      setPendingSlots((prev) =>
+        prev.map((s) =>
+          s.dayOfWeek?.toLowerCase() === day.toLowerCase() &&
+          s.availabilityType === availabilityType
+            ? { ...s, isActive: checked }
+            : s
+        )
+      )
+      setAvailability((prev) => ({
+        ...prev,
+        [day]: { ...prev[day], active: checked },
+      }))
+
+      // ✅ API Call
+
+
+      try {
+
+        
+        const response =await ChangeDayAvailability(day,checked);
+         toast.success(`Day ${day} updated successfully`);
+        console.log(`✅ Day ${day} updated successfully`)
+      } catch (error) {
+        console.error("❌ Error updating day availability:", error)
+        // Optionally rollback UI state here
+        setAvailability((prev) => ({
+          ...prev,
+          [day]: { ...prev[day], active: !checked },
+        }))
+      }
+    }}
     className="
-      pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
-      translate-x-0
-      data-[state=checked]:translate-x-5
+      relative inline-flex h-6 w-11 items-center rounded-full
+      transition-colors duration-200 ease-in-out
+      data-[state=checked]:bg-[#5fe089]
+      data-[state=unchecked]:bg-gray-300
+      hover:brightness-95
+      hover:cursor-pointer
     "
-  />
-</Switch>
+  >
+    <span
+      className="
+        pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
+        translate-x-0
+        data-[state=checked]:translate-x-5
+      "
+    />
+  </Switch>
+)}
 
 </div>
 
         {/* Slot List */}
-      <div className="space-y-3">
+    <div className="space-y-3">
   {allSlots.length > 0 ? (
-    allSlots.map((slot) => {
-      const isPending = !slot.id
-      const label = slot.slotType.charAt(0).toUpperCase() + slot.slotType.slice(1)
+    [...allSlots]
+      .sort((a, b) => {
+        const slotOrder = { morning: 1, afternoon: 2, evening: 3 }
+        return slotOrder[a.slotType] - slotOrder[b.slotType]
+      })
+      .map((slot) => {
+        const isPending = !slot.id
+        const label = slot.slotType.charAt(0).toUpperCase() + slot.slotType.slice(1)
 
-      return (
-        <div
-          key={slot.slotType}
-          className="bg-gray-50 rounded-xl p-3 flex flex-col gap-2 border border-gray-100"
-        >
-          {/* Slot Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <span>{label}</span>
-              {isPending && <span className="text-xs text-orange-500">(new)</span>}
+        return (
+          <div
+            key={slot.slotType}
+            className="bg-gray-50 rounded-xl p-3 flex flex-col gap-2 border border-gray-100"
+          >
+            {/* Slot Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <span>{label}</span>
+                {isPending && <span className="text-xs text-orange-500">(new)</span>}
+              </div>
+
+              <div className="flex flex-end gap-2">
+                <Switch
+                  checked={slot.isActive}
+                  onCheckedChange={(checked) => handleToggleSlot(slot, checked, isPending)}
+                  className="
+                    relative inline-flex h-6 w-11 items-center rounded-full
+                    transition-colors duration-200 ease-in-out
+                    data-[state=checked]:bg-[#5fe089]
+                    data-[state=unchecked]:bg-gray-300
+                    hover:brightness-95
+                    hover:cursor-pointer
+                  "
+                >
+                  <span
+                    className="
+                      pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
+                      translate-x-0
+                      data-[state=checked]:translate-x-5
+                    "
+                  />
+                </Switch>
+              </div>
             </div>
 
-            <div className="flex flex-end gap-2">
-              {/* Use your custom Switch component */}
-
-
-              <Switch
-  checked={slot.isActive}
-                onCheckedChange={(checked) => handleToggleSlot(slot, checked, isPending)}
-  className="
-    relative inline-flex h-6 w-11 items-center rounded-full
-    transition-colors duration-200 ease-in-out
-    data-[state=checked]:bg-[#5fe089]
-    data-[state=unchecked]:bg-gray-300
-    hover:brightness-95
-    hover:cursor-pointer
-  "
->
-  <span
-    className="
-      pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
-      translate-x-0
-      data-[state=checked]:translate-x-5
-    "
-  />
-</Switch>
-            
+            {/* Time Inputs */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">Start:</span>
+                <input
+                  type="time"
+                  className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
+                  defaultValue={slot.startTime || ""}
+                  onChange={(e) =>
+                    handleUpdateSlotTimes(slot, e.target.value, slot.endTime || "", isPending)
+                  }
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">End:</span>
+                <input
+                  type="time"
+                  className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
+                  defaultValue={slot.endTime || ""}
+                  onChange={(e) =>
+                    handleUpdateSlotTimes(slot, slot.startTime || "", e.target.value, isPending)
+                  }
+                />
+              </div>
             </div>
-
-           
           </div>
-
-          {/* Time Inputs */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500">Start:</span>
-              <input
-                type="time"
-                className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
-                defaultValue={slot.startTime || ""}
-                onChange={(e) =>
-                  handleUpdateSlotTimes(slot, e.target.value, slot.endTime || "", isPending)
-                }
-              />
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500">End:</span>
-              <input
-                type="time"
-                className="border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#5fe089]"
-                defaultValue={slot.endTime || ""}
-                onChange={(e) =>
-                  handleUpdateSlotTimes(slot, slot.startTime || "", e.target.value, isPending)
-                }
-              />
-            </div>
-          </div>
-        </div>
-      )
-    })
+        )
+      })
   ) : (
     <p className="text-xs text-gray-400 italic">No slots added yet.</p>
   )}
 </div>
+
 
 
         {/* Add New Slot */}

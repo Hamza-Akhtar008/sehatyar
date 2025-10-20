@@ -5,6 +5,7 @@ import { Input } from "../ui/input";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useEffect,useState,useRef,useMemo } from "react";
+import { useRouter } from "next/navigation";
 
  const specializations = [
   "Allergy and Immunology",
@@ -190,8 +191,9 @@ import { useEffect,useState,useRef,useMemo } from "react";
   "Wound Care Medicine"
 ]
 export default function HeroSection() {
-
+ const router = useRouter()
    const [query, setQuery] = useState("")
+   const [city,setcity]=useState("");
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [isFocused, setIsFocused] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -231,6 +233,10 @@ export default function HeroSection() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  const handleSearch = () => {
+    router.push(`/doctor?query=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`)
+  }
 
   return (
   <section
@@ -380,36 +386,41 @@ export default function HeroSection() {
             </svg>
             <Input
               type="text"
+              onChange={(e)=>setcity(e.target.value)}
               placeholder="Near you or Enter City"
               className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
             />
           </div>
 
           {/* Find Button */}
-          <Button
-            className="text-white inline-flex items-center justify-center"
-            style={{
-              width: '119.17292785644531px',
-              height: '71.7504653930664px',
-              borderRadius: '122.47px',
-              paddingTop: '12.37px',
-              paddingRight: '39.59px',
-              paddingBottom: '12.37px',
-              paddingLeft: '39.59px',
-              gap: '12.37px',
-              background: '#5FE089',
-              opacity: 1,
-              transform: 'rotate(0deg)',
-              fontFamily: 'var(--font-montserrat)',
-              fontWeight: 600,
-              fontSize: '17.32px',
-              lineHeight: '29.69px',
-              verticalAlign: 'middle',
-              color: '#FFFFFF',
-            }}
-          >
-            Find
-          </Button>
+      <Button
+  className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
+  style={{
+    width: "119.17px",
+    height: "71.75px",
+    borderRadius: "122.47px",
+    paddingTop: "12.37px",
+    paddingRight: "39.59px",
+    paddingBottom: "12.37px",
+    paddingLeft: "39.59px",
+    gap: "12.37px",
+    background: "#5FE089",
+    opacity: 1,
+    transform: "rotate(0deg)",
+    fontFamily: "var(--font-montserrat)",
+    fontWeight: 600,
+    fontSize: "17.32px",
+    lineHeight: "29.69px",
+    verticalAlign: "middle",
+    color: "#FFFFFF",
+  }}
+  onMouseEnter={(e) => (e.currentTarget.style.background = "#4ad87b")}
+  onMouseLeave={(e) => (e.currentTarget.style.background = "#5FE089")}
+  onClick={handleSearch}
+>
+  Find
+</Button>
+
         </div>
       </div>
 
