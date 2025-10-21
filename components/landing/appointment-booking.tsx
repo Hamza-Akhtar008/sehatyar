@@ -318,10 +318,7 @@ export default function AppointmentBooking() {
 
   const handleSlotClick = (time: string) => {
     setSelectedSlot(time);
-    // Auto-navigate to confirm page after selecting a slot
-    setTimeout(() => {
-      router.push(`/book-appointment/confirm?doctorId=${doctorId}&time=${encodeURIComponent(time)}&date=${daySchedules[selectedDayIndex]?.date}`);
-    }, 300);
+    // Do not navigate here; navigation will be handled by Confirm Booking button
   };
 
   if (loading) {
@@ -437,6 +434,20 @@ export default function AppointmentBooking() {
                     <div className="text-sm font-medium mt-2">Fee: Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</div>
                   </div>
                 </div>
+                {/* Confirm Booking Button */}
+                <div className="mt-6">
+                  <Button
+                    className="w-full h-10 rounded-full text-[14px] font-medium"
+                    style={{ backgroundColor: '#5FE089', color: '#0A0A0A' }}
+                    disabled={!selectedSlot}
+                    onClick={() => {
+                      if (!selectedSlot) return;
+                      router.push(`/book-appointment/confirm?doctorId=${doctorId}&time=${encodeURIComponent(selectedSlot)}&date=${daySchedules[selectedDayIndex]?.date}`);
+                    }}
+                  >
+                    Confirm Booking
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -457,20 +468,20 @@ export default function AppointmentBooking() {
               </Card>
             ))}
 
-                <div className="flex justify-start pt-2">
-                <button
-                  className="flex items-center gap-2 border border-[#414141] rounded-[12px] px-6 py-2 text-[#414141] text-[14px] bg-white hover:bg-[#F3F4F6] transition-colors"
-                  type="button"
-                >
-                  <Image
-                    src="/downarrow.svg"
-                    alt="Down Arrow"
-                    width={18}
-                    height={18}
-                  />
-                  Load More Reviews
-                </button>
-              </div>
+            <div className="flex justify-start pt-2">
+              <button
+                className="flex items-center gap-2 border border-[#414141] rounded-[12px] px-6 py-2 text-[#414141] text-[14px] bg-white hover:bg-[#F3F4F6] transition-colors"
+                type="button"
+              >
+                <Image
+                  src="/downarrow.svg"
+                  alt="Down Arrow"
+                  width={18}
+                  height={18}
+                />
+                Load More Reviews
+              </button>
+            </div>
           </div>
         </div>
       </section>
