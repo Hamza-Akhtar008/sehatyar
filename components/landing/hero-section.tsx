@@ -299,16 +299,16 @@ export default function HeroSection() {
         <div
           className="w-11/12 flex flex-row gap-3.5 bg-white rounded-full shadow-sm text-[#52525B] py-3 px-2 border-[1px] border-[#CACACA]"
           style={{
-            // width: '801.0261840820312px',
-            // height: '91.73924255371094px',
-            // paddingTop: '9.99px',
-            // paddingRight: '9.57px',
-            // paddingBottom: '9.99px',
-            // paddingLeft: '9.57px',
-            // border: '1px solid #CACACA',
-            // background: '#FFFFFF',
-            // opacity: 1,
-            // transform: 'rotate(0deg)'
+            width: '801.0261840820312px',
+            height: '91.73924255371094px',
+            paddingTop: '9.99px',
+            paddingRight: '9.57px',
+            paddingBottom: '9.99px',
+            paddingLeft: '9.57px',
+            border: '1px solid #CACACA',
+            background: '#FFFFFF',
+            opacity: 1,
+            transform: 'rotate(0deg)'
           }}
           ref={dropdownRef}
         >
@@ -317,17 +317,17 @@ export default function HeroSection() {
           <div
             className="w-5/12 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
             style={{
-              // width: '344.3640441894531px',
-              // height: '66.64610290527344px',
-              // borderRadius: '35.88px',
-              // paddingTop: '18.32px',
-              // paddingRight: '26.65px',
-              // paddingBottom: '18.32px',
-              // paddingLeft: '26.65px',
-              // gap: '12.37px',
-              // background: '#F4F4F4',
-              // opacity: 1,
-              // transform: 'rotate(0deg)'
+              width: '344.3640441894531px',
+              height: '66.64610290527344px',
+              borderRadius: '35.88px',
+              paddingTop: '18.32px',
+              paddingRight: '26.65px',
+              paddingBottom: '18.32px',
+              paddingLeft: '26.65px',
+              gap: '12.37px',
+              background: '#F4F4F4',
+              opacity: 1,
+              transform: 'rotate(0deg)'
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
@@ -370,17 +370,17 @@ export default function HeroSection() {
           <div
             className="w-5/12 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
             style={{
-              // width: '344.3640441894531px',
-              // height: '66.64610290527344px',
-              // borderRadius: '35.88px',
-              // paddingTop: '18.32px',
-              // paddingRight: '26.65px',
-              // paddingBottom: '18.32px',
-              // paddingLeft: '26.65px',
-              // gap: '12.37px',
-              // background: '#F4F4F4',
-              // opacity: 1,
-              // transform: 'rotate(0deg)'
+              width: '344.3640441894531px',
+              height: '66.64610290527344px',
+              borderRadius: '35.88px',
+              paddingTop: '18.32px',
+              paddingRight: '26.65px',
+              paddingBottom: '18.32px',
+              paddingLeft: '26.65px',
+              gap: '12.37px',
+              background: '#F4F4F4',
+              opacity: 1,
+              transform: 'rotate(0deg)'
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
