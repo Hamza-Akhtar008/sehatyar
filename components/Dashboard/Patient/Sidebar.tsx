@@ -1,79 +1,138 @@
-"use client"
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Home,
+  CalendarDays,
+  FileText,
+  Pill,
+  Users2,
+  MessageSquare,
+  UserCircle2,
+  LogOut,
+  X,
+} from "lucide-react";
 
-import React from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '@/src/contexts/AuthContext';
+type Props = {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
 
-// Import any icons you're using - examples below
-import { 
-  HomeIcon, 
-  CalendarIcon, 
-  UserIcon, 
-  MessageSquareIcon, 
-  FileTextIcon, 
-  Settings2Icon, 
-  LogOutIcon 
-} from 'lucide-react';
-
-const PatientSidebar = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { logout } = useAuth();
-
-  const navigationItems = [
-    { name: 'Dashboard', href: '/patient-dashboard', icon: HomeIcon },
-    { name: 'Appointments', href: '/appointment', icon: CalendarIcon },
-    { name: 'Medical Records', href: '/medical-records', icon: FileTextIcon },
-    { name: 'Messages', href: '/messages', icon: MessageSquareIcon },
-    { name: 'Profile', href: '/profile', icon: UserIcon },
-    { name: 'Settings', href: '/settings', icon: Settings2Icon },
-  ];
-
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
-
+const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
   return (
-    <div className="flex flex-col w-64 px-4 py-8 bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
-      <div className="flex items-center px-2 py-4">
-        <Link href="/" className="text-xl font-bold text-primary">
-          Sehat Yar
-        </Link>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-white bg-opacity-30 z-50 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      <aside
+        className={[
+          "fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 z-60",
+          "transform transition-transform duration-300",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0",
+        ].join(" ")}
+      >
+        {/* Mobile close button */}
+        <button
+          type="button"
+          aria-label="Close sidebar"
+          className="lg:hidden absolute right-2 top-2 p-2 rounded-md hover:bg-gray-50"
+          onClick={onClose}
+        >
+          <X className="w-5 h-5 text-gray-700" />
+        </button>
 
-      <div className="flex flex-col justify-between flex-1 mt-6">
-        <nav className="-mx-3 space-y-3">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-3 py-2 ${
-                  isActive
-                    ? 'text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'
-                    : 'text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="mx-2 text-sm font-medium">{item.name}</span>
-              </Link>
-            );
-          })}
-          
-          <button
-            onClick={handleLogout}
-            className="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+        {/* Header / Logo */}
+        <div className="px-4 py-5">
+          <Image
+            src="/images/logo2.webp"
+            alt="Sehatyar"
+            width={140}
+            height={36}
+            className="object-contain"
+            priority
+          />
+        </div>
+        <div className="border-b border-gray-200" />
+
+        {/* Nav */}
+        <nav className="p-4 flex flex-col h-[calc(100%-96px)]">
+          {/* Active: Home */}
+          <Link
+            href="#"
+            aria-current="page"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 bg-[#5FE0894D] text-[#01503F]"
           >
-            <LogOutIcon className="w-5 h-5" />
-            <span className="mx-2 text-sm font-medium">Logout</span>
-          </button>
+            <Home size={20} className="shrink-0 text-[#01503F]" />
+            <span className="text-[15px] font-medium">Home</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <CalendarDays size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">My Appointments</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <FileText size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">My Health Records</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <Pill size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">My Medications</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <Users2 size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">My Doctors</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <MessageSquare size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">Messages</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
+          >
+            <UserCircle2 size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
+            <span className="text-[15px]">My Profile</span>
+          </Link>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Sign Out */}
+          <Link
+            href="#"
+            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+          >
+            <LogOut size={20} className="shrink-0 text-red-600" />
+            <span className="text-[15px]">Sign Out</span>
+          </Link>
         </nav>
-      </div>
-    </div>
+      </aside>
+    </>
   );
 };
 

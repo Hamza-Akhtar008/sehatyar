@@ -55,6 +55,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   useEffect(() => {
     setIsClient(true);
@@ -113,23 +114,30 @@ export default function DashboardLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <div className="min-h-screen bg-[#F4F4F4] flex">
-              {/* Render appropriate sidebar based on user role */}
+            <div className="flex min-h-screen">
+              {/* Sidebar */}
               {user?.role === 'doctor' ? (
                 <DoctorSidebar />
               ) : (
-                <PatientSidebar />
+                <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
               )}
               
-              <main className="flex-1 flex flex-col gap-6 py-4">
-                {/* Render appropriate header based on user role */}
-                {user?.role === 'doctor' ? (
-                  <DoctorDashboardHeader />
-                ) : (
-                  <PatientDashboardHeader />
-                )}
-                {children}
-              </main>
+              {/* Right side (header + content) */}
+              <div className="flex-1 flex flex-col lg:ml-64">
+                {/* Fixed Header */}
+                <div className="fixed left-64 right-0 top-0 z-40">
+                  {user?.role === 'doctor' ? (
+                    <DoctorDashboardHeader />
+                  ) : (
+                    <PatientDashboardHeader onToggleSidebar={() => setSidebarOpen((v) => !v)} />
+                  )}
+                </div>
+
+                {/* Scrollable Content */}
+                <main className="flex-1 mt-16 p-6 overflow-y-auto bg-gray-50">
+                  {children}
+                </main>
+              </div>
             </div>
           </ThemeProvider>
         </body>
