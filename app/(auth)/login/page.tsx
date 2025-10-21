@@ -1,28 +1,74 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Toaster, toast } from "react-hot-toast";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 const PRIMARY = "#5fe089";
 const BORDER = "#BDBDBD";
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const [role, setRole] = useState("Patient");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const { login, isAuthenticated, user } = useAuth();
+	const router = useRouter();
+	
+	// Redirect if already logged in
+	useEffect(() => {
+		if (isAuthenticated && user) {
+			// Redirect based on role
+			router.push(user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard');
+		}
+	}, [isAuthenticated, user, router]);
+
+	const handleLogin = async (e: React.FormEvent) => {
+		e.preventDefault();
+		
+		// Basic validation
+		if (!email || !password) {
+			toast.error("Please fill in all fields");
+			return;
+		}
+
+		setIsLoading(true);
+
+		try {
+			const response = await login(email, password);
+			console.log('LOGIN RESPONSE:', response);
+			return response;
+			// The login function from AuthContext will handle redirects based on user role
+
+			
+		} catch (error) {
+			console.error("Login failed:", error);
+			toast.error(
+				error instanceof Error 
+					? error.message 
+					: "Login failed. Please check your credentials and try again."
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	return (
 		<div className="min-h-screen flex items-center justify-center overflow-hidden">
+			{/* <Toaster position="top-right" /> */}
 			{/* Main Container */}
 			<div className="flex w-full max-w-[1200px] min-h-[700px] md:justify-center lg:justify-start">
 				{/* Left Side Card */}
 				<div
 					className="
-      flex flex-col justify-center
-      w-full max-w-[500px]
-      ml-4 lg:ml-16
-      rounded-[24px]
-      lg:px-12 py-10
-    "
+					flex flex-col justify-center
+					w-full max-w-[500px]
+					ml-4 lg:ml-16
+					rounded-[24px]
+					lg:px-12 py-10
+					"
 				>
 					{/* Logo */}
 					<div className="flex flex-col items-start mb-6">
@@ -44,7 +90,7 @@ const LoginPage = () => {
 						<span style={{ color: PRIMARY }}>Account</span>
 					</h2>
 					{/* Login Form */}
-					<form>
+					<form onSubmit={handleLogin}>
 						<div className="mb-5">
 							<label
 								htmlFor="email"
@@ -59,6 +105,9 @@ const LoginPage = () => {
 								placeholder="lendar@gmail.com"
 								className="w-full max-w-[400px] lg:max-w-[480px] h-[48px] rounded-[12px] border px-4 text-[15px] font-normal outline-none"
 								style={{ borderColor: BORDER, color: "#000000" }}
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								disabled={isLoading}
 							/>
 						</div>
 						<div className="mb-5">
@@ -76,12 +125,16 @@ const LoginPage = () => {
 									placeholder="**********"
 									className="w-full h-[48px] rounded-[12px] border px-4 text-[15px] font-normal outline-none"
 									style={{ borderColor: BORDER, color: "#000000" }}
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									disabled={isLoading}
 								/>
 								<button
 									type="button"
 									className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
 									tabIndex={-1}
 									onClick={() => setShowPassword((v) => !v)}
+									disabled={isLoading}
 								>
 									{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 								</button>
@@ -94,7 +147,11 @@ const LoginPage = () => {
 								className="flex items-center text-[15px]"
 								style={{ color: "#000000" }}
 							>
-								<input type="checkbox" className="mr-2 accent-[#5fe089]" />
+								<input 
+									type="checkbox" 
+									className="mr-2 accent-[#5fe089]" 
+									disabled={isLoading}
+								/>
 								Remember me
 							</label>
 							<a
@@ -108,10 +165,11 @@ const LoginPage = () => {
 						{/* Sign In Button */}
 						<button
 							type="submit"
-							className="w-full max-w-[400px] h-[48px] rounded-[99px] font-semibold text-[16px] bg-[#5fe089] mb-4"
+							className="w-full max-w-[400px] h-[48px] rounded-[99px] font-semibold text-[16px] bg-[#5fe089] mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
 							style={{ color: "#000000" }}
+							disabled={isLoading}
 						>
-							Sign in
+							{isLoading ? "Signing in..." : "Sign in"}
 						</button>
 						{/* Sign Up Link */}
 						<div className="text-center mb-6 max-w-[400px]">
@@ -130,8 +188,9 @@ const LoginPage = () => {
 						<div className="flex gap-4 justify-center max-w-[400px]">
 							<button
 								type="button"
-								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white"
+								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white disabled:opacity-50"
 								style={{ color: "#000000" }}
+								disabled={isLoading}
 							>
 								<Image
 									src="/images/google.png"
@@ -148,8 +207,9 @@ const LoginPage = () => {
 							</button>
 							<button
 								type="button"
-								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white"
+								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white disabled:opacity-50"
 								style={{ color: "#000000" }}
+								disabled={isLoading}
 							>
 								<Image
 									src="/images/facebook.png"

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
-
 import { cn } from "@/lib/utils"
 
 function Switch({
@@ -13,7 +12,12 @@ function Switch({
     <SwitchPrimitive.Root
       data-slot="switch"
       className={cn(
-        "peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        // 🧭 Track styles
+        "peer relative inline-flex h-[1.3rem] w-[2.6rem] shrink-0 items-center rounded-full border border-transparent transition-all shadow-xs outline-none",
+        "data-[state=checked]:bg-[#5fe089] data-[state=unchecked]:bg-gray-300",
+        "focus-visible:ring-[3px] focus-visible:ring-[#5fe089]/50 focus-visible:border-[#5fe089]",
+        "hover:brightness-95 hover:cursor-pointer",
+        "disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
       {...props}
@@ -21,7 +25,10 @@ function Switch({
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
         className={cn(
-          "bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0"
+          // 🧭 Thumb styles
+          "pointer-events-none block h-[1.1rem] w-[1.1rem] rounded-full bg-white shadow transition-transform duration-200 ease-in-out",
+          // ✅ Move thumb fully to the right when checked
+          "data-[state=unchecked]:translate-x-[2px] data-[state=checked]:translate-x-[calc(1.5rem)]"
         )}
       />
     </SwitchPrimitive.Root>

@@ -1,10 +1,243 @@
+"use client";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { useEffect,useState,useRef,useMemo } from "react";
+import { useRouter } from "next/navigation";
 
+ const specializations = [
+  "Allergy and Immunology",
+  "Anesthesiology",
+  "Cardiology",
+  "Cardiothoracic Surgery",
+  "Cardiovascular Surgery",
+  "Clinical Neurophysiology",
+  "Clinical Pharmacology",
+  "Colon and Rectal Surgery",
+  "Community Medicine",
+  "Critical Care Medicine",
+  "Dental Surgery",
+  "Dermatology",
+  "Diagnostic Radiology",
+  "Emergency Medicine",
+  "Endocrinology, Diabetes & Metabolism",
+  "Family Medicine",
+  "Gastroenterology",
+  "General Practice",
+  "General Surgery",
+  "Genetics and Genomics",
+  "Geriatric Medicine",
+  "Gynecologic Oncology",
+  "Hand Surgery",
+  "Head and Neck Surgery",
+  "Hematology",
+  "Hepatology",
+  "Hospital Medicine",
+  "Infectious Disease",
+  "Internal Medicine",
+  "Interventional Cardiology",
+  "Interventional Radiology",
+  "Legal Medicine",
+  "Maternal and Fetal Medicine",
+  "Medical Oncology",
+  "Medical Toxicology",
+  "Neonatal-Perinatal Medicine",
+  "Nephrology",
+  "Neurocritical Care",
+  "Neurodevelopmental Disabilities",
+  "Neurology",
+  "Neuromuscular Medicine",
+  "Neuroradiology",
+  "Neurosurgery",
+  "Nuclear Medicine",
+  "Obstetrics & Gynecology",
+  "Occupational Medicine",
+  "Oncology",
+  "Ophthalmology",
+  "Optometry",
+  "Oral and Maxillofacial Surgery",
+  "Orthopedic Surgery",
+  "Otolaryngology (ENT)",
+  "Pain Medicine",
+  "Palliative Care",
+  "Pathology",
+  "Pediatric Allergy & Immunology",
+  "Pediatric Anesthesiology",
+  "Pediatric Cardiology",
+  "Pediatric Critical Care Medicine",
+  "Pediatric Dermatology",
+  "Pediatric Emergency Medicine",
+  "Pediatric Endocrinology",
+  "Pediatric Gastroenterology",
+  "Pediatric Hematology & Oncology",
+  "Pediatric Infectious Diseases",
+  "Pediatric Nephrology",
+  "Pediatric Neurology",
+  "Pediatric Neurosurgery",
+  "Pediatric Oncology",
+  "Pediatric Ophthalmology",
+  "Pediatric Orthopedics",
+  "Pediatric Otolaryngology",
+  "Pediatric Pathology",
+  "Pediatric Pulmonology",
+  "Pediatric Radiology",
+  "Pediatric Rheumatology",
+  "Pediatric Surgery",
+  "Pediatric Urology",
+  "Pediatrics",
+  "Physical Medicine & Rehabilitation",
+  "Plastic Surgery",
+  "Preventive Medicine",
+  "Psychiatry",
+  "Psychosomatic Medicine",
+  "Public Health",
+  "Pulmonary Disease",
+  "Radiation Oncology",
+  "Radiology",
+  "Reproductive Endocrinology and Infertility",
+  "Rheumatology",
+  "Sleep Medicine",
+  "Spinal Cord Injury Medicine",
+  "Sports Medicine",
+  "Surgical Critical Care",
+  "Thoracic Surgery",
+  "Transplant Surgery",
+  "Trauma Surgery",
+  "Urology",
+  "Vascular Neurology",
+  "Vascular Surgery",
+  "Adolescent Medicine",
+  "Aerospace Medicine",
+  "Biochemical Genetics",
+  "Chemical Pathology",
+  "Clinical Biochemistry",
+  "Clinical Cytogenetics",
+  "Clinical Immunology",
+  "Clinical Microbiology",
+  "Clinical Pathology",
+  "Clinical Psychology",
+  "Community Health",
+  "Dental Public Health",
+  "Developmental Pediatrics",
+  "Endodontics",
+  "Epidemiology",
+  "Forensic Medicine",
+  "Forensic Pathology",
+  "Gastrointestinal Surgery",
+  "General Internal Medicine",
+  "Geriatric Psychiatry",
+  "Health Informatics",
+  "Hematopathology",
+  "Hospice and Palliative Medicine",
+  "Immunopathology",
+  "Interventional Neuroradiology",
+  "Laboratory Medicine",
+  "Laparoscopic Surgery",
+  "Lifestyle Medicine",
+  "Maxillofacial Surgery",
+  "Medical Biochemistry",
+  "Medical Genetics",
+  "Medical Microbiology",
+  "Military Medicine",
+  "Molecular Pathology",
+  "Musculoskeletal Radiology",
+  "Neonatology",
+  "Neuroendocrinology",
+  "Neuroimaging",
+  "Neurointerventional Surgery",
+  "Neuropathology",
+  "Neuropsychiatry",
+  "Nuclear Cardiology",
+  "Occupational Health",
+  "Oncologic Surgery",
+  "Oral Medicine",
+  "Oral Pathology",
+  "Orthodontics",
+  "Orthopedic Oncology",
+  "Pain Rehabilitation",
+  "Pediatric Dentistry",
+  "Pediatric Emergency Care",
+  "Pediatric Gastrohepatic Surgery",
+  "Pediatric Infectious Medicine",
+  "Pediatric Intensive Care",
+  "Pediatric Neuroradiology",
+ 
+  "Pediatric Plastic Surgery",
+  "Pediatric Rehabilitation",
+  "Pediatric Thoracic Surgery",
+  "Perinatal Medicine",
+  "Phlebology",
+  "Physician Executive",
+  "Plastic and Reconstructive Surgery",
+  "Primary Care",
+  "Proctology",
+  "Pulmonology (Respiratory Medicine)",
+  "Radiologic Physics",
+  "Rehabilitation Psychology",
+  "Reproductive Medicine",
+  "Rural Medicine",
+  "Sleep Disorders Medicine",
+  "Spine Surgery",
+  "Surgical Oncology",
+  "Tropical Medicine",
+  "Undersea and Hyperbaric Medicine",
+  "Urgent Care Medicine",
+  "Urogynecology",
+  "Vascular and Interventional Radiology",
+  "Virology",
+  "Women's Health",
+  "Wound Care Medicine"
+]
 export default function HeroSection() {
+ const router = useRouter()
+   const [query, setQuery] = useState("")
+   const [city,setcity]=useState("");
+  const [focusedIndex, setFocusedIndex] = useState(-1)
+  const [isFocused, setIsFocused] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Filter suggestions based on user input
+  const filtered = useMemo(() => {
+    if (!query.trim()) return []
+    return specializations.filter((item) =>
+      item.toLowerCase().includes(query.toLowerCase())
+    )
+  }, [query])
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!filtered.length) return
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setFocusedIndex((prev) => (prev + 1) % filtered.length)
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      setFocusedIndex((prev) => (prev - 1 + filtered.length) % filtered.length)
+    } else if (e.key === "Enter" && focusedIndex >= 0) {
+      e.preventDefault()
+      setQuery(filtered[focusedIndex])
+      setIsFocused(false)
+    }
+  }
+
+  // Hide dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsFocused(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const handleSearch = () => {
+    router.push(`/doctor?query=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`)
+  }
+
   return (
   <section
     aria-label="Hero section"
@@ -77,6 +310,7 @@ export default function HeroSection() {
             // opacity: 1,
             // transform: 'rotate(0deg)'
           }}
+          ref={dropdownRef}
         >
           
           {/* Search Input */}
@@ -103,8 +337,35 @@ export default function HeroSection() {
             <Input
               type="text"
               placeholder="Search Specialist or Hospital"
+<<<<<<< HEAD
               className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#52525B] placeholder:text-lg"
+=======
+               value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
+>>>>>>> 692d8db74b511e6fe38b9d483b4f02567813cbbd
             />
+             {isFocused && filtered.length > 0 && (
+        <div className="absolute top-[70px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
+          {filtered.map((item, index) => (
+            <div
+              key={item}
+              onMouseDown={() => {
+                setQuery(item)
+                setIsFocused(false)
+              }}
+              className={`px-4 py-2 text-sm cursor-pointer transition ${
+                index === focusedIndex
+                  ? "bg-[#5fe089] text-white"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
           </div>
 
      
@@ -132,12 +393,14 @@ export default function HeroSection() {
             </svg>
             <Input
               type="text"
+              onChange={(e)=>setcity(e.target.value)}
               placeholder="Near you or Enter City"
               className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#52525B] placeholder:text-lg"
             />
           </div>
 
           {/* Find Button */}
+<<<<<<< HEAD
           <Button
             className="w-2/12 text-white inline-flex items-center justify-center"
             style={{
@@ -162,6 +425,36 @@ export default function HeroSection() {
           >
             Find
           </Button>
+=======
+      <Button
+  className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
+  style={{
+    width: "119.17px",
+    height: "71.75px",
+    borderRadius: "122.47px",
+    paddingTop: "12.37px",
+    paddingRight: "39.59px",
+    paddingBottom: "12.37px",
+    paddingLeft: "39.59px",
+    gap: "12.37px",
+    background: "#5FE089",
+    opacity: 1,
+    transform: "rotate(0deg)",
+    fontFamily: "var(--font-montserrat)",
+    fontWeight: 600,
+    fontSize: "17.32px",
+    lineHeight: "29.69px",
+    verticalAlign: "middle",
+    color: "#FFFFFF",
+  }}
+  onMouseEnter={(e) => (e.currentTarget.style.background = "#4ad87b")}
+  onMouseLeave={(e) => (e.currentTarget.style.background = "#5FE089")}
+  onClick={handleSearch}
+>
+  Find
+</Button>
+
+>>>>>>> 692d8db74b511e6fe38b9d483b4f02567813cbbd
         </div>
       </div>
         </div>

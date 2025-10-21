@@ -2,37 +2,31 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import AppointmentModal from "./modals/AppointmentModal";
+import { getAppointmentsForLoggedInDoctor } from "@/lib/Api/appointment";
 
 export default function Appointment() {
     const [showFilter, setShowFilter] = useState(false);
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
-    
-    const appointments = [
-        {
-            name: "Sarah Johnson",
-            type: "Routine Checkup",
-            phone: "+1 (055) 123–4567",
-            time: "2:30 PM – 3:00 PM",
-            status: "Confirmed",
-        },
-        {
-            name: "Sarah Johnson",
-            type: "Routine Checkup",
-            phone: "+1 (055) 123–4567",
-            time: "2:30 PM – 3:00 PM",
-            status: "Confirmed",
-        },
-        {
-            name: "Sarah Johnson",
-            type: "Routine Checkup",
-            phone: "+1 (055) 123–4567",
-            time: "2:30 PM – 3:00 PM",
-            status: "Confirmed",
-        },
-    ];
+    const [appointments, setAppointments] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-
+    useEffect(() => {
+        async function fetchAppointments() {
+            setLoading(true);
+            setError(null);
+            try {
+                const data = await getAppointmentsForLoggedInDoctor();
+                setAppointments(data);
+            } catch (err: any) {
+                setError(err?.message || "Failed to fetch appointments");
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchAppointments();
+    }, []);
 
     const filterOptions = ['All Appointments', 'Today', 'Confirmed', 'Pending'];
 
@@ -98,35 +92,43 @@ export default function Appointment() {
             </div>
 
             <div className="appointment-list">
-                {appointments.map((appointment, index) => (
-                    <div key={index} className="appointment-card">
-                        <div className="appointment-info">
-                            <div className="appointment-avatar">
-                                <Image
-                                    src="/assets/doctors.svg"
-                                    alt={appointment.name}
-                                    width={40}
-                                    height={40}
-                                />
+                {loading ? (
+                    <div>Loading appointments...</div>
+                ) : error ? (
+                    <div className="text-red-500">{error}</div>
+                ) : appointments.length === 0 ? (
+                    <div>No appointments found.</div>
+                ) : (
+                    appointments.map((appointment, index) => (
+                        <div key={index} className="appointment-card">
+                            <div className="appointment-info">
+                                <div className="appointment-avatar">
+                                    <Image
+                                        src="/assets/doctors.svg"
+                                        alt={appointment.patientName || "Patient"}
+                                        width={40}
+                                        height={40}
+                                    />
+                                </div>
+                                <div className="appointment-details">
+                                    <p className="appointment-name">{appointment.patientName}</p>
+                                    <p className="appointment-type">{appointment.type || appointment.appointmentFor}</p>
+                                    <p className="appointment-phone">{appointment.phoneNumber}</p>
+                                </div>
                             </div>
-                            <div className="appointment-details">
-                                <p className="appointment-name">{appointment.name}</p>
-                                <p className="appointment-type">{appointment.type}</p>
-                                <p className="appointment-phone">{appointment.phone}</p>
-                            </div>
-                        </div>
 
-                        <div className="appointment-time">
-                            <div className="time-details">
-                                <p className="time-day">Today</p>
-                                <p className="time-slot">{appointment.time}</p>
+                            <div className="appointment-time">
+                                <div className="time-details">
+                                    <p className="time-day">{appointment.appointmentDate || ""}</p>
+                                    <p className="time-slot">{appointment.appointmentTime || ""}</p>
+                                </div>
+                                <span className="status-badge">
+                                    {appointment.status || "Confirmed"}
+                                </span>
                             </div>
-                            <span className="status-badge">
-                                {appointment.status}
-                            </span>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
 
           
@@ -136,4 +138,3 @@ export default function Appointment() {
         </div>
     );
 }
-            

@@ -38,8 +38,9 @@ export const metadata: Metadata = {
   description: "A medical plateform",
 };
 
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import Header from "@/components/ui/header";
+import { Toaster } from "react-hot-toast";
 
 
 interface LayoutProps {
@@ -58,12 +59,13 @@ export default function RootLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-        <Header/>
+        
             {/* <Header /> */}
-            <Suspense>
-
-            <main>{children}</main>
-            </Suspense>
+            <main>
+              {children}
+               <Toaster position="top-right" />
+            </main>
+            
           </ThemeProvider>
         </body>
       </html>
