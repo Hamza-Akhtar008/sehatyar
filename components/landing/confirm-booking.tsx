@@ -173,9 +173,9 @@ export default function ConfirmBooking() {
               ) : doctor ? (
                 <div className="flex items-start gap-3">
                   <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-                    {doctor.profilePicture ? (
+                    {(doctor.profilePicture || doctor.profilePic) ? (
                       <Image
-                        src={doctor.profilePicture}
+                        src={doctor.profilePicture || doctor.profilePic || ''}
                         alt={`Dr. ${doctor.user?.fullName || "Doctor"}`}
                         fill
                         sizes="40px"
@@ -196,7 +196,7 @@ export default function ConfirmBooking() {
                       {doctor.specialization || "Specialist"}
                     </div>
                     <div className="text-[14px] text-[#52525B]">
-                      {doctor.availableForVideoConsultation ? "Video consultation" : "In-clinic consultation"}: Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}
+                      {doctor.availableForVideoConsultation ? "Video consultation" : "In-clinic consultation"}: Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}
                     </div>
                     <div className="inline-flex mt-4 items-center rounded-full px-4 py-2 text-[14px] font-medium text-[#111827]" style={{ background: '#EEEEEE' }}>
                       {appointmentDate && appointmentTime ? `${appointmentDate}, ${appointmentTime}` : "No slot selected"}

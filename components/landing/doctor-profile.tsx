@@ -26,6 +26,7 @@ interface DoctorProfile {
   licenseNumber: string;
   experienceYears: number;
   consultationFee: number;
+  FeesPerConsultation?: string; // API field
   bio?: string;
   clinicAddress?: string;
   clinicName?: string;
@@ -35,6 +36,7 @@ interface DoctorProfile {
   zipCode?: string;
   phoneNumber?: string;
   profilePicture?: string;
+  profilePic?: string; // API field
   qualifications?: string;
   languages?: string[];
   availableForVideoConsultation: boolean;
@@ -149,9 +151,9 @@ export default function DoctorProfile() {
               <CardHeader className="gap-4 md:gap-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
                   <div className="relative h-24 w-24 md:h-28 md:w-28 rounded-full overflow-hidden bg-gray-200">
-                    {doctor.profilePicture ? (
+                    {(doctor.profilePicture || doctor.profilePic) ? (
                       <Image
-                        src={doctor.profilePicture}
+                        src={doctor.profilePicture || doctor.profilePic || ''}
                         alt={`Dr. ${fullName}`}
                         fill
                         sizes="112px"
@@ -218,7 +220,7 @@ export default function DoctorProfile() {
             <DoctorProfileTabs />
           </section>
 
-          {/* Right – booking cards */}
+          {/* Right – booking cards or fallback */}
           <aside className="space-y-4">
             {doctor.availableForVideoConsultation && (
               <Card className="rounded-xl bg-[#F8F8F8]">
@@ -230,7 +232,7 @@ export default function DoctorProfile() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Fee:</span>
-                    <span className="text-[#111827]">Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                    <span className="text-[#111827]">Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Address:</span>
@@ -260,7 +262,7 @@ export default function DoctorProfile() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Fee:</span>
-                    <span className="text-[#111827]">Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                    <span className="text-[#111827]">Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Address:</span>
@@ -278,6 +280,22 @@ export default function DoctorProfile() {
                   >
                     Book an Appointment
                   </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Fallback card if no video or clinic info */}
+            {!(doctor.availableForVideoConsultation || doctor.clinicName) && (
+              <Card className="rounded-xl bg-[#F8F8F8]">
+                <CardHeader>
+                  <CardTitle className="text-[#414141] text-[22px]">
+                    No Booking Options Available
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-[#52525B] text-sm">
+                    This doctor currently does not offer online or in-clinic booking options.
+                  </div>
                 </CardContent>
               </Card>
             )}

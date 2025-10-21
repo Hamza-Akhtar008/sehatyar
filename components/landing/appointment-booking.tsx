@@ -17,6 +17,7 @@ interface DoctorProfile {
   licenseNumber: string;
   experienceYears: number;
   consultationFee: number;
+  FeesPerConsultation?: string; // API field
   bio?: string;
   clinicAddress?: string;
   clinicName?: string;
@@ -26,6 +27,7 @@ interface DoctorProfile {
   zipCode?: string;
   phoneNumber?: string;
   profilePicture?: string;
+  profilePic?: string; // API field
   qualifications?: string;
   languages?: string[];
   availableForVideoConsultation: boolean;
@@ -411,9 +413,9 @@ export default function AppointmentBooking() {
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-start gap-4">
                   <div className="relative h-12 w-12 overflow-hidden rounded-full bg-gray-200">
-                    {doctor.profilePicture ? (
+                    {(doctor.profilePicture || doctor.profilePic) ? (
                       <Image
-                        src={doctor.profilePicture}
+                        src={doctor.profilePicture || doctor.profilePic || ''}
                         alt={`Dr. ${fullName}`}
                         fill
                         sizes="48px"
@@ -431,7 +433,9 @@ export default function AppointmentBooking() {
                   <div className="flex-1">
                     <div className="text-[#111827] font-semibold">Dr. {fullName}</div>
                     <div className="text-xs text-[#6B7280]">{consultationTypeText}</div>
-                    <div className="text-sm font-medium mt-2">Fee: Rs. {doctor.consultationFee?.toLocaleString() || 'N/A'}</div>
+                    <div className="text-sm font-medium mt-2">
+                      Fee: Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}
+                    </div>
                   </div>
                 </div>
                 {/* Confirm Booking Button */}

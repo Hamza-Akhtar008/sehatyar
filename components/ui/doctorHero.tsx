@@ -14,6 +14,7 @@ interface Doctor {
   licenseNumber: string;
   experienceYears: number;
   consultationFee: number;
+  FeesPerConsultation?: string; // API field
   bio?: string;
   clinicAddress?: string;
   clinicName?: string;
@@ -23,6 +24,7 @@ interface Doctor {
   zipCode?: string;
   phoneNumber?: string;
   profilePicture?: string;
+  profilePic?: string; // API field
   qualifications?: string;
   languages?: string[];
   availableForVideoConsultation: boolean;
@@ -64,9 +66,9 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
         <div className="flex flex-row gap-10 items-center">
           {/* Doctor Image */}
           <div className="w-34 h-34 rounded-full overflow-hidden  bg-yellow-500 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0 relative">
-            {doctor.profilePicture ? (
+            {(doctor.profilePicture || doctor.profilePic) ? (
               <Image 
-                src={doctor.profilePicture} 
+                src={doctor.profilePicture || doctor.profilePic || ''} 
                 alt={`Dr. ${fullName}`}
                 fill
                 sizes="(max-width: 768px) 80px, 100px"
@@ -159,7 +161,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
             )}
           </div>
           <div className="text-2xl font-semibold text-gray-800">
-            Rs {doctor.consultationFee?.toLocaleString() || 'N/A'}
+            Rs {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}
           </div>
         </div>
       </div>
