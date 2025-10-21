@@ -1,9 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useIsMobile } from "../../hooks/use-mobile";
 
-const tabList = ["Feedback", "Services", "Education", "Other Info", "FAQs"];
-
-export default function DoctorProfileTabs() {
+// Accept servicesTreatementOffered and education as props
+export default function DoctorProfileTabs({
+  servicesTreatementOffered = [],
+  education = [],
+  primarySpecialization = [],
+  experienceDetails = [],
+  memberships = [],
+  faqs = [],
+  yearsOfExperience,
+  city,
+  country,
+  Description,
+  doctorName,
+}: {
+  servicesTreatementOffered?: string[];
+  education?: { institute: string; degreeName: string; fieldOfStudy?: string }[];
+  primarySpecialization?: string[];
+  experienceDetails?: string[];
+  memberships?: string[];
+  faqs?: { question: string; answer: string; table?: { location: string; fee: string }[] }[];
+  yearsOfExperience?: string | number;
+  city?: string;
+  country?: string;
+  Description?: string;
+  doctorName?: string;
+}) {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(0);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -19,6 +42,8 @@ export default function DoctorProfileTabs() {
     }
   }, [activeTab, isMobile]);
   
+  const tabList = ["Feedback", "Services", "Education", "Other Info", "FAQs"];
+
   return (
     <div style={{ 
       width: "100%", 
@@ -227,6 +252,263 @@ export default function DoctorProfileTabs() {
           </div>
         </div>
       )}
+      {/* Services tab content */}
+      {activeTab === 1 && (
+        <div style={{ width: "100%", marginTop: isMobile ? 24 : 42 }}>
+          <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            Services
+          </div>
+          {servicesTreatementOffered && servicesTreatementOffered.length > 0 ? (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+              gap: isMobile ? 8 : 32,
+              maxWidth: 600,
+            }}>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {servicesTreatementOffered
+                  .filter((_, idx) => idx % 2 === 0)
+                  .map((service, idx) => (
+                    <li key={service + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {service}
+                    </li>
+                  ))}
+              </ul>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {servicesTreatementOffered
+                  .filter((_, idx) => idx % 2 === 1)
+                  .map((service, idx) => (
+                    <li key={service + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {service}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No services available.</div>
+          )}
+        </div>
+      )}
+      {/* Education tab content */}
+      {activeTab === 2 && (
+        <div style={{ width: "100%", marginTop: isMobile ? 24 : 42 }}>
+          <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            Education
+          </div>
+          {education && education.length > 0 ? (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+              gap: isMobile ? 8 : 32,
+              maxWidth: 900,
+            }}>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {education
+                  .filter((_, idx) => idx % 2 === 0)
+                  .map((e, idx) => (
+                    <li key={e.degreeName + e.institute + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {e.degreeName}
+                      {e.fieldOfStudy ? ` (${e.fieldOfStudy})` : ""}
+                      {e.institute ? ` — ${e.institute}` : ""}
+                    </li>
+                  ))}
+              </ul>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {education
+                  .filter((_, idx) => idx % 2 === 1)
+                  .map((e, idx) => (
+                    <li key={e.degreeName + e.institute + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {e.degreeName}
+                      {e.fieldOfStudy ? ` (${e.fieldOfStudy})` : ""}
+                      {e.institute ? ` — ${e.institute}` : ""}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No education details available.</div>
+          )}
+        </div>
+      )}
+      {/* Other Info tab content */}
+      {activeTab === 3 && (
+        <div style={{ width: "100%", marginTop: isMobile ? 24 : 42 }}>
+          <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            Specialization
+          </div>
+          {primarySpecialization && primarySpecialization.length > 0 ? (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+              gap: isMobile ? 8 : 32,
+              maxWidth: 900,
+            }}>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {primarySpecialization
+                  .filter((_, idx) => idx % 2 === 0)
+                  .map((spec, idx) => (
+                    <li key={spec + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {spec}
+                    </li>
+                  ))}
+              </ul>
+              <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+                {primarySpecialization
+                  .filter((_, idx) => idx % 2 === 1)
+                  .map((spec, idx) => (
+                    <li key={spec + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                      {spec}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No specialization info available.</div>
+          )}
+
+          <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginTop: isMobile ? 24 : 32,
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            Experience
+          </div>
+          {/* Professional sentence for experience */}
+          {yearsOfExperience ? (
+            <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+              <li style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                {(() => {
+                  const years = Number(yearsOfExperience);
+                  const endYear = 2025; // You can use new Date().getFullYear() if you want dynamic
+                  const startYear = endYear - years + 1;
+                  return `${startYear} - ${endYear}: ${years} years of clinical experience as a specialist${city ? ` in ${city}` : ""}${country ? `, ${country}` : ""}.`;
+                })()}
+              </li>
+            </ul>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No experience details available.</div>
+          )}
+
+          {/* <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginTop: isMobile ? 24 : 32,
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            Professional memberships
+          </div>
+          {memberships && memberships.length > 0 ? (
+            <ul style={{ listStyle: "disc inside", margin: 0, padding: 0 }}>
+              {memberships.map((mem, idx) => (
+                <li key={mem + idx} style={{ fontSize: 16, color: "#222", marginBottom: 8 }}>
+                  {mem}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No memberships listed.</div>
+          )} */}
+
+          {/* About Doctor section */}
+          <div style={{
+            fontSize: isMobile ? 18 : 22,
+            fontWeight: 600,
+            color: "#414141",
+            marginTop: isMobile ? 24 : 32,
+            marginBottom: isMobile ? 12 : 16,
+            paddingRight: isMobile ? 8 : 0
+          }}>
+            {`About Dr. ${doctorName || ""}`}
+          </div>
+          <div style={{ fontSize: 16, color: "#222", marginBottom: 12 }}>
+            {Description ||
+              `Dr. ${doctorName || ""} is a top specialist with ${yearsOfExperience || "N/A"} years of experience. You can book an in-person appointment or an online video consultation.`}
+          </div>
+          {/* Experience summary sentence */}
+          {yearsOfExperience && (
+            <div style={{ fontSize: 16, color: "#222", marginBottom: 12 }}>
+              {(() => {
+                const years = Number(yearsOfExperience);
+                const endYear = 2025;
+                const startYear = endYear - years + 1;
+                return `Dr. ${doctorName || ""} has over ${years} years of experience in ${city ? city + ", " : ""}${country || ""}. (${startYear} - ${endYear})`;
+              })()}
+            </div>
+          )}
+        </div>
+      )}
+      {/* FAQs tab content */}
+      {activeTab === 4 && (
+        <div style={{ width: "100%", marginTop: isMobile ? 24 : 42 }}>
+          {faqs && faqs.length > 0 ? (
+            <div>
+              {faqs.map((faq, idx) => (
+                <div key={idx} style={{ marginBottom: isMobile ? 32 : 40 }}>
+                  <div style={{
+                    fontSize: isMobile ? 20 : 24,
+                    fontWeight: 600,
+                    color: "#414141",
+                    marginBottom: isMobile ? 8 : 12,
+                  }}>
+                    {faq.question}
+                  </div>
+                  <div style={{
+                    fontSize: 16,
+                    color: "#414141",
+                    marginBottom: faq.table ? 8 : 16,
+                  }}>
+                    {faq.answer}
+                  </div>
+                  {faq.table && faq.table.length > 0 && (
+                    <table style={{ width: "100%", marginBottom: 16 }}>
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: "left", fontWeight: 500, fontSize: 16, color: "#222", paddingBottom: 8 }}>Location</th>
+                          <th style={{ textAlign: "left", fontWeight: 500, fontSize: 16, color: "#222", paddingBottom: 8 }}>Fee</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {faq.table.map((row, i) => (
+                          <tr key={row.location + i}>
+                            <td style={{ fontSize: 16, color: "#222", paddingBottom: 4 }}>{row.location}</td>
+                            <td style={{ fontSize: 16, color: "#222", paddingBottom: 4 }}>{row.fee}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: 16, color: "#676767" }}>No FAQs available.</div>
+          )}
+        </div>
+      )}
+      {/* ...existing code for other tabs... */}
     </div>
   );
 }
