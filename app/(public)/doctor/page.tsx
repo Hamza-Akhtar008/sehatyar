@@ -37,7 +37,7 @@ export default function Page() {
   }, [query, city])
 
   return (
-   <div className='mx-25 my-18'>
+   <div className='mx-2 md:mx-8 xl:mx-25 my-18'>
     <DoctorHero 
       doctors={doctors} 
       loading={loading}

@@ -47,6 +47,14 @@ interface DoctorProfile {
   reviewCount?: number;
   verified?: boolean;
   availableToday?: boolean;
+  servicesTreatementOffered?: string[];
+  education?: { institute: string; degreeName: string; fieldOfStudy?: string }[]; // <-- Add this line
+  primarySpecialization?: string[];
+  experienceDetails?: string[]; // e.g. ["2000 - 2013, Head of General Surgery, Doctors Hospital and Medical Center"]
+  memberships?: string[]; // e.g. ["American Board of Surgery", "Pakistan Medical Commission (PMC)"]
+  faqs?: { question: string; answer: string; table?: { location: string; fee: string }[] }[];
+  yearsOfExperience?: string | number; // <-- Add this line
+  Description?: string; // <-- Add this line
 }
 
 type StatProps = { label: string; value: string };
@@ -131,6 +139,36 @@ export default function DoctorProfile() {
   const displayRating = doctor.rating || 4.5;
   const displayReviews = doctor.reviewCount || 0;
 
+  // Add default FAQs if not present in API
+  const defaultFaqs = [
+    {
+      question: "What are the consultation fees and locations?",
+      answer: "Below are the available locations and their respective fees.",
+      table: [
+        {
+          location: doctor.clinicName || doctor.clinicAddress || "Clinic",
+          fee: `Rs. ${doctor.FeesPerConsultation || doctor.consultationFee || "N/A"}`
+        },
+        {
+          location: "Online Video Consultation",
+          fee: `Rs. ${doctor.FeesPerConsultation || doctor.consultationFee || "N/A"}`
+        }
+      ]
+    },
+    {
+      question: "What services does the doctor offer?",
+      answer: doctor.servicesTreatementOffered && doctor.servicesTreatementOffered.length > 0
+        ? doctor.servicesTreatementOffered.join(", ")
+        : "Please see the Services tab for details."
+    },
+    {
+      question: "What is the doctor's education background?",
+      answer: doctor.education && doctor.education.length > 0
+        ? doctor.education.map(e => `${e.degreeName}${e.fieldOfStudy ? ` (${e.fieldOfStudy})` : ""} — ${e.institute}`).join(", ")
+        : "Please see the Education tab for details."
+    }
+  ];
+
   return (
     <main className="w-full">
      
@@ -140,7 +178,7 @@ export default function DoctorProfile() {
           font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
       `}</style>
-      <section className="mx-auto w-full max-w-[1300px] px-4 md:px-6 lg:px-8 py-6 md:py-10 plus-jakarta-sans">
+      <section className="mx-auto w-full max-w-[1450px] px-4 md:px-6 lg:px-8 py-6 md:py-10 plus-jakarta-sans">
        
       
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
@@ -217,7 +255,19 @@ export default function DoctorProfile() {
              
 
             </Card>
-            <DoctorProfileTabs />
+            <DoctorProfileTabs
+              servicesTreatementOffered={doctor.servicesTreatementOffered}
+              education={doctor.education}
+              primarySpecialization={doctor.primarySpecialization}
+              experienceDetails={doctor.experienceDetails}
+              memberships={doctor.memberships}
+              faqs={doctor.faqs && doctor.faqs.length > 0 ? doctor.faqs : defaultFaqs}
+              yearsOfExperience={doctor.yearsOfExperience || doctor.experienceYears}
+              city={doctor.city}
+              country={doctor.country}
+              Description={doctor.Description}
+              doctorName={doctor.user?.fullName}
+            />
           </section>
 
           {/* Right – booking cards or fallback */}
@@ -286,18 +336,66 @@ export default function DoctorProfile() {
 
             {/* Fallback card if no video or clinic info */}
             {!(doctor.availableForVideoConsultation || doctor.clinicName) && (
-              <Card className="rounded-xl bg-[#F8F8F8]">
-                <CardHeader>
-                  <CardTitle className="text-[#414141] text-[22px]">
-                    No Booking Options Available
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="text-[#52525B] text-sm">
-                    This doctor currently does not offer online or in-clinic booking options.
-                  </div>
-                </CardContent>
-              </Card>
+              <>
+                {/* Static Online Video Consultation Card */}
+                <Card className="rounded-xl bg-[#F8F8F8]">
+                  <CardHeader>
+                    <CardTitle className="text-[#414141] text-[22px]">
+                      Online Video Consultation
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-[#52525B]">Fee:</span>
+                      <span className="text-[#111827]">Rs. 5,000</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-[#52525B]">Address:</span>
+                      <span className="text-right text-[#111827] font-semibold">
+                        Use phone/laptop for video call
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-[#52525B]">
+                      <span>Available Thu, Oct, 09</span>
+                      <span>02:00 PM - 03:00 PM</span>
+                    </div>
+                    <Button
+                      className="w-full bg-[#5FE089] mt-2 py-6 hover:bg-[#51db7f] rounded-full text-black"
+                    >
+                      Book an Appointment
+                    </Button>
+                  </CardContent>
+                </Card>
+                {/* Static Doctors Hospital Card */}
+                <Card className="rounded-xl bg-[#F8F8F8]">
+                  <CardHeader>
+                    <CardTitle className="text-[#414141] text-[22px]">
+                      Doctors Hospital
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-[#52525B]">Fee:</span>
+                      <span className="text-[#111827]">Rs. 5,000</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-[#52525B]">Address:</span>
+                      <span className="text-right text-[#111827] font-semibold">
+                        152 A - G / 1, Canal Bank, Johar Town, Lahore
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-[#52525B]">
+                      <span>Available Tomorrow</span>
+                      <span>02:00 PM - 03:00 PM</span>
+                    </div>
+                    <Button
+                      className="w-full bg-[#01503F] mt-2 hover:bg-[#15803D] py-6 rounded-full text-white"
+                    >
+                      Book an Appointment
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
             )}
           </aside>
         </div>
