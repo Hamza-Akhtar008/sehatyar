@@ -337,14 +337,10 @@ export default function HeroSection() {
             <Input
               type="text"
               placeholder="Search Specialist or Hospital"
-<<<<<<< HEAD
-              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#52525B] placeholder:text-lg"
-=======
                value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsFocused(true)}
               className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
->>>>>>> 692d8db74b511e6fe38b9d483b4f02567813cbbd
             />
              {isFocused && filtered.length > 0 && (
         <div className="absolute top-[70px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
@@ -400,32 +396,6 @@ export default function HeroSection() {
           </div>
 
           {/* Find Button */}
-<<<<<<< HEAD
-          <Button
-            className="w-2/12 text-white inline-flex items-center justify-center"
-            style={{
-              width: '119.17292785644531px',
-              height: '71.7504653930664px',
-              borderRadius: '122.47px',
-              paddingTop: '12.37px',
-              paddingRight: '39.59px',
-              paddingBottom: '12.37px',
-              paddingLeft: '39.59px',
-              gap: '12.37px',
-              background: '#5FE089',
-              opacity: 1,
-              transform: 'rotate(0deg)',
-              fontFamily: 'var(--font-montserrat)',
-              fontWeight: 600,
-              fontSize: '17.32px',
-              lineHeight: '29.69px',
-              verticalAlign: 'middle',
-              color: '#FFFFFF',
-            }}
-          >
-            Find
-          </Button>
-=======
       <Button
   className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
   style={{
@@ -454,7 +424,6 @@ export default function HeroSection() {
   Find
 </Button>
 
->>>>>>> 692d8db74b511e6fe38b9d483b4f02567813cbbd
         </div>
       </div>
         </div>
