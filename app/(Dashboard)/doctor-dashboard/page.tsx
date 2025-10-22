@@ -11,10 +11,10 @@ export default function DoctorDashboardPage() {
     return (
        
             <>
-                <div className="flex ">
+                <div className="flex mt-4 -ml-3">
                     <StatsCards />
                 </div>
-                <div className="flex">
+                <div className="flex mt-4 -ml-3">
                     <div className="flex-1 flex flex-col">
                         <UpcomingAppointments />
                         
@@ -23,7 +23,10 @@ export default function DoctorDashboardPage() {
                         <RecentPatients />
                     </div>
                 </div>
+                <div className="mt-4 -ml-3">
+
                         <CalendarView />
+                </div>
             </>
           
     );

@@ -105,7 +105,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
   // Only show content if authenticated
   return (
     <>
-      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
+      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} m-0 p-0`}>
         <head />
         <body>
           <ThemeProvider
@@ -123,7 +123,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               )}
               
               {/* Right side (header + content) */}
-              <div className="flex-1 flex flex-col lg:ml-64">
+              <div className="flex-1 flex flex-col">
                 {/* Fixed Header */}
                 <div className="fixed left-64 right-0 top-0 z-40">
                   {user?.role === 'doctor' ? (

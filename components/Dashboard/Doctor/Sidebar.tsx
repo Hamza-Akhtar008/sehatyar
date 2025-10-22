@@ -7,6 +7,8 @@ import { useRouter, usePathname } from 'next/navigation';
 
 const sidebarItems = [
   { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard", active: true },
+  { label: "Hospitals", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/Hospital" },
+
   { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/appointment" },
   { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/doctor-dashboard/patients" },
   { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/doctor-dashboard/availability" },
@@ -28,8 +30,8 @@ export default function DoctorSidebar() {
 
   return (
     <aside
-      className="fixed lg:relative m-4 z-20 bg-white flex flex-col justify-between 
-                 h-screen lg:h-auto w-[80px] md:w-[200px] lg:w-[240px]
+      className="fixed lg:relative  m-4 z-20 bg-white flex flex-col justify-between 
+                 h-screen lg:h-auto w-[80px] md:w-[200px] lg:w-[200px]
                  p-4 lg:p-5 rounded-none lg:rounded-[22px]
                  border-r border-[#F2F2F2] transition-all duration-300"
     >

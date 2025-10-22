@@ -35,7 +35,7 @@ const stats = [
 
 export default function StatsCards() {
   return (
-    <div className="flex w-full -mt-4 -ml-2 gap-2">
+    <div className="flex w-full -mt-4 -ml-2 gap-2 mb-4">
       {stats.map((stat) => (
         <div
           key={stat.label}

@@ -9,7 +9,7 @@ export default function DoctorDashboardHeader() {
 
   
   return (
-    <header className="flex items-center -ml-2 justify-between h-[64px] px-4 bg-white rounded-[22px] w-full shadow-sm">
+    <header className="flex items-center -ml-2 m-4 justify-between h-[64px] px-4 bg-white rounded-[22px] w-full shadow-sm">
       {/* Left: Greeting */}
       <div className="text-[20px] font-medium text-[#555]">Good Morning, {user?.fullName || 'Doctor'}</div>
 
