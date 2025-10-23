@@ -35,16 +35,6 @@ export async function registerDoctor(payload: any) {
     }   
 }
 
-//get doctor profile by user id
-// export const getDoctorProfileByUserId = async (userId: number) => {
-//     try {
-//         const response = await axiosInstance.get(`/doctor-profile/user/${userId}`);
-//         return response.data;
-//     } catch (error) {
-//         console.error("Error fetching doctor profile by user ID:", error);
-//         throw error;
-//     }
-// };
 
 //get doctor profile by doctor id
 export const getDoctorProfileByDoctorId = async (doctorId: number) => {
@@ -53,6 +43,17 @@ export const getDoctorProfileByDoctorId = async (doctorId: number) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching doctor profile by doctor ID:", error);
+        throw error;
+    }
+};
+
+//get patient appointments by doctor id
+export const getPatientAppointmentsByDoctorId = async () => {
+    try {
+        const response = await axiosInstance.get(`/doctor-profile/patients/only`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching patient appointments by doctor ID:", error);
         throw error;
     }
 };

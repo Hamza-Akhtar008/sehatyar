@@ -6,14 +6,13 @@ import { useRouter, usePathname } from 'next/navigation';
 
 
 const sidebarItems = [
-  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard", active: true },
+  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard" },
   { label: "Hospitals", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/Hospital" },
-
   { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/appointment" },
   { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/doctor-dashboard/patients" },
   { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/doctor-dashboard/availability" },
   { label: "Message", icon: "/assets/sidebar/message.svg", href: "/doctor-dashboard/messages" },
-  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "//doctor-dashboardanalytics" },
+  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "/doctor-dashboard/analytics" },
   { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
 ];
 
@@ -49,29 +48,37 @@ export default function DoctorSidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-col gap-1 flex-1">
-        {sidebarItems.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 
-                        rounded-lg font-medium text-sm lg:text-[16px]
-                        transition-colors whitespace-nowrap
-                        ${
-                          item.active
-                            ? "bg-[#E6F9F0] text-[#2DC36A]"
-                            : "text-[#222] hover:bg-[#F2F2F2]"
-                        }`}
-          >
-            <span className="w-6 h-6 flex items-center justify-center shrink-0">
-              <Image src={item.icon} alt={item.label} width={24} height={24} />
-            </span>
-            <span className="hidden md:inline">{item.label}</span>
-          </Link>
-        ))}
+        {sidebarItems.map((item) => {
+          // For dashboard, only match exact path. For others, match path and sub-routes
+          const isActive = item.href === "/doctor-dashboard" 
+            ? pathname === item.href 
+            : pathname === item.href || pathname.startsWith(item.href + '/');
+          
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 
+                          rounded-lg font-medium text-sm lg:text-[16px]
+                          transition-colors whitespace-nowrap
+                          ${
+                            isActive
+                              ? "bg-[#E6F9F0] text-[#2DC36A]"
+                              : "text-[#222] hover:bg-[#F2F2F2]"
+                          }`}
+            >
+              <span className="w-6 h-6 flex items-center justify-center shrink-0">
+                <Image src={item.icon} alt={item.label} width={24} height={24} />
+              </span>
+              <span className="hidden md:inline">{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Logout Button */}
       <button
+        onClick={handleLogout}
         className="mt-auto flex items-center gap-2 text-[#F04438] font-medium 
                    px-3 py-2.5 lg:px-4 lg:py-3 rounded-lg hover:bg-[#F2F2F2] 
                    text-sm lg:text-[16px]"
@@ -100,10 +107,7 @@ export default function DoctorSidebar() {
             strokeWidth="1.5"
           />
         </svg>
-        <span className="hidden md:inline"
-        onClick={handleLogout}
-
-      >Logout</span>
+        <span className="hidden md:inline">Logout</span>
       </button>
     </aside>
   );
