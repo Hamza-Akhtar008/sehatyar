@@ -2,13 +2,16 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import AppointmentModal from "./modals/AppointmentModal";
+import { useRouter } from "next/navigation";
 import { getAppointmentsForLoggedInDoctor } from "@/lib/Api/appointment";
+
 
 export default function Appointment() {
     const [showFilter, setShowFilter] = useState(false);
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
     const [appointments, setAppointments] = useState<any[]>([]);
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -43,6 +46,27 @@ export default function Appointment() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+
+    // Handler for navigating to patient details page
+    const handleShowPatientDetails = (appointment: any) => {
+        // Save appointmentId and userId to localStorage
+        if (appointment?.id && appointment?.userId) {
+            localStorage.setItem("appointmentId", String(appointment.id));
+            localStorage.setItem("userId", String(appointment.userId));
+        }
+        try {
+            const patientId = appointment.userId || appointment.patient?.id || appointment.id;
+            if (patientId) {
+                router.push(`/doctor-dashboard/patients/${patientId}`);
+            } else {
+                console.error("No patient ID found in appointment:", appointment);
+            }
+        } catch (err) {
+            console.error("Error navigating to patient details:", err);
+        }
+    };
+
 
     return (
         <div className="appointment-container">
@@ -111,7 +135,12 @@ export default function Appointment() {
                                     />
                                 </div>
                                 <div className="appointment-details">
-                                    <p className="appointment-name">{appointment.patientName}</p>
+                                    <p
+                                        className="appointment-name cursor-pointer text-blue-600 hover:underline"
+                                        onClick={() => handleShowPatientDetails(appointment)}
+                                    >
+                                        {appointment.patientName}
+                                    </p>
                                     <p className="appointment-type">{appointment.type || appointment.appointmentFor}</p>
                                     <p className="appointment-phone">{appointment.phoneNumber}</p>
                                 </div>
@@ -135,6 +164,8 @@ export default function Appointment() {
             
             {/* Use the separated AppointmentModal component */}
             <AppointmentModal isOpen={showAppointmentModal} onClose={() => setShowAppointmentModal(false)} />
+
+            {/* Patient Details now navigates to a separate page */}
         </div>
     );
 }

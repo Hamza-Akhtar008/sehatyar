@@ -84,64 +84,38 @@ export default function DashboardLayout({ children }: LayoutProps) {
   // Show loading state while checking authentication
   if (isLoading || !isClient) {
     return (
-      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="flex items-center justify-center min-h-screen">
-              Loading...
-            </div>
-          </ThemeProvider>
-        </body>
-      </html>
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
     );
   }
 
   // Only show content if authenticated
   return (
-    <>
-      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} m-0 p-0`}>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="flex min-h-screen">
-              {/* Sidebar */}
-              {user?.role === 'doctor' ? (
-                <DoctorSidebar />
-              ) : (
-                <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-              )}
-              
-              {/* Right side (header + content) */}
-              <div className="flex-1 flex flex-col">
-                {/* Fixed Header */}
-                <div className="fixed left-64 right-0 top-0 z-40">
-                  {user?.role === 'doctor' ? (
-                    <DoctorDashboardHeader />
-                  ) : (
-                    <PatientDashboardHeader onToggleSidebar={() => setSidebarOpen((v) => !v)} />
-                  )}
-                </div>
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      {user?.role === 'doctor' ? (
+        <DoctorSidebar />
+      ) : (
+        <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      )}
+      
+      {/* Right side (header + content) */}
+      <div className="flex-1 flex flex-col">
+        {/* Fixed Header */}
+        <div className="fixed left-64 right-0 top-0 z-40">
+          {user?.role === 'doctor' ? (
+            <DoctorDashboardHeader />
+          ) : (
+            <PatientDashboardHeader onToggleSidebar={() => setSidebarOpen((v) => !v)} />
+          )}
+        </div>
 
-                {/* Scrollable Content */}
-                <main className="flex-1 mt-16 p-6 overflow-y-auto bg-gray-50">
-                  {children}
-                </main>
-              </div>
-            </div>
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
-  )
+        {/* Scrollable Content */}
+        <main className="flex-1 mt-16 p-6 overflow-y-auto bg-gray-50">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }
