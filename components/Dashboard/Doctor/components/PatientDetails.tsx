@@ -28,7 +28,7 @@ export default function PatientDetails({ patient, onAddPrescription }: PatientDe
           </div>
         </div>
         <button
-          className="bg-[#059669] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#047857] transition"
+          className="bg-[#46cc8e] text-white px-8 py-3 rounded-lg font-medium hover:scale-105 transition"
           onClick={onAddPrescription}
         >
           Add New Prescription

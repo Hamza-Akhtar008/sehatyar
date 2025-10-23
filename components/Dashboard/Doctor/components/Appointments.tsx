@@ -50,6 +50,11 @@ export default function Appointment() {
 
     // Handler for navigating to patient details page
     const handleShowPatientDetails = (appointment: any) => {
+        // Save appointmentId and userId to localStorage
+        if (appointment?.id && appointment?.userId) {
+            localStorage.setItem("appointmentId", String(appointment.id));
+            localStorage.setItem("userId", String(appointment.userId));
+        }
         try {
             const patientId = appointment.userId || appointment.patient?.id || appointment.id;
             if (patientId) {
