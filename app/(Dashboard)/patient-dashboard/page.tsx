@@ -10,13 +10,15 @@ export default function PatientDashboard() {
 
   return (
     < >
-      <div className="max-w-8xl mx-auto">
+      <div className="max-w-8xl mx-auto overflow-auto h-[calc(100vh-89.6px)] scrollbar-hide">
         {/* Tutorial Card (No spacing/margins) */}
         <div className="!m-0 !p-0 ">
           <TutorialCard />
         </div>
         <FindDoctorCard/>
+        
 
+  
         {/* Dashboard sections */}
     <RecentDoctors/>
       
