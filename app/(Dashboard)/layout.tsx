@@ -1,42 +1,8 @@
 
 "use client";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
-
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-  weight: ["300","400","500","600","700","800"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-plusjakarta",
-  subsets: ["latin"],
-  weight: ["500", "800"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-});
-
-
 
 import { ReactNode, useEffect, useState } from "react";
 import Header from "@/components/ui/header";
@@ -92,38 +58,31 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   // Only show content if authenticated
   return (
-    <>
-      <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} m-0 p-0`}>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="flex bg-gray-50">
-              {/* Sidebar */}
-              <DoctorSidebar />
-             
-              
-              {/* Right side (header + content) */}
-              <div className="flex-1 flex flex-col bg-gray-50">
-                {/* Fixed Header */}
-                <div className="  right-0 top-0 z-40">
-                  <DoctorDashboardHeader />
-                 
-                </div>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className="flex bg-gray-50">
+        {/* Sidebar */}
+        <DoctorSidebar />
+       
+        
+        {/* Right side (header + content) */}
+        <div className="flex-1 flex flex-col bg-gray-50">
+          {/* Fixed Header */}
+          <div className="right-0 top-0 z-40">
+            <DoctorDashboardHeader />
+           
+          </div>
 
-                {/* Scrollable Content */}
-                <main className="flex-1 p-3 bg-gray-50">
-                  {children}
-                </main>
-              </div>
-            </div>
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
+          {/* Scrollable Content */}
+          <main className="flex-1 p-3 bg-gray-50">
+            {children}
+          </main>
+        </div>
+      </div>
+    </ThemeProvider>
   )
 }

@@ -7,13 +7,21 @@ import { useState } from "react";
 
 interface PatientDetailsWrapperProps {
   patient: any;
+  prescriptions?: any[];
 }
 
-export default function PatientDetailsWrapper({ patient }: PatientDetailsWrapperProps) {
+export default function PatientDetailsWrapper({ patient, prescriptions }: PatientDetailsWrapperProps) {
   const router = useRouter();
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
 
   const handleAddPrescription = () => {
+    setSelectedPrescription(null);
+    setShowPrescriptionModal(true);
+  };
+
+  const handleEditPrescription = (prescription: any) => {
+    setSelectedPrescription(prescription);
     setShowPrescriptionModal(true);
   };
 
@@ -50,11 +58,19 @@ export default function PatientDetailsWrapper({ patient }: PatientDetailsWrapper
         </svg>
         Back
       </button>
-      <PatientDetails patient={patient} onAddPrescription={handleAddPrescription} />
+      <PatientDetails 
+        patient={{ ...patient, prescriptions }} 
+        onAddPrescription={handleAddPrescription}
+        onEditPrescription={handleEditPrescription}
+      />
       <AddPrescriptionModal
         open={showPrescriptionModal}
-        onClose={() => setShowPrescriptionModal(false)}
+        onClose={() => {
+          setShowPrescriptionModal(false);
+          setSelectedPrescription(null);
+        }}
         onSubmit={handlePrescriptionSubmit}
+        prescriptionToEdit={selectedPrescription}
       />
     </>
   );
