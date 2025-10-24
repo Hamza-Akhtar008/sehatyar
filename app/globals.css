@@ -1717,3 +1717,45 @@
 }
 
 }
+
+
+@media screen and (max-width: 1920px) {
+   html,
+   body {
+      font-size: 100%;
+   }
+}
+
+@media screen and (max-width: 1700px) {
+   html,
+   body {
+      font-size: 90%;
+   }
+}
+
+@media screen and (max-width: 1500px) {
+   html,
+   body {
+      font-size: 80%;
+   }
+}
+
+@media screen and (max-width: 1300px) {
+   html,
+   body {
+      font-size: 80%;
+   }
+}
+
+.custom-dashed {
+  border: 2px dashed #d2d2d2;
+  border-radius: 1rem;
+  padding: 3rem;
+  border-image: repeating-linear-gradient(
+    to right,
+    #d2d2d2 0,
+    #d2d2d2 10px,
+    transparent 10px,
+    transparent 20px
+  ) 1;
+}

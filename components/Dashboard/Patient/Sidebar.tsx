@@ -29,13 +29,11 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
         />
       )}
       <aside
-        className={[
-          "fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 z-60",
-          "transform transition-transform duration-300",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:translate-x-0",
-        ].join(" ")}
-      >
+      className="fixed lg:relative  m-4 z-20 bg-white flex flex-col justify-between 
+                 h-screen lg:h-auto w-[80px] md:w-[200px] lg:w-[200px]
+                 p-4 lg:p-5 rounded-none lg:rounded-[22px]
+                 border-r border-[#F2F2F2] transition-all duration-300"
+    >
         {/* Mobile close button */}
         <button
           type="button"
@@ -68,7 +66,7 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 bg-[#5FE0894D] text-[#01503F]"
           >
             <Home size={20} className="shrink-0 text-[#01503F]" />
-            <span className="text-[15px] font-medium">Home</span>
+            <span className="text-[16px] font-medium">Home</span>
           </Link>
 
           <Link
@@ -76,7 +74,7 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
           >
             <CalendarDays size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">My Appointments</span>
+            <span className="text-[16px]">Medical Records</span>
           </Link>
 
           <Link
@@ -84,7 +82,7 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
           >
             <FileText size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">My Health Records</span>
+            <span className="text-[16px]">My Health Records</span>
           </Link>
 
           <Link
@@ -92,31 +90,17 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
           >
             <Pill size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">My Medications</span>
+            <span className="text-[16px]">My Medications</span>
           </Link>
 
+        
+        
           <Link
             href="#"
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
           >
-            <Users2 size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">My Doctors</span>
-          </Link>
-
-          <Link
-            href="#"
-            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
-          >
-            <MessageSquare size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">Messages</span>
-          </Link>
-
-          <Link
-            href="#"
-            className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-gray-600 hover:bg-[#5FE0894D] hover:text-[#01503F] transition-colors"
-          >
-            <UserCircle2 size={20} className="shrink-0 text-gray-500 group-hover:text-[#01503F]" />
-            <span className="text-[15px]">My Profile</span>
+            <img src="/images/setting.svg" alt="" />
+            <span className="text-[16px]">Settings</span>
           </Link>
 
           {/* Spacer */}
@@ -128,7 +112,7 @@ const PatientSidebar = ({ isOpen = false, onClose }: Props) => {
             className="no-underline group flex items-center gap-3 rounded-xl px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
           >
             <LogOut size={20} className="shrink-0 text-red-600" />
-            <span className="text-[15px]">Sign Out</span>
+            <span className="text-[16px]">Sign Out</span>
           </Link>
         </nav>
       </aside>
