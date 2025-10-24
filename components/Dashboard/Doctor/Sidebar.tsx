@@ -38,7 +38,8 @@ export default function DoctorSidebar() {
 
   return (
     <aside
-      className="fixed lg:relative m-4 z-20 bg-white flex flex-col justify-between 
+      className="fixed lg:relative m-4 z-20 bg-white flex flex-col justi    <RecentDoctors/>
+fy-between 
                  min-h-screen lg:h-auto w-[90px] md:w-[200px] lg:w-[220px]
                  p-4 lg:p-5 rounded-none lg:rounded-[22px]
                  border border-[#F2F2F2] transition-all duration-300"

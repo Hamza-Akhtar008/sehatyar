@@ -8,15 +8,21 @@ interface AppointmentCardProps {
     specialty: string
     date: string
     time: string
-    status: "completed" | "pending"
+    status: "completed" | "pending" | "cancelled"
     avatar: string
   }
 }
 
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
-  const statusColor =
-    appointment.status === "completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
-  const statusLabel = appointment.status === "completed" ? "Completed" : "Pending"
+  let statusColor = "bg-yellow-100 text-yellow-700";
+  let statusLabel = "Pending";
+  if (appointment.status === "completed") {
+    statusColor = "bg-green-100 text-green-700";
+    statusLabel = "Completed";
+  } else if (appointment.status === "cancelled") {
+    statusColor = "bg-red-100 text-red-700";
+    statusLabel = "Cancelled";
+  }
 
   return (
     <div className="flex items-center justify-between rounded-[22px] border border-border bg-white p-2">
