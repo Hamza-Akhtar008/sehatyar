@@ -114,27 +114,21 @@ export default function DashboardLayout({ children }: LayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex min-h-screen">
+            <div className="flex bg-gray-50">
               {/* Sidebar */}
-              {user?.role === 'doctor' ? (
-                <DoctorSidebar />
-              ) : (
-                <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-              )}
+              <DoctorSidebar />
+             
               
               {/* Right side (header + content) */}
-              <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex flex-col bg-gray-50">
                 {/* Fixed Header */}
-                <div className="fixed left-64 right-0 top-0 z-40">
-                  {user?.role === 'doctor' ? (
-                    <DoctorDashboardHeader />
-                  ) : (
-                    <PatientDashboardHeader onToggleSidebar={() => setSidebarOpen((v) => !v)} />
-                  )}
+                <div className="  right-0 top-0 z-40">
+                  <DoctorDashboardHeader />
+                 
                 </div>
 
                 {/* Scrollable Content */}
-                <main className="flex-1 mt-16 p-6 overflow-y-auto bg-gray-50">
+                <main className="flex-1 p-3 bg-gray-50">
                   {children}
                 </main>
               </div>
