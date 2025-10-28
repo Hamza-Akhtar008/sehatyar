@@ -2,7 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+<<<<<<< Updated upstream
 import { ChevronDownIcon,  ArrowRight } from "lucide-react";
+=======
+import { ChevronDownIcon, ChevronRightIcon, Globe, ArrowRight } from "lucide-react";
+>>>>>>> Stashed changes
 
 import {
   DropdownMenu,
@@ -24,7 +28,12 @@ import {
 export default function Header() {
   const [open, setOpen] = useState(false);
 
+<<<<<<< Updated upstream
  
+=======
+  // ...existing code...
+  // Inline expand/collapse for specialties
+>>>>>>> Stashed changes
   const specialties = [
     {
       name: "Dermatologist",
@@ -84,6 +93,7 @@ export default function Header() {
     },
   ];
 
+<<<<<<< Updated upstream
 
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -129,6 +139,22 @@ export default function Header() {
 
   <div className="desktop-nav-group hidden md:flex items-center flex-1 min-w-0">
           <NavigationMenu>
+=======
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  return (
+    <header className="site-header">
+      <div className="header-container">
+        <div className="site-logo">
+          <Link href="/">
+            <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={160} height={48} priority />
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="items-center justify-between hidden md:flex">
+          <NavigationMenu className="hidden md:flex">
+>>>>>>> Stashed changes
             <NavigationMenuList className="nav-menu">
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-black">Doctors</NavigationMenuTrigger>
@@ -163,6 +189,7 @@ export default function Header() {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-black">Clinics</NavigationMenuTrigger>
                 <NavigationMenuContent className="navigation-menu-content">
+<<<<<<< Updated upstream
                   <div className="doctor-dropdown">
                     <div className="doctor-dropdown-title">Find clinic by City</div>
                     {clinics.map((city) => (
@@ -186,11 +213,47 @@ export default function Header() {
                         )}
                       </div>
                     ))}
+=======
+                  <div className="p-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="specialist-item">
+                        Lahore Clinics <ChevronDownIcon size={16} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem className="city-item">Doctors Hospital</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">Hameed Latif Hospital</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">Evercare Hospital</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="specialist-item">
+                        Karachi Clinics <ChevronDownIcon size={16} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem className="city-item">Agha Khan Hospital</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">South City Hospital</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">Liaquat National Hospital</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="specialist-item">
+                        Islamabad Clinics <ChevronDownIcon size={16} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem className="city-item">Shifa International</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">PIMS Hospital</DropdownMenuItem>
+                        <DropdownMenuItem className="city-item">Ali Medical Centre</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+>>>>>>> Stashed changes
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
+<<<<<<< Updated upstream
                   <NavigationMenuLink asChild>
                     <Link href="/how-it-works" className={navigationMenuTriggerStyle()}>
                       How It&apos;s Work
@@ -241,6 +304,42 @@ export default function Header() {
   </div>
 </Link>
 
+=======
+                <Link href="/how-it-works" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    How It's Work
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Link href="/about" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    About Us
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          <div className="flex items-center gap-4 ml-6">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium">
+                EN <ChevronDownIcon className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>English</DropdownMenuItem>
+                <DropdownMenuItem>اردو</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link href="/login" className="btn btn-ghost text-black px-4 py-2 rounded-full">Login / Sign Up</Link>
+            
+            <Link href="/join-doctor" className="btn btn-primary flex items-center gap-1 px-4 py-2 rounded-full">
+              Join As Doctor <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+>>>>>>> Stashed changes
         </div>
 
         {/* Mobile navigation toggle */}
@@ -254,6 +353,7 @@ export default function Header() {
       {/* Mobile menu (shown when open state is true) */}
       {open && (
         <div className="md:hidden mobile-menu bg-white p-4">
+<<<<<<< Updated upstream
           <ul className="flex flex-col space-y-2">
             {/* Doctors collapsible */}
             <li>
@@ -345,6 +445,26 @@ export default function Header() {
             </li>
             <li className="sm:hidden">
               <Link href="/register" className="block py-3">Join As Doctor</Link>
+=======
+          <ul className="flex flex-col space-y-4">
+            <li>
+              <Link href="/doctors" className="block py-2">Doctors</Link>
+            </li>
+            <li>
+              <Link href="/clinics" className="block py-2">Clinics</Link>
+            </li>
+            <li>
+              <Link href="/how-it-works" className="block py-2">How It's Work</Link>
+            </li>
+            <li>
+              <Link href="/about" className="block py-2">About Us</Link>
+            </li>
+            <li>
+              <Link href="/login" className="block py-2">Login / Sign Up</Link>
+            </li>
+            <li>
+              <Link href="/join-doctor" className="block py-2">Join As Doctor</Link>
+>>>>>>> Stashed changes
             </li>
           </ul>
         </div>
