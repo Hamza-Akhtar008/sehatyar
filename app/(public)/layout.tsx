@@ -64,8 +64,8 @@ export default function RootLayout({ children }: LayoutProps) {
             <Suspense>
 
             <main>{children}</main>
-            </Suspense>
             <Footer />
+            </Suspense>
           </ThemeProvider>
         </body>
       </html>

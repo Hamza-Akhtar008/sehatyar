@@ -4,6 +4,8 @@ import { AuthProvider } from "@/src/contexts/AuthContext"
 import { Toaster } from "react-hot-toast"
 import "./globals.css"
 import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
+import Header from "@/components/ui/header";
+import Footer from "@/components/ui/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning>
         <AuthProvider>
+          <Header />
           {children}
+          <Footer />
           <Toaster position="top-right" />
         </AuthProvider>
       </body>

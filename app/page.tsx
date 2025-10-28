@@ -7,11 +7,12 @@ import Specialists from "@/components/landing/specialists";
 import { Conditions } from "@/components/landing";
 import Partners from "@/components/landing/partners";
 import DoctorByCondition from "@/components/landing/doctor-by-condition";
+import Footer from "@/components/ui/footer";
 
 export default function Home() {
   return (
    <>
-   <Header />
+   {/* <Header /> */}
    <HeroSection />
    <Doctors />
    <Hospitals />
@@ -19,6 +20,7 @@ export default function Home() {
    <Conditions />
    <Partners />
    <DoctorByCondition />
+   {/* <Footer /> */}
    </>
   );
 }
