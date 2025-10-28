@@ -49,6 +49,18 @@ export const createAvailability = async (data: Partial<Slot>[]) => {
   }
 };
 
+//Patch Availability
+
+export const PatchAvailability = async (data: Partial<Slot>,id:number) => {
+  try {
+    const response = await axiosInstance.patch(`/availability/${id}`, data);
+    return response.data as Slot[];
+  } catch (error) {
+    console.error("Error creating availability:", error);
+    throw error;
+  }
+};
+
 //delete availability
 export const deleteAvailability = async (id: number) => {
     try {
