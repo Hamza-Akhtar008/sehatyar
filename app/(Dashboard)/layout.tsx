@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
       enableSystem
       disableTransitionOnChange
     >
-      <div className="flex bg-gray-50">
+      <div className="flex  bg-gray-50">
         {/* Sidebar */}
         <DoctorSidebar />
        
