@@ -123,11 +123,7 @@
   --black: #000000;
 
   /* Typography tokens */
-<<<<<<< Updated upstream
-  font-family: var(--font-montserrat), sans-serif;
-=======
   --font-family-sans: var(--font-montserrat, "Montserrat"), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
->>>>>>> Stashed changes
   --font-plusjakarta: var(--font-plusjakarta, "Plus Jakarta Sans");
   --font-inter: var(--font-inter, "Inter");
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
@@ -276,21 +272,12 @@
   }
 
   /* Headings scale that map to Figma typographic sizes */
-<<<<<<< Updated upstream
-  h1 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h2 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h3 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h4 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h5 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h6 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-=======
   h1 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
   h2 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
   h3 { font-size: 42px; line-height: 48px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
   h4 { font-size: 32px; line-height: 38px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
   h5 { font-size: 24px; line-height: 30px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
   h6 { font-size: 18px; line-height: 22px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
->>>>>>> Stashed changes
 
   /* Logo helper */
   .logo {
@@ -352,34 +339,6 @@
   .site-header {
     background: var(--background);
     border-bottom: 1px solid rgba(0,0,0,0.06);
-<<<<<<< Updated upstream
-    /* padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 100px;
-    padding-right: 100px; */
-  padding-top: 1.875rem;    /* 30px = 1.875rem */
-  padding-bottom: 1.875rem; /* 30px = 1.875rem */
-  padding-left: 6.25rem;    /* 100px = 6.25rem */
-  padding-right: 6.25rem;   /* 100px = 6.25rem */
-  }
-
-  /* Apply Figma drop-shadow and sticky behavior to the main header container */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 60;
-    /* Figma shadow: X:0 Y:4 Blur:75.8 Spread:0 Color: #000000 10% */
-    box-shadow: 0px 4px 75.8px rgba(0,0,0,0.1);
-    backdrop-filter: saturate(120%) blur(4px);
-  }
-
-  .header-container {
-    /* max-width: 1400px; */
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-
-=======
     padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 100px;
@@ -392,7 +351,6 @@
     display: flex;
     align-items: center;
     /* justify-content: space-between; */
->>>>>>> Stashed changes
     gap: 80px;
   }
 
@@ -429,30 +387,10 @@
 
   .mobile-toggle { display: none; background: transparent; border: none; }
 
-<<<<<<< Updated upstream
-  @media (max-width: 1280px) {
-    .site-header { padding-left: 16px; padding-right: 16px; padding-top: 16px; padding-bottom: 16px; }
-    .header-container { gap: 16px; }
-    .nav-list, .nav-menu, .desktop-nav-group { display: none !important; }
-    .mobile-toggle { display: inline-flex !important; margin-left: auto; }
-    /* Override Tailwind's md:hidden on mobile menu so it can open at <=1024px */
-    .mobile-menu { display: block !important; }
-    .header-desktop-actions { gap: 8px; }
-    .header-desktop-actions .btn-ghost { width: auto !important; height: 40px !important; padding: 8px 14px !important; }
-    .header-desktop-actions .btn-primary { width: auto !important; height: 44px !important; padding: 4px 10px 4px 16px !important; }
-  }
-
-  @media (max-width: 640px) {
-    .site-logo img { width: 120px; height: auto; }
-    /* Keep language visible; hide only Login/Join buttons */
-    .header-desktop-actions { display: flex; }
-    .header-desktop-actions .hide-on-mobile { display: none !important; }
-=======
   @media (max-width: 980px) {
     .site-header { padding-left: 24px; padding-right: 24px; }
     .nav-list { display: none; }
     .mobile-toggle { display: inline-flex; }
->>>>>>> Stashed changes
   }
 
   /* Nav group dimension per design spec */
@@ -465,12 +403,8 @@
     justify-content: flex-start;
   }
 
-<<<<<<< Updated upstream
-  /* Remove global span color to preserve original text colors */
-=======
   /* Span accent color and selected option helpers */
   span { color: var(--accent-green); }
->>>>>>> Stashed changes
 
   /* When an option is selected */
   .selected, .option.selected {
@@ -487,25 +421,9 @@
     top: 100%;
     left: 0;
     right: 0;
-<<<<<<< Updated upstream
-    z-index: 80;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border-top: 1px solid rgba(0,0,0,0.05);
-    background: #fff;
-    pointer-events: auto;
-  }
-
-  /* Ensure hamburger sits above decorative elements */
-  .mobile-toggle { z-index: 70; }
-
-  /* Prevent overlapping/riding sections on tablets and below */
-  @media (max-width: 1024px) {
-    .card { overflow: hidden; min-height: auto; margin-bottom: 2rem; }
-=======
     z-index: 50;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     border-top: 1px solid rgba(0,0,0,0.05);
->>>>>>> Stashed changes
   }
 
   /* Navigation menu alignment and styles */
@@ -611,42 +529,6 @@
   .navigation-menu-content {
     min-width: 320px;
   }
-<<<<<<< Updated upstream
-  
-  /* Hero section styles */
-  .hero-card {
-    border: none !important;
-  }
-  
-  .hero-input:focus-visible {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    --tw-ring-offset-width: 0px !important;
-    --tw-ring-color: transparent !important;
-  }
-  
-  /* Remove input focus styles */
-  .no-focus-ring:focus-visible {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    --tw-ring-offset-width: 0px !important;
-    --tw-ring-offset-color: transparent !important;
-    --tw-ring-color: transparent !important;
-  }
-
-
-/* Remove shadcn navigation menu border and shadow */
-.navigation-menu-content,
-[data-slot="navigation-menu-content"],
-.navigation-menu-viewport,
-[data-slot="navigation-menu-viewport"] {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-=======
->>>>>>> Stashed changes
 }
 /* Doctor dropdown styles (Figma spec) */
 
@@ -1426,7 +1308,7 @@
   border-radius: 34.04px !important;
   object-fit: fill !important;
 }
-}
+
 /* Doctor dropdown styles (Figma spec) */
 
 .doctor-dropdown {
