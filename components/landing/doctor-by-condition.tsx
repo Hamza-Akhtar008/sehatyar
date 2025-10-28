@@ -1,7 +1,7 @@
 // import React from 'react'
 import Image from 'next/image'
 
-export default function doctorByCondition() {
+export default function DoctorByCondition() {
   return (
     <div className='px-5 md:px-25 rounded-4xl relative'>
         <div className='flex bg-[#003F31] py-10 xl:py-15 md:px-22.5 px-5 rounded-4xl'>

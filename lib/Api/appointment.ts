@@ -24,9 +24,6 @@ export const postAppointment = async (data: AppointmentRequest) => {
   }
 };
 
-
-
-
 // Get appointments for the logged-in doctor (token required)
 export const getAppointmentsForLoggedInDoctor = async () => {
     try {
@@ -36,4 +33,15 @@ export const getAppointmentsForLoggedInDoctor = async () => {
         console.error('Error fetching appointments for logged-in doctor:', error);
         throw error;
     }
-}
+};
+
+// Get appointments for a specific patient by userId
+export const getAppointmentsForPatient = async (userId: number | string) => {
+  try {
+    const response = await axiosInstance.get(`/appointments/patient/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching appointments for patient:', error);
+    throw error;
+  }
+};

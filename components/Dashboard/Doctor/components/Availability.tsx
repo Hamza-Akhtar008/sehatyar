@@ -367,14 +367,14 @@ toast.success(
                   const slotOrder = { morning: 1, afternoon: 2, evening: 3 }
                   return slotOrder[a.slotType] - slotOrder[b.slotType]
                 })
-                .map((slot) => {
+                .map((slot, index) => {
                   const isPending = !slot.id
                   const label =
                     slot.slotType.charAt(0).toUpperCase() + slot.slotType.slice(1)
 
                   return (
                     <div
-                      key={slot.slotType}
+                      key={slot.id || `${slot.slotType}-${index}`}
                       className="bg-gray-50 rounded-lg p-2 flex flex-col gap-1.5 border border-gray-100"
                     >
                       <div className="flex items-center justify-between">
