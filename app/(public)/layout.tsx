@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "../globals.css";
-import { ThemeProvider } from "@/components/theme-provider"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,25 +50,11 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <>
-  <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-        <Header/>
-            {/* <Header /> */}
-            <Suspense>
-
-            <main>{children}</main>
-            </Suspense>
-            <Footer />
-          </ThemeProvider>
-        </body>
-      </html>
+      <Header/>
+      <Suspense>
+        <main>{children}</main>
+      </Suspense>
+      <Footer />
     </>
   )
 }
