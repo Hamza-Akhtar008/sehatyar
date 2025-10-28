@@ -242,7 +242,7 @@ export default function HeroSection() {
   <section
     aria-label="Hero section"
     // className="px-[100px] mt-[50px] relative"
-    className="px-25 mt-12.5 relative"
+    className="px-5 xl:px-25 mt-12.5 relative"
   >
   <Card
     className="hero-card bg-[#F4F4F4] md:p-10 shadow-sm relative overflow-visible rounded-4xl"
@@ -271,66 +271,57 @@ export default function HeroSection() {
     </div>
 
     {/* ---------- Main Hero Content ---------- */}
-    <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 relative z-10 items-center">
+    <div className="flex flex-col lg:flex-row relative z-10 items-center md:gap-20 lg:gap-40 xl:gap-52 2xl:gap-68.5">
       
       {/* ---------- Left Content ---------- */}
-      <div className="w-7/12 space-y-6 mt-6 ">
+      <div className="w-11/12 lg:w-7/12 space-y-6 mt-6 ">
         
         <div className="flex flex-col gap-10">
         {/* Patients Served */}
 
         <div className="flex items-center gap-2.5 py-1 px-3 bg-white w-fit rounded-3xl mx-auto lg:mx-0">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <p className="text-[#52525B] text-[14px] font-normal" style={{ fontFamily: 'var(--font-inter)' }}>50M+ patients served</p>
+          <p className="text-[#52525B] text-sm font-normal" style={{ fontFamily: 'var(--font-inter)' }}>50M+ patients served</p>
         </div>
 
 
         {/* Headings */}
         <div className=" text-center lg:text-left">
-          <h1 className="text-[3.875rem] font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
+          <h1 className="text-3xl md:text-4xl xl:text-5xl  font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
             Find and Book the
           </h1>
-          <h1 className="text-[3.875rem] font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
-            <span className="text-[#4ADE80]" style={{ fontFamily: 'var(--font-plusjakarta)', fontWeight: 800, fontSize: '62px', lineHeight: '66px' }}>Best Doctors</span> near you
+          <h1 className="text-3xl md:text-4xl xl:text-5xl  font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
+            <span className="text-[#4ADE80]">
+              Best Doctors
+              </span> near you
           </h1>
         </div>
 
         {/* Search Bar */}
         <div
-          className="w-11/12 flex flex-row gap-3.5 bg-white rounded-full shadow-sm text-[#52525B] py-3 px-2 border-[1px] border-[#CACACA]"
-          style={{
-            width: '801.0261840820312px',
-            height: '91.73924255371094px',
-            paddingTop: '9.99px',
-            paddingRight: '9.57px',
-            paddingBottom: '9.99px',
-            paddingLeft: '9.57px',
-            border: '1px solid #CACACA',
-            background: '#FFFFFF',
-            opacity: 1,
-            transform: 'rotate(0deg)'
-          }}
+          className="  md:flex md:flex-row flex flex-col gap-5 md:gap-3.5 bg-white rounded-2xl md:rounded-full shadow-sm text-[#52525B] py-3 px-2 border-[1px] border-[#CACACA] items-center"
+       
           ref={dropdownRef}
         >
           
           {/* Search Input */}
           <div
-            className="w-5/12 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
+            className="md:w-5/12 flex items-center text-base bg-[#F4F4F4] rounded-full px-3"
             style={{
-              width: '344.3640441894531px',
-              height: '66.64610290527344px',
+              // width: '344.3640441894531px',
+              // height: '66.64610290527344px',
               borderRadius: '35.88px',
-              paddingTop: '18.32px',
+              paddingTop: '10.32px',
               paddingRight: '26.65px',
-              paddingBottom: '18.32px',
-              paddingLeft: '26.65px',
-              gap: '12.37px',
+              paddingBottom: '10.32px',
+              paddingLeft: '16.65px',
+              // gap: '12.37px',
               background: '#F4F4F4',
               opacity: 1,
               transform: 'rotate(0deg)'
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.3-4.3"></path>
             </svg>
@@ -340,7 +331,7 @@ export default function HeroSection() {
                value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsFocused(true)}
-              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
+              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full text-lg"
             />
              {isFocused && filtered.length > 0 && (
         <div className="absolute top-[70px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
@@ -368,22 +359,22 @@ export default function HeroSection() {
 
           {/* Location Input */}
           <div
-            className="w-5/12 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
+            className="md:w-5/12 flex items-center text-base bg-[#F4F4F4] rounded-full px-3"
             style={{
-              width: '344.3640441894531px',
-              height: '66.64610290527344px',
+              // width: '344.3640441894531px',
+              // height: '66.64610290527344px',
               borderRadius: '35.88px',
-              paddingTop: '18.32px',
+              paddingTop: '10.32px',
               paddingRight: '26.65px',
-              paddingBottom: '18.32px',
-              paddingLeft: '26.65px',
-              gap: '12.37px',
+              paddingBottom: '10.32px',
+              paddingLeft: '16.65px',
+              // gap: '12.37px',
               background: '#F4F4F4',
               opacity: 1,
               transform: 'rotate(0deg)'
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
               <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
@@ -391,32 +382,14 @@ export default function HeroSection() {
               type="text"
               onChange={(e)=>setcity(e.target.value)}
               placeholder="Near you or Enter City"
-              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#52525B] placeholder:text-lg"
+              className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input min-w-0 rounded-md border px-3 py-1 transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full text-lg"
             />
           </div>
 
           {/* Find Button */}
       <Button
-  className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
-  style={{
-    width: "119.17px",
-    height: "71.75px",
-    borderRadius: "122.47px",
-    paddingTop: "12.37px",
-    paddingRight: "39.59px",
-    paddingBottom: "12.37px",
-    paddingLeft: "39.59px",
-    gap: "12.37px",
-    background: "#5FE089",
-    opacity: 1,
-    transform: "rotate(0deg)",
-    fontFamily: "var(--font-montserrat)",
-    fontWeight: 600,
-    fontSize: "17.32px",
-    lineHeight: "29.69px",
-    verticalAlign: "middle",
-    color: "#FFFFFF",
-  }}
+  className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300 bg-green-400 rounded-full px-8 py-7"
+
   onMouseEnter={(e) => (e.currentTarget.style.background = "#4ad87b")}
   onMouseLeave={(e) => (e.currentTarget.style.background = "#5FE089")}
   onClick={handleSearch}
@@ -429,102 +402,46 @@ export default function HeroSection() {
         </div>
 
       {/* ---------- Right Side (absolute) ---------- */}
-      <div className="w-5/12"
-        // style={{
-        //   position: 'absolute',
-        //   top: '80px',
-        //   right: '40px',
-        //   width: '657.89453125px',
-        //   height: '580px',
-        //   opacity: 1,
-        //   zIndex: 10
-        // }}
+      <div className="mt-5 md:mt-0 w-11/12 md:w-5/12 lg:w-5/12 "
       >
         {/* <h1>myheading</h1> */}
-        <div className="flex justify-end">
+        <div className="flex justify-end relative">
           <Image
             src="/assets/Hero.svg"
             alt="Doctor on call"
             width={480}
             height={580}
-            className=" object-contain select-none"
+            className="object-contain select-none"
           />
-        </div>
-
-  {/* Consult Online Now card */}
-            <div className="absolute bottom-25 w-3/12 bg-white p-6 rounded-2xl z-1000 ">
+          {/* Consult Online Now card */}
+            <div className="absolute bottom-20 md:bottom-25  md:-left-50 lg:-left-25 xl:-left-38 bg-white p-6 rounded-2xl z-1000 ">
               <div className="hero-consult-header z-20">
-                <h3 className="hero-consult-title z-20">Consult Online Now</h3>
+                <h3 className="hero-consult-title z-20  text-lg lg:text-2xl ">Consult Online Now</h3>
                 <div className="hero-consult-icon">
-                  <ArrowRight className="w-5 h-5 -rotate-45 text-white z-20" />
+                  <ArrowRight  className="w-5 h-5 -rotate-45 text-white z-20" />
                 </div>
               </div>
               <p className="hero-consult-description z-20">
-                Instantly connect with Specialists through Video call.
+                Instantly connect with Specialists through
+                <br></br>
+                 Video call.
               </p>
             </div>
+        </div>
 
-        
-        {/* Image filling the right container */}
-      <div className="" 
-      // style={{ width: '480px', height: '580px' }}
-      >
-        {/* <div className="w-3/12 z-10">
-          <Image
-            src="/assets/Hero.svg"
-            alt="Doctor on call"
-            fill
-            style={{ objectFit: 'contain'}}
-          />
-        </div> */}
-      </div>
 
 
             {/* Floating Badge (In Clinic Appointment) */}
-            <div className="hero-floating-badge">
-              <div className="hero-floating-badge-dot" />
-              <span className="hero-floating-badge-text">In Clinic Appointment</span>
+            <div className="flex absolute  lg:right-8 bottom-5 items-center rounded-full px-6 py-2 bg-white/90 backdrop-blur-lg shadow-md">
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-3" />
+              <span className="font-medium text-base text-[#414141]">In Clinic Appointment</span>
               <div className="ml-4 flex items-center">
                 <ArrowRight className="w-4 h-4 -rotate-12 text-gray-700" />
               </div>
-            </div>
-            
-            {/* Stacked badge for small screens */}
-            <div className="hero-floating-badge-mobile">
-              <div className="hero-floating-badge-inner">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                <span className="font-medium text-sm text-[#414141]">In Clinic Appointment</span>
-              </div>
-            </div>
-
-            {/* Consult Online Now card */}
-            {/* <div className="hero-consult-card">
-              <div className="hero-consult-header">
-                <h3 className="hero-consult-title">Consult Online Now</h3>
-                <div className="hero-consult-icon">
-                  <ArrowRight className="w-5 h-5 -rotate-12 text-white" />
-                </div>
-              </div>
-              <p className="hero-consult-description">
-                Instantly connect with Specialists through Video call.
-              </p>
-            </div> */}
-            
-            <div className="hero-consult-card-mobile">
-              <div className="hero-consult-card-inner">
-                <div className="hero-consult-header">
-                  <h3 className="hero-consult-title-mobile">Consult Online Now</h3>
-                  <div className="hero-consult-icon-mobile">
-                    <ArrowRight className="w-4 h-4 -rotate-12 text-white" />
-                  </div>
-                </div>
-                <p className="hero-consult-description-mobile">
-                  Instantly connect with Specialists through Video call.
-                </p>
-              </div>
+            </div>           
             </div>
           </div>
-        </div>
+        {/* </div> */}
       </Card>
     </section>
   );

@@ -1,3 +1,19 @@
 export const tickIcon = <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M20.3509 2.64972C20.6103 2.37129 20.7516 2.00304 20.7449 1.62253C20.7381 1.24202 20.584 0.878977 20.3149 0.609876C20.0458 0.340776 19.6828 0.18663 19.3022 0.179916C18.9217 0.173203 18.5535 0.314445 18.2751 0.573885L7.56297 11.286L2.72589 6.44888C2.44746 6.18945 2.07921 6.0482 1.6987 6.05492C1.31819 6.06163 0.955147 6.21578 0.686046 6.48488C0.416946 6.75398 0.262802 7.11702 0.256088 7.49753C0.249375 7.87804 0.390615 8.24629 0.650055 8.52472L6.52506 14.3997C6.80045 14.6748 7.17375 14.8293 7.56297 14.8293C7.95219 14.8293 8.3255 14.6748 8.60089 14.3997L20.3509 2.64972Z" fill="#01503F"/>
 </svg>
+
+
+// export const Dermatologist = 
+// export const Gynecologist = 
+// export const Cardiologist = 
+// export const Urologist =
+// export const Dentist =
+// export const ObesitySpecialist =
+// export const ENTSpecialist =
+// export const OrthopedicSurgeon = 
+// export const Sexologist = 
+// export const Neurologist = 
+// export const ChildSpecialist = 
+// export const Pulmonologist = 
+// export const EyeSpecialist = 
+// export const MedicalSpecialist = 

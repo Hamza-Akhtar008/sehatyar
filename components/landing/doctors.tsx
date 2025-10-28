@@ -1,11 +1,30 @@
+"use client"
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import React, { useRef } from "react";
 
 export default function Doctors() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollAmount = 450; // Adjust this value based on your card width
+    const newScrollPosition = direction === 'left' 
+      ? container.scrollLeft - scrollAmount 
+      : container.scrollLeft + scrollAmount;
+
+    container.scrollTo({
+      left: newScrollPosition,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <section className="p-25 px-20">
+    <section className=" p-10 lg:p-25 px-5 lg:px-20">
       <div className="relative">
        <div className="absolute bottom-0 left-0 w pointer-events-none">
           <Image 
@@ -16,7 +35,7 @@ export default function Doctors() {
             className="object-contain select-none" 
           />
         </div>
-      <div className="bg-card py-20 px-25 rounded-4xl">
+      <div className="bg-card py-10 lg:py-20 px-5 md:px-25 rounded-4xl">
       {/* <Card className=""> */}
         {/* Decorative Backgrounds */}
         {/* <div className="doctors-bg-decoration">
@@ -36,7 +55,7 @@ export default function Doctors() {
             <h2 className="doctors-title">
               Popular <span className="doctors-title-accent">Doctors</span>
             </h2>
-            <p className="doctors-description">
+            <p className="doctors-description text-lg">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               <br></br>
                Vehicula massa in enim luctus. Rutrum arcu.
@@ -45,31 +64,34 @@ export default function Doctors() {
         </div>
 
         {/* Doctors Grid */}
-        <div className="doctors-grid">
-          {[1, 2, 3].map((index) => (
-            <div key={index} className="doctors-card-item">
+        <div className="w-full md:w-[86%] mx-auto overflow-hidden">
+          <div 
+            ref={scrollContainerRef}
+            className="flex gap-19 flex-nowrap overflow-x-auto hide-scrollbar w-full my-10">
+            {[1, 2, 3, 4].map((index) => (
+            <div key={index} className="doctors-card-item  flex-shrink-0 ">
               {/* <div className="doctors-card-inner"> */}
               <div className="">
-                <div className="doctors-image-container items-start inline-flex">
+                <div className="doctors-image-container  items-start inline-flex ">
                   <Image
                     src="/assets/doctors.svg"
                     alt="Doctor"
-                    width={388}
-                    height={437.78}
-                    className="doctors-image"
+                    width={50}
+                    height={50}
+                    className="doctors-image w-auto h-auto md:w-auto md:h-100 xl:w-auto  xl:h-110 2xl:w-100 2xl:h-110"
                     />
-                    <span className="w-15 h-15 -ml-17 mt-2 bg-[#4ADE80] hover:bg-[#3cbb6c] p-4.5  rounded-full cursor-pointer transition text-white rotate-320">
+                    <span className="w-14 h-14 sm:w-15 sm:h-15 -ml-15 sm:-ml-16  xl:mt-2 bg-[#4ADE80] hover:bg-[#3cbb6c] p-4.5  rounded-full cursor-pointer transition text-white rotate-320 items-center justify-center flex">
                       {/* <span className=""> */}
 
                       <ArrowRight className="doctors-image-arrow" />
                       {/* </span> */}
                     </span>
                 </div>
-                <div className="doctors-info-card">
-                  <h3 className="doctors-name">
+                <div className="doctors-info-card p-5.5 w-7/12 md:w-[78%] left-38 md:left-45 bottom-10">
+                  <h3 className="doctors-name text-base mb-0 font-medium">
                     Dr. Michael Sterling
                   </h3>
-                  <p className="doctors-specialization">
+                  <p className="doctors-specialization text-xs mt-0 font-light">
                     Gynecologist, Obstetrician
                     <br />
                     MBBS, FCPS (Gynecology and Obstetrics)
@@ -82,12 +104,23 @@ export default function Doctors() {
               </div> */}
             </div>
           ))}
+          </div>
         </div>
 
         {/* Pagination Arrows */}
-        <div className="doctors-pagination">
-          <Button className="doctors-pagination-button">‹</Button>
-          <Button className="doctors-pagination-button">›</Button>
+        <div className="doctors-pagination flex justify-center gap-2">
+          <Button 
+            onClick={() => handleScroll('left')}
+            className="doctors-pagination-button hover:bg-primary/90"
+          >
+            ‹
+          </Button>
+          <Button 
+            onClick={() => handleScroll('right')}
+            className="doctors-pagination-button hover:bg-primary/90"
+          >
+            ›
+          </Button>
         </div>
         </div>
         </div>

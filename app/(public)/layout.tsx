@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 
 import { ReactNode, Suspense } from "react";
 import Header from "@/components/ui/header";
+import Footer from "@/components/ui/footer";
 
 
 interface LayoutProps {
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: LayoutProps) {
 
             <main>{children}</main>
             </Suspense>
+            <Footer />
           </ThemeProvider>
         </body>
       </html>

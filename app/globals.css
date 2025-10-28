@@ -210,12 +210,12 @@
   }
 
   /* Headings scale that map to Figma typographic sizes */
-  h1 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h2 { font-size: 62px; line-height: 66px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h3 { font-size: 42px; line-height: 48px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h4 { font-size: 32px; line-height: 38px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h5 { font-size: 24px; line-height: 30px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
-  h6 { font-size: 18px; line-height: 22px; margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h1 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h2 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h3 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h4 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h5 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
+  h6 { margin: 0 0 0.5rem 0; font-family: var(--font-plusjakarta); font-weight: 800; color: #000000; }
 
   /* Logo helper */
   .logo {
@@ -905,7 +905,7 @@
   font-weight: 600 !important;
   white-space: nowrap !important;
   font-family: var(--font-montserrat) !important;
-  height: 67px !important;
+  /* height: 67px !important; */
 }
 
 .hero-right {
@@ -919,7 +919,7 @@
 @media (max-width: 640px) {
   .hero-search-button { height: 44px !important; padding: 0.5rem 0.875rem !important; }
 }
-
+/* 
 .hero-floating-badge {
   @apply hidden lg:flex absolute right-8 bottom-5 items-center rounded-full px-6 py-2 bg-white/90 backdrop-blur-lg shadow-md;
   gap: 12px;
@@ -932,7 +932,7 @@
 .hero-floating-badge-text {
   @apply font-medium text-[16px] text-[#414141];
   font-family: var(--font-montserrat);
-}
+} */
 
 .hero-floating-badge-mobile {
   @apply flex lg:hidden mt-4 justify-start w-full pl-8 sm:pl-16 md:pl-24;
@@ -959,7 +959,7 @@
 }
 
 .hero-consult-title {
-  @apply text-[22px] lg:text-[22px] font-semibold text-[#363636];
+  @apply font-semibold text-[#363636];
   font-family: var(--font-plusjakarta);
   margin: 0;
 }
@@ -1009,7 +1009,7 @@
 }
 
 .doctors-title {
-  @apply text-[2.63rem] font-bold text-[#323232] mb-10;
+  @apply text-4xl md:text-[2.63rem] font-bold text-[#323232] mb-10;
 }
 
 .doctors-title-accent {
@@ -1017,11 +1017,11 @@
 }
 
 .doctors-description {
-  @apply text-gray-500 max-w-[600px];
+  @apply text-gray-500 ;
 }
 
 .doctors-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-19 mt-10  justify-center;
+  @apply grid grid-cols-5  gap-19 py-10 justify-center overflow-hidden  mx-auto;
 }
 
 .doctors-card-item {
@@ -1040,17 +1040,18 @@
 }
 
 .doctors-image-container {
-  @apply w-full  justify-center items-center;
-  min-height: 220px;
+  @apply w-8/12 md:w-full
+  /* @apply w-full  justify-center items-center; */
+  /* min-height: 220px; */
 }
 @media (min-width: 640px) { /* sm */
-  .doctors-image-container { min-height: 260px; }
+  /* .doctors-image-container { min-height: 260px; } */
 }
 @media (min-width: 768px) { /* md */
-  .doctors-image-container { min-height: 320px; }
+  /* .doctors-image-container { min-height: 320px; } */
 }
 @media (min-width: 1280px) { /* xl */
-  .doctors-image-container { min-height: 380px; }
+  /* .doctors-image-container { min-height: 380px; } */
 }
 
 .doctors-image {
@@ -1062,10 +1063,11 @@
 
 .doctors-info-card {
   @apply flex flex-col items-start;
-  width: 280px;
+  /* width: 280px; */
+  /* width: 20rem; */
   border-radius: 20.42px;
   gap: 6.81px;
-  padding: 16px 18px;
+  /* padding: 16px 18px; */
   background: #00000099;
   backdrop-filter: blur(30px);
   box-sizing: border-box;
@@ -1075,7 +1077,7 @@
 .doctors-name {
   @apply text-white font-[600] leading-[23.82px] tracking-[-0.1px];
   font-family: var(--font-plusjakarta);
-  font-size: 15.32px;
+  /* font-size: 15.32px; */
 }
 
 .doctors-specialization {
@@ -1103,7 +1105,7 @@
 }
 
 .doctors-pagination {
-  @apply flex justify-center items-center gap-4 mt-10;
+  @apply flex justify-center items-center gap-4;
 }
 
 .doctors-pagination-button {
@@ -1208,7 +1210,7 @@
   @apply text-white w-5 h-5 rotate-[-25deg];
 }
 .hospitals-pagination {
-  @apply flex justify-center items-center gap-4 mt-12;
+  @apply flex justify-center items-center gap-4;
 }
 .hospitals-pagination-button {
   border-radius: 9999px !important;
@@ -1239,7 +1241,7 @@
 }
 
 .conditions-title {
-  @apply text-3xl sm:text-4xl font-bold text-gray-800 mb-[40px];
+  @apply text-3xl sm:text-4xl font-bold text-gray-800;
 }
 
 .conditions-title-accent {
@@ -1278,7 +1280,7 @@
 
 
 .specialists-header {
-  @apply flex flex-col sm:flex-row items-start sm:items-center justify-between mt-10 relative z-10 gap-4;
+  @apply flex flex-col sm:flex-row items-start justify-between mt-10 relative z-10 gap-4;
 }
 
 .specialists-title-container {
@@ -1286,7 +1288,7 @@
 }
 
 .specialists-title {
-  @apply text-3xl sm:text-4xl font-bold text-gray-800 mb-[40px];
+  @apply text-3xl sm:text-4xl font-bold text-gray-800;
 }
 
 .specialists-title-accent {
@@ -1717,3 +1719,50 @@
 }
 
 }
+
+
+
+
+
+
+
+@media screen and (max-width: 1920px) {
+   html,
+   body {
+      font-size: 100%;
+   }
+}
+
+@media screen and (max-width: 1700px) {
+   html,
+   body {
+      font-size: 90%;
+   }
+}
+
+@media screen and (max-width: 1500px) {
+   html,
+   body {
+      font-size: 80%;
+   }
+}
+
+@media screen and (max-width: 1300px) {
+   html,
+   body {
+      font-size: 80%;
+   }
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+
+
