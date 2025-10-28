@@ -689,8 +689,6 @@
 
 .card {
     background-color: #F4F4F4;
-<<<<<<< Updated upstream
-=======
     padding: 1rem;
     /* For md:p-10, use media query */
     box-shadow: 0 1px 2px rgba(16,24,40,0.05);
@@ -2251,7 +2249,6 @@
 
 .card {
     background-color: #F4F4F4;
->>>>>>> Stashed changes
     /* padding: 1rem; */
     /* For md:p-10, use media query */
     box-shadow: 0 1px 2px rgba(16,24,40,0.05);

@@ -48,27 +48,22 @@ interface LayoutProps {
 }
 
 export default function RootLayout({ children }: LayoutProps) {
+  // This is a nested layout — do NOT render <html> or <body> here.
+  // The root `app/layout.tsx` must be the only place rendering <html> and <body>.
   return (
     <>
-  <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-        
-            {/* <Header /> */}
-            <main>
-              {children}
-               <Toaster position="top-right" />
-            </main>
-            
-          </ThemeProvider>
-        </body>
-      </html>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {/* <Header /> */}
+        <main>
+          {children}
+          <Toaster position="top-right" />
+        </main>
+      </ThemeProvider>
     </>
-  )
+  );
 }

@@ -15,8 +15,8 @@ interface Slot {
   id?: number;
   doctorId: number;
   dayOfWeek: string;
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
   isActive: boolean;
   availabilityType: AvailabilityType;
   hospitalId?: number;
