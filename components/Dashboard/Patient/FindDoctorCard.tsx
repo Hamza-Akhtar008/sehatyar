@@ -296,8 +296,13 @@ export default function FindDoctorCard() {
 
 	// Replace navigate with fetch + render
 	const handleSearch = async () => {
-		const specialization = query || "Cardiology";
-		const cityParam = city || "abbottobad";
+		// If no input, don't hit API
+		if (!query.trim() && !city.trim()) {
+			setDoctors([]);
+			return;
+		}
+		const specialization = query;
+		const cityParam = city;
 		const url = `${BASE}/doctor-profile/specialization?specialization=${encodeURIComponent(
 			specialization
 		)}&city=${encodeURIComponent(cityParam)}`;
@@ -323,9 +328,9 @@ export default function FindDoctorCard() {
 				Find a Doctor
 			</h2>
 
-			<div className="flex items-center bg-white border border-gray-200 rounded-full px-4 py-2.5 shadow-sm">
+			<div className="flex ">
 				<div
-					className="w-1/2 flex flex-row gap-3.5 bg-white rounded-full shadow-sm  py-3 px-2 border-[1px] border-[#CACACA]"
+					className="w-1/2 flex flex-row gap-3.5 bg-white rounded-full shadow-sm  py-3 px-2 border-[1px] border-[#CACACA] z-10"
 					style={{
 						width: "900px",
 						height: "91.73924255371094px",
@@ -383,7 +388,10 @@ export default function FindDoctorCard() {
 							className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
 						/>
 						{isFocused && filtered.length > 0 && (
-							<div className="absolute top-[70px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
+							<div
+								className="absolute top-[66px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden max-h-60 overflow-y-auto"
+								style={{ zIndex: 1000 }}
+							>
 								{filtered.map((item, index) => (
 									<div
 										key={item}
@@ -451,7 +459,7 @@ export default function FindDoctorCard() {
 						className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
 						style={{
 							width: "119.17px",
-							height: "71.75px",
+							height: "61.75px",
 							borderRadius: "122.47px",
 							paddingTop: "12.37px",
 							paddingRight: "39.59px",
@@ -487,6 +495,12 @@ export default function FindDoctorCard() {
 				{loading && (
 					<div className="flex justify-center items-center py-8">
 						<div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500"></div>
+					</div>
+				)}
+				{/* Only show "No doctor found" after search is performed */}
+				{!loading && !error && doctors.length === 0 && (query.trim() || city.trim()) && (
+					<div className="text-center py-8 text-gray-500 text-lg">
+						No doctor found. Please try different search criteria.
 					</div>
 				)}
 				{!loading && doctors.length > 0 && (
@@ -559,7 +573,7 @@ function DoctorResultCard({ doctor, router }: { doctor: Doctor, router: ReturnTy
 		>
 			<div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-4 lg:gap-0">
 				<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-7 lg:gap-10 items-center sm:items-center w-full lg:w-auto">
-					<div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-34 lg:h-34 rounded-full overflow-hidden bg-yellow-500 flex items-center justify-center flex-shrink-0 relative">
+					<div className="z-0 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-34 lg:h-34 rounded-full overflow-hidden bg-yellow-500 flex items-center justify-center flex-shrink-0 relative">
 						{(doctor.profilePicture || (doctor.profilePic && doctor.profilePic !== "")) ? (
 							<Image
 								src={doctor.profilePicture || doctor.profilePic || ""}
