@@ -1,6 +1,12 @@
+import Hospital from "@/app/(Dashboard)/doctor-dashboard/Hospital/page";
 import axiosInstance from "./axios";
 import { AvailabilityType, SlotType } from "@/src/types/enums";
 
+
+interface Hospital{
+  name:string;
+  address:string
+}
 export interface Slot {
   id?: number;
   doctorId: number;
@@ -9,6 +15,7 @@ export interface Slot {
   endTime: string | null;
   isActive: boolean;
   availabilityType: AvailabilityType;
+hospital:Hospital;
   slotType: SlotType;
   createdAt?: string;
   updatedAt?: string;

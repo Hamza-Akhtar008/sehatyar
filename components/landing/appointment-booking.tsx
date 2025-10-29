@@ -317,8 +317,8 @@ export default function AppointmentBooking() {
       const hospitalMap = new Map<string, TimeSlot[]>()
 
       daySlots.forEach((slot) => {
-        if (slot.startTime && slot.endTime && slot.hospital) {
-          const hospitalName = slot.hospital.name+ ` (${slot.hospital.address})`
+        if (slot.startTime && slot.endTime && slot?.hospital) {
+          const hospitalName = slot?.hospital.name+ ` (${slot?.hospital.address})`
           const timeSlots = generateTimeSlots(slot.startTime, slot.endTime)
 
           if (!hospitalMap.has(hospitalName)) {
