@@ -4,6 +4,29 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
+// --- Type Definitions ---
+interface Medication {
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  notes?: string;
+}
+
+interface BloodPressure {
+  high: number;
+  low: number;
+}
+
+interface Prescription {
+  id?: string;
+  diagnosis?: string;
+  medications?: Medication[];
+  tests?: string[];
+  instructions?: string;
+  bloodPressure?: BloodPressure;
+}
+
 interface Appointment {
   id: string;
   doctorName: string;
@@ -12,9 +35,10 @@ interface Appointment {
   time: string;
   status: "completed" | "pending" | "cancelled";
   avatar: string;
-  prescriptions?: any[];
+  prescriptions?: Prescription[];
 }
 
+// --- Component ---
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   const [expanded, setExpanded] = useState(false);
   const toggleExpand = () => setExpanded((prev) => !prev);
@@ -114,34 +138,36 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
                   )}
 
                   {/* Medications */}
-                  {prescription.medications?.length > 0 && (
+                  {prescription.medications&&prescription.medications?.length > 0 && (
                     <div>
                       <p className="font-medium text-gray-700 mb-1">
                         Medications:
                       </p>
                       <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        {prescription.medications.map((med, i) => (
-                          <li key={i}>
-                            <span className="font-medium">{med.name}</span> —{" "}
-                            {med.dosage}, {med.frequency}, {med.duration}
-                            {med.notes && (
-                              <span className="text-gray-500">
-                                {" "}
-                                ({med.notes})
-                              </span>
-                            )}
-                          </li>
-                        ))}
+                        {prescription.medications.map(
+                          (med: Medication, i: number) => (
+                            <li key={i}>
+                              <span className="font-medium">{med.name}</span> —{" "}
+                              {med.dosage}, {med.frequency}, {med.duration}
+                              {med.notes && (
+                                <span className="text-gray-500">
+                                  {" "}
+                                  ({med.notes})
+                                </span>
+                              )}
+                            </li>
+                          )
+                        )}
                       </ul>
                     </div>
                   )}
 
                   {/* Tests */}
-                  {prescription.tests?.length > 0 && (
+                  {prescription.tests&&prescription.tests?.length > 0 && (
                     <div>
                       <p className="font-medium text-gray-700 mb-1">Tests:</p>
                       <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        {prescription.tests.map((test: string, i: number) => (
+                        {prescription.tests.map((test, i) => (
                           <li key={i}>{test}</li>
                         ))}
                       </ul>

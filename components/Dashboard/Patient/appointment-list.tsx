@@ -7,14 +7,38 @@ import { getAppointmentsForPatient } from "@/lib/Api/appointment"
 
 type TabType = "upcoming" | "complete" | "diagnosis"
 
+// --- Type Definitions ---
+interface Medication {
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  notes?: string;
+}
+
+interface BloodPressure {
+  high: number;
+  low: number;
+}
+
+interface Prescription {
+  id?: string;
+  diagnosis?: string;
+  medications?: Medication[];
+  tests?: string[];
+  instructions?: string;
+  bloodPressure?: BloodPressure;
+}
+
 interface Appointment {
-  id: string
-  doctorName: string
-  specialty: string
-  date: string
-  time: string
-  status: "completed" | "pending" | "cancelled"
-  avatar: string
+  id: string;
+  doctorName: string;
+  specialty: string;
+  date: string;
+  time: string;
+  status: "completed" | "pending" | "cancelled";
+  avatar: string;
+  prescriptions?: Prescription[];
 }
 
 export function AppointmentList() {
