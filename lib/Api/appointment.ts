@@ -45,3 +45,14 @@ export const getAppointmentsForPatient = async (userId: number | string) => {
     throw error;
   }
 };
+
+// Get appointments for the logged-in doctors (token required)
+export const getUpcomingAppointments = async (doctorId: number | string) => {
+    try {
+        const response = await axiosInstance.get(`/appointments/for/doctors?doctorId=${doctorId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching appointments for logged-in doctor:', error);
+        throw error;
+    }
+};
