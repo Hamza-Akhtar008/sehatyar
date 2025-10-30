@@ -73,18 +73,6 @@ export default function ConsultOnline() {
         />
       </div>
 
-      {/* Popular specialties tags */}
-      {/* <div className='flex flex-wrap gap-2 mt-4 mb-8 justify-center'>
-        {['All', 'Gynecologist', 'Dentist', 'Cardiologist', 'Neurologist'].map((specialty, index) => (
-          <button 
-            key={index}
-            className='border border-[#E0E0E0] rounded-full px-4 py-2 text-[#616161] text-sm hover:bg-[#F4F4F4] transition-colors'
-            onClick={() => setSearchQuery(specialty === 'All' ? '' : specialty)}
-          >
-            {specialty}
-          </button>
-        ))}
-      </div> */}
 
       {/* Grid of doctors */}
       <div className='grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6'>

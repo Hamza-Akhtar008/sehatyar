@@ -47,18 +47,6 @@ const specialityList = [
             </Button>
           </div>
         </div>
-
-        {/* Specialists image - full width & responsive height */}
-        {/* <div className="specialists-image-container ">
-          <div className="specialists-image-wrapper rounded-4xl">
-            <Image
-              src="/assets/specialityIcons/Dermatologist.png"
-              alt="Dermatologist"
-              fill
-              className="specialists-image bg-green-500"
-            />
-          </div>
-        </div> */}
 <div className="p-5 md:p-15 bg-white rounded-2xl">
   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-6 md:gap-8 lg:gap-19">
         {specialityList.map((speciality) => (
