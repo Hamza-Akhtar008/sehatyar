@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 // Define the shape of our auth context
 export type User = {
   id: string
+  doctorId?: string
   fullName: string
   email: string
   role: 'doctor' | 'patient'
@@ -75,6 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Example profile: { id, fullName, email, role }
         const userData: User = {
           id: profile.id,
+          doctorId: response.doctorId?.toString(), // Get doctorId from login response
           fullName: profile.fullName || '',
           email: profile.email || '',
           role: profile.role || 'patient',
