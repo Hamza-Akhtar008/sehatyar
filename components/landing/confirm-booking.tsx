@@ -224,7 +224,7 @@ export default function ConfirmBooking() {
                         phoneNumber,
                         email,
                         paymentMethod: payment,
-                        amount: "5000", // You may want to get this dynamically
+                        amount: doctor.FeesPerConsultation, // You may want to get this dynamically
                         notes,
                         appointmentDate,
                         appointmentTime,

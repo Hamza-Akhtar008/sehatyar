@@ -8,8 +8,21 @@ export default function PatientDashboard() {
 
   return (
     <>
-      <div className="">
-        <div className=" flex -mt-4 -ml-4 items-center justify-between bg-[#FBFBFB] rounded-[22px] px-6 py-6 shadow-sm w-[764px]">
+ <div
+      className="w-full h-[calc(100vh-89.6px)] overflow-y-auto overflow-x-hidden"
+      style={{
+        scrollbarWidth: "none", // Firefox
+        msOverflowStyle: "none", // IE/Edge
+      }}
+    >
+      {/* Hide scrollbar for Chrome, Safari, Edge */}
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+
+          <div className=" flex m-0 items-center justify-between bg-[#FFFFFF] rounded-[22px] px-6 py-6 shadow-sm w-[764px]">
           {/* Left section */}
           <div className="flex flex-col">
             <h3 className="text-lg font-semibold text-gray-800">
@@ -20,9 +33,10 @@ export default function PatientDashboard() {
             </p>
           </div>
         </div>
-      </div>
+    
 
       <AppointmentList />
+      </div>    
     </>
   );
 }

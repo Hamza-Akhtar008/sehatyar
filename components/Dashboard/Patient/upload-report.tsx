@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
 import { Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -39,14 +38,17 @@ export function UploadReport() {
   }
 
   return (
-   <div className="bg-white rounded-2xl mt-2 -ml-4 shadow-sm p-6  w-[1064px]">
-      <h2 className="text-lg font-semibold text-foreground mb-6">Upload New Report</h2>
+    <div className="bg-white rounded-2xl mt-4 shadow-sm p-4 sm:p-6 md:p-8 w-full max-w-[1100px]">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-6">
+        Upload New Report
+      </h2>
 
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`custom-dashed border-2 border-[#D2D2D2] border-dashed rounded-2xl p-12 text-center transition-colors ${
+        onClick={handleClick}
+        className={`custom-dashed border-2 border-dashed rounded-2xl p-10 sm:p-12 text-center transition-colors cursor-pointer ${
           isDragging ? "border-green-400 bg-green-50" : "border-gray-300 bg-white"
         }`}
       >
@@ -55,9 +57,11 @@ export function UploadReport() {
             <Upload className="w-8 h-8 text-green-600" />
           </div>
 
-          <p className="text-gray-600 text-sm">Drag and drop your files here, or click to browse</p>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Drag and drop your files here, or click to browse
+          </p>
 
-          <Button onClick={handleClick} className="bg-green-500 hover:bg-green-600 text-white rounded-full px-8 py-2">
+          <Button className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 sm:px-8 py-2 sm:py-3">
             Upload File
           </Button>
         </div>
@@ -74,14 +78,12 @@ export function UploadReport() {
 
       {files.length > 0 && (
         <div className="mt-6">
-          <p className="text-sm font-medium text-foreground mb-3">
+          <p className="text-sm sm:text-base font-medium text-gray-800 mb-3">
             {files.length} file{files.length !== 1 ? "s" : ""} selected:
           </p>
-          <ul className="space-y-2">
+          <ul className="space-y-2 text-sm sm:text-base text-gray-600">
             {files.map((file, index) => (
-              <li key={index} className="text-sm text-gray-600">
-                {file.name}
-              </li>
+              <li key={index}>{file.name}</li>
             ))}
           </ul>
         </div>

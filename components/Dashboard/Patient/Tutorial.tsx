@@ -1,15 +1,14 @@
 import React from "react";
-import { Play } from "lucide-react";
 
 const TutorialCard = () => {
   return (
-    <div className=" flex -mt-4 -ml-4 items-center justify-between bg-[#FBFBFB] rounded-[22px] px-6 py-6 shadow-sm w-[1064px]">
+    <div className="flex flex-col m-0 md:flex-row items-center md:items-start justify-between bg-[#FFFFFF] rounded-[22px] px-4 md:px-6 py-6 shadow-sm w-full max-w-[1064px] gap-4 " >
       {/* Left section */}
-      <div className="flex flex-col">
-        <h3 className="text-lg font-semibold text-gray-800">
+      <div className="flex flex-col text-left max-w-full md:max-w-[65%]">
+        <h3 className="text-base md:text-lg font-semibold text-gray-800">
           Getting Started Tutorial
         </h3>
-        <p className="text-sm text-gray-500 mt-1 ">
+        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
           Learn how to navigate your patient dashboard and make the most of our
           healthcare platform features.
         </p>
@@ -20,8 +19,7 @@ const TutorialCard = () => {
       </div>
 
       {/* Right section */}
-      <div className="w-[220px] h-[100px] bg-[#D1F4F4] rounded-[12px] flex items-center justify-center overflow-hidden relative">
-       
+      <div className="w-full sm:w-[280px] md:w-[220px] h-[180px] md:h-[100px] bg-[#D1F4F4] rounded-[12px] flex items-center justify-center overflow-hidden relative">
         <img
           src="/images/turotial.png"
           alt="Tutorial preview"

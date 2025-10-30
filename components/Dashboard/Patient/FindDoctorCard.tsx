@@ -323,195 +323,117 @@ export default function FindDoctorCard() {
 	};
 
 	return (
-		<div className="bg-white rounded-2xl mt-2 -ml-4 shadow-sm p-6  w-[1064px]">
-			<h2 className="text-lg font-semibold text-gray-800 mb-3">
-				Find a Doctor
-			</h2>
+	  <div className="bg-white rounded-2xl mt-4 shadow-sm p-6 max-w-[1064px] w-full">
+      <h2 className="text-lg font-semibold text-gray-800 mb-3 text-center md:text-left">
+        Find a Doctor
+      </h2>
 
-			<div className="flex ">
-				<div
-					className="w-1/2 flex flex-row gap-3.5 bg-white rounded-full shadow-sm  py-3 px-2 border-[1px] border-[#CACACA] z-10"
-					style={{
-						width: "900px",
-						height: "91.73924255371094px",
-						paddingTop: "9.99px",
-						paddingRight: "9.57px",
-						paddingBottom: "9.99px",
-						paddingLeft: "9.57px",
-						border: "1px solid #CACACA",
-						background: "#FFFFFF",
-						opacity: 1,
-						transform: "rotate(0deg)",
-					}}
-					ref={dropdownRef}
-				>
-					{/* Search Input */}
-					<div
-						className="w-5/16 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
-						style={{
-							width: "344.3640441894531px",
-							height: "66.64610290527344px",
-							borderRadius: "35.88px",
-							paddingTop: "18.32px",
-							paddingRight: "26.65px",
-							paddingBottom: "18.32px",
-							paddingLeft: "26.65px",
-							gap: "12.37px",
-							background: "#F4F4F4",
-							opacity: 1,
-							transform: "rotate(0deg)",
-						}}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="30"
-							height="30"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="text-[#52525B]"
-						>
-							<circle cx="11" cy="11" r="8"></circle>
-							<path d="m21 21-4.3-4.3"></path>
-						</svg>
-						<input
-							type="text"
-							placeholder="Search Specialist or Hospital"
-							value={query}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								setQuery(e.target.value)
-							}
-							onFocus={() => setIsFocused(true)}
-							className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full"
-						/>
-						{isFocused && filtered.length > 0 && (
-							<div
-								className="absolute top-[66px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden max-h-60 overflow-y-auto"
-								style={{ zIndex: 1000 }}
-							>
-								{filtered.map((item, index) => (
-									<div
-										key={item}
-										onMouseDown={() => {
-											setQuery(item);
-											setIsFocused(false);
-										}}
-										className={`px-4 py-2 text-sm cursor-pointer transition ${
-											index === focusedIndex
-												? "bg-[#5fe089] text-white"
-												: "hover:bg-gray-100 text-gray-700"
-										}`}
-									>
-										{item}
-									</div>
-								))}
-							</div>
-						)}
-					</div>
+      <div className="flex flex-col md:flex-row items-center gap-3 w-full" ref={dropdownRef}>
+        {/* Search Input */}
+        <div className="relative flex items-center w-full md:w-2/5 bg-[#F4F4F4] rounded-full px-4 py-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-[#52525B] mr-3"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search Specialist or Hospital"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onKeyDown={handleKeyDown}
+            className="w-full bg-transparent outline-none placeholder:text-gray-500 text-[16px]"
+          />
 
-					{/* Location Input */}
-					<div
-						className="w-5/12 flex items-center text-[16px] bg-[#F4F4F4] rounded-full px-6"
-						style={{
-							width: "344.3640441894531px",
-							height: "66.64610290527344px",
-							borderRadius: "35.88px",
-							paddingTop: "18.32px",
-							paddingRight: "26.65px",
-							paddingBottom: "18.32px",
-							paddingLeft: "26.65px",
-							gap: "12.37px",
-							background: "#F4F4F4",
-							opacity: 1,
-							transform: "rotate(0deg)",
-						}}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="30"
-							height="30"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="text-[#52525B]"
-						>
-							<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-							<circle cx="12" cy="10" r="3"></circle>
-						</svg>
-						<input
-							type="text"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								setcity(e.target.value)
-							}
-							placeholder="Near you or Enter City"
-							className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#52525B] placeholder:text-lg"
-						/>
-					</div>
+          {/* Dropdown */}
+          {isFocused && filtered.length > 0 && (
+            <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto mt-2 z-50">
+              {filtered.map((item, index) => (
+                <div
+                  key={item}
+                  onMouseDown={() => {
+                    setQuery(item);
+                    setIsFocused(false);
+                  }}
+                  className={`px-4 py-2 text-sm cursor-pointer ${
+                    index === focusedIndex
+                      ? "bg-[#5FE089] text-white"
+                      : "hover:bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-					{/* Find Button */}
-					<Button
-						className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300"
-						style={{
-							width: "119.17px",
-							height: "61.75px",
-							borderRadius: "122.47px",
-							paddingTop: "12.37px",
-							paddingRight: "39.59px",
-							paddingBottom: "12.37px",
-							paddingLeft: "39.59px",
-							gap: "12.37px",
-							background: "#5FE089",
-							opacity: 1,
-							transform: "rotate(0deg)",
-							fontFamily: "var(--font-montserrat)",
-							fontWeight: 600,
-							fontSize: "17.32px",
-							lineHeight: "29.69px",
-							verticalAlign: "middle",
-							color: "#FFFFFF",
-						}}
-						onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-							(e.currentTarget.style.background = "#4ad87b")
-						}
-						onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-							(e.currentTarget.style.background = "#5FE089")
-						}
-						onClick={handleSearch}
-					>
-						Find
-					</Button>
-				</div>
-			</div>
+        {/* City Input */}
+        <div className="flex items-center w-full md:w-2/5 bg-[#F4F4F4] rounded-full px-4 py-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-[#52525B] mr-3"
+          >
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <input
+            type="text"
+            placeholder="Near you or Enter City"
+            value={city}
+            onChange={(e) => setcity(e.target.value)}
+            className="w-full bg-transparent outline-none placeholder:text-gray-500 text-[16px]"
+          />
+        </div>
 
-			{/* Results below search */}
-			<div className="mt-6">
-				{error && <div className="text-red-500 text-sm">{error}</div>}
-				{loading && (
-					<div className="flex justify-center items-center py-8">
-						<div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500"></div>
-					</div>
-				)}
-				{/* Only show "No doctor found" after search is performed */}
-				{!loading && !error && doctors.length === 0 && (query.trim() || city.trim()) && (
-					<div className="text-center py-8 text-gray-500 text-lg">
-						No doctor found. Please try different search criteria.
-					</div>
-				)}
-				{!loading && doctors.length > 0 && (
-					<div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
-						{doctors.map((doctor) => (
-							<DoctorResultCard key={doctor.id} doctor={doctor} router={router} />
-						))}
-					</div>
-				)}
-			</div>
-		</div>
+        {/* Find Button */}
+        <Button
+          onClick={handleSearch}
+          className="w-full md:w-auto px-8 py-3 text-white font-semibold rounded-full bg-[#5FE089] hover:bg-[#4ad87b] transition-all"
+        >
+          Find
+        </Button>
+      </div>
+
+      {/* Results Section */}
+      <div className="mt-6">
+        {error && <div className="text-red-500 text-sm">{error}</div>}
+        {loading && (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500"></div>
+          </div>
+        )}
+        {!loading && !error && doctors.length === 0 && (query.trim() || city.trim()) && (
+          <div className="text-center py-8 text-gray-500 text-lg">
+            No doctor found. Please try different search criteria.
+          </div>
+        )}
+        {!loading && doctors.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {doctors.map((doctor) => (
+              <DoctorResultCard key={doctor.id} doctor={doctor} router={router} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
 	);
 }
 
