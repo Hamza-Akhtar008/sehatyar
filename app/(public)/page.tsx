@@ -11,7 +11,6 @@ import DoctorByCondition from "@/components/landing/doctor-by-condition";
 export default function Home() {
   return (
    <>
-  
    <HeroSection />
    <Doctors />
    <Hospitals />

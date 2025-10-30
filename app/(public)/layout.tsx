@@ -50,11 +50,33 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <>
+<<<<<<< HEAD
       <Header/>
       <Suspense>
         <main>{children}</main>
       </Suspense>
       <Footer />
+=======
+  <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
+        <head />
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+        <Header/>
+            {/* <Header /> */}
+            <Suspense>
+
+            <main>{children}</main>
+            <Footer />
+            </Suspense>
+          </ThemeProvider>
+        </body>
+      </html>
+>>>>>>> origin/adil-dev
     </>
   )
 }

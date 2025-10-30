@@ -4,10 +4,12 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useEffect,useState,useRef,useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "../ui/dialog";
+import ConsultOnline from "./consult-online";
 
- const specializations = [
+const specializations = [
   "Allergy and Immunology",
   "Anesthesiology",
   "Cardiology",
@@ -191,9 +193,10 @@ import { useRouter } from "next/navigation";
   "Wound Care Medicine"
 ]
 export default function HeroSection() {
- const router = useRouter()
-   const [query, setQuery] = useState("")
-   const [city,setcity]=useState("");
+  const router = useRouter()
+  const [query, setQuery] = useState("")
+  const [city,setcity]=useState("");
+  const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [isFocused, setIsFocused] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -417,8 +420,8 @@ export default function HeroSection() {
             <div className="absolute bottom-20 md:bottom-25  md:-left-50 lg:-left-25 xl:-left-38 bg-white p-6 rounded-2xl z-1000 ">
               <div className="hero-consult-header z-20">
                 <h3 className="hero-consult-title z-20  text-lg lg:text-2xl ">Consult Online Now</h3>
-                <div className="hero-consult-icon">
-                  <ArrowRight  className="w-5 h-5 -rotate-45 text-white z-20" />
+                <div className="hero-consult-icon" onClick={() => setIsConsultModalOpen(true)}>
+                  <ArrowRight className="w-5 h-5 -rotate-45 text-white z-20 cursor-pointer hover:scale-110 transition-transform" />
                 </div>
               </div>
               <p className="hero-consult-description z-20">
@@ -427,6 +430,11 @@ export default function HeroSection() {
                  Video call.
               </p>
             </div>
+            <Dialog open={isConsultModalOpen} onOpenChange={setIsConsultModalOpen}>
+              <DialogContent className="max-w-4xl">
+                <ConsultOnline />
+              </DialogContent>
+            </Dialog>
         </div>
 
 

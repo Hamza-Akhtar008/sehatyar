@@ -226,7 +226,9 @@
   }
 
   /* Body text global style per user */
-  body, p, li, a, input, button { font-family: var(--font-plusjakarta); font-weight: 500; font-size: 16px; line-height: 24px; color: #000000; }
+  body, p, li, a, input, button { font-family: var(--font-plusjakarta); font-weight: 500; font-size: 16px; 
+    /* line-height: 24px; */
+     color: #000000; }
 
   /* Paragraphs / descriptions (Inter) */
   .description, p.description { font-family: var(--font-inter); font-weight: 400; font-size: 18px; line-height: 26px; color: #52525B; }
