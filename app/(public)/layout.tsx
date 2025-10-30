@@ -41,6 +41,7 @@ export const metadata: Metadata = {
 import { ReactNode, Suspense } from "react";
 import Header from "@/components/ui/header";
 import  Footer from "@/components/landing/footer";
+import { ThemeProvider } from "@/components/theme-provider";
 
 
 interface LayoutProps {
@@ -50,13 +51,6 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <>
-<<<<<<< HEAD
-      <Header/>
-      <Suspense>
-        <main>{children}</main>
-      </Suspense>
-      <Footer />
-=======
   <html lang="en" suppressHydrationWarning className={` ${montserrat.variable} ${plusJakarta.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <head />
         <body>
@@ -76,7 +70,6 @@ export default function RootLayout({ children }: LayoutProps) {
           </ThemeProvider>
         </body>
       </html>
->>>>>>> origin/adil-dev
     </>
   )
 }
