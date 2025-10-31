@@ -7,7 +7,7 @@ export default function Specialists() {
 
 
 const specialityList = [
-  { name: 'Fever', icon: '/assets/conditionIcons/fever.png' },
+  { name: 'Fever', icon: '/assets/conditionIcons/Fever.png' },
   { name: 'Heart Attack', icon: '/assets/conditionIcons/HeartAttack.png' },
   { name: 'Pregnancy', icon: '/assets/conditionIcons/Pregnancy.png' },
   { name: 'High Blood Pressure', icon: '/assets/conditionIcons/HighBloodPressure.png' },

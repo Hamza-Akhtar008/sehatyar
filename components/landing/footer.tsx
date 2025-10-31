@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <div className='p-10 md:p-14 lg:p-25'>
         {/* <div className='flex gap-32.5'> */}
-        <div className='md:flex lg:gap-5 xl:gap-15 2xl:gap-32.5 gap-4'>
+        <div className='md:flex lg:gap-5 xl:gap-15 2xl:gap-22 gap-4'>
             <div className='md:w-3/12'>
             <Image src="/images/logo2.webp" width={130} height={40} alt="sehatyar-logo"/>
            <p className='mt-8 text-base'>Book appointments with the best Doctors and Specialists such as Gynecologists, Skin Specialists, Child Specialists, Surgeons, etc. Avail test services such as MRI, CT scan, Ultrasound, X-Ray, etc. and Online Doctor Video Consultations all across Pakistan conveniently.</p>
@@ -126,10 +126,10 @@ export default function Footer() {
                     <div className=''>
 
                     </div>
-                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/fbIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/instaIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/githubIcon.png" width={24} height={24} alt="tick-icon"/>
+                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="twitter-icon"/>
+                    <Image src="/images/fbIcon.png" width={24} height={24} alt="fb-icon"/>
+                    <Image src="/images/instaIcon.png" width={24} height={24} alt="insta-icon"/>
+                    <Image src="/images/githubIcon.png" width={24} height={24} alt="github-icon"/>
                     {/* <span className='text-sm text-[#01503F] font-semibold'>100% Satisfaction Guarantee</span> */}
                 </div>
             </div>

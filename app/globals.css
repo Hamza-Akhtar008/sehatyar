@@ -1062,7 +1062,7 @@
   transform: rotate(0deg);
 }
 
-.doctors-info-card {
+/* .doctors-info-card {
   @apply flex flex-col items-start;
   width: 280px;
   border-radius: 20.42px;
@@ -1072,7 +1072,7 @@
   backdrop-filter: blur(30px);
   box-sizing: border-box;
 }
-.doctors-info-card { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 2; }
+.doctors-info-card { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 2; } */
 
 .doctors-name {
   @apply text-white font-[600] leading-[23.82px] tracking-[-0.1px];
@@ -1105,7 +1105,7 @@
 }
 
 .doctors-pagination {
-  @apply flex justify-center items-center gap-4 mt-12;
+  @apply flex justify-center items-center gap-4;
 }
 
 .doctors-pagination-button {
@@ -1885,9 +1885,9 @@
   @apply text-white w-5 h-5 rotate-[-25deg];
 }
 
-.doctors-pagination {
+/* .doctors-pagination {
   @apply flex justify-center items-center gap-4;
-}
+} */
 
 .doctors-pagination-button {
   border-radius: 9999px !important;
@@ -2622,7 +2622,7 @@
   transform: rotate(0deg);
 }
 
-.doctors-info-card {
+/* .doctors-info-card {
   @apply flex flex-col items-start;
   width: 280px;
   border-radius: 20.42px;
@@ -2631,7 +2631,7 @@
   background: #00000099;
   backdrop-filter: blur(30px);
   box-sizing: border-box;
-}
+} */
 .doctors-info-card { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 2; }
 
 .doctors-name {
@@ -2665,7 +2665,7 @@
 }
 
 .doctors-pagination {
-  @apply flex justify-center items-center gap-4 mt-10;
+  @apply flex justify-center items-center gap-4 ;
 }
 
 .doctors-pagination-button {
@@ -3320,4 +3320,16 @@
     transparent 10px,
     transparent 20px
   ) 1;
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

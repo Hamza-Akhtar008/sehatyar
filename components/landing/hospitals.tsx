@@ -72,22 +72,22 @@ export default function Hospitals() {
             <div key={index} className="doctors-card-item  flex-shrink-0 ">
               {/* <div className="doctors-card-inner"> */}
               <div className="">
-                <div className="doctors-image-container  items-start inline-flex ">
+                <div className="items-start inline-flex">
                   <Image
                     src="/assets/hospital.svg"
                     alt="Doctor"
                     width={50}
                     height={50}
-                    className="doctors-image w-auto h-auto md:w-auto md:h-100 xl:w-auto  xl:h-110 2xl:w-100 2xl:h-110"
+                    className="doctors-image w-auto h-84 sm:h-100 xl:w-auto  xl:h-110 2xl:w-100 2xl:h-110"
                     />
-                    <span className="w-14 h-14 sm:w-15 sm:h-15 -ml-15 sm:-ml-16  xl:mt-2 bg-[#4ADE80] hover:bg-[#3cbb6c] p-4.5  rounded-full cursor-pointer transition text-white rotate-320 items-center justify-center flex">
+                    <span className="w-12 h-12 sm:w-15 sm:h-15 -ml-13 sm:-ml-16  xl:mt-2 bg-[#4ADE80] hover:bg-[#3cbb6c] p-4.5  rounded-full cursor-pointer transition text-white rotate-320 items-center justify-center flex mt-1 md:mt-0">
                       {/* <span className=""> */}
 
                       <ArrowRight className="doctors-image-arrow" />
                       {/* </span> */}
                     </span>
                 </div>
-               <div className="doctors-info-card p-5.5 w-7/12 md:w-[78%] left-38 md:left-45 bottom-10">
+               <div className="doctors-info-card p-5.5 w-[78%] left-38 md:left-45 bottom-10">
                   <h3 className="doctors-name text-base mb-0 font-medium">
                     Dr. Michael Sterling
                   </h3>
