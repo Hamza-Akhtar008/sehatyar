@@ -6,10 +6,41 @@ import DoctorSidebar from "@/components/Dashboard/Doctor/Sidebar"
 import DoctorDashboardHeader from "@/components/Dashboard/Doctor/Header"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { useRouter } from "next/navigation"
+import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
 
 interface LayoutProps {
   children: ReactNode
 }
+
+export const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+export const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["300","400","500","600","700","800"],
+});
+
+export const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plusjakarta",
+  subsets: ["latin"],
+  weight: ["500", "800"],
+  display: "swap",
+});
+
+export const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
 
 export default function DashboardLayout({ children }: LayoutProps) {
   const { user, isAuthenticated, isLoading } = useAuth()
