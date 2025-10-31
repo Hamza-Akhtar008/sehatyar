@@ -23,12 +23,14 @@ export default function SettingsForm() {
     }))
   }
 
-  const handleCheckboxChange = (name: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: !prev[name],
-    }))
-  }
+ type ToggleKeys = "emailNotifications" | "smsReminders";
+
+const handleCheckboxChange = (name: ToggleKeys) => {
+  setFormData((prev) => ({
+    ...prev,
+    [name]: !prev[name],
+  }));
+};
 
   const handleSaveChanges = () => {
     console.log("Settings saved:", formData)

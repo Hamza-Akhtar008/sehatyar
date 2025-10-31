@@ -111,8 +111,8 @@ export default function Messages() {
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             <svg
-              width="24"
-              height="24"
+              width="12"
+              height="12"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

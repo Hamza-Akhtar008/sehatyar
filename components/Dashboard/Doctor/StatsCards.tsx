@@ -8,8 +8,7 @@ const stats = [
     sub: "12% from yesterday",
     subClass: "text-[#2DC36A]",
     iconBg: "bg-[#E6F9F0]",
-    iconColor: "text-[#2DC36A]",
-    icons:"/assets/greenusericon.png"
+    icons: "/assets/greenusericon.png",
   },
   {
     label: "Upcoming Appointments",
@@ -17,9 +16,7 @@ const stats = [
     sub: "Next at 2:30 PM",
     subClass: "text-[#2D7CF3]",
     iconBg: "bg-[#E6F0FA]",
-    iconColor: "text-[#2D7CF3]",
-    icons:"/assets/greenusericon.png"
-
+    icons: "/assets/greenusericon.png",
   },
   {
     label: "Completed Appointments",
@@ -27,35 +24,37 @@ const stats = [
     sub: "2 urgent reviews",
     subClass: "text-[#F04438]",
     iconBg: "bg-[#FFE6DC]",
-    iconColor: "text-[#F04438]",
-    icons:"/assets/greenusericon.png"
-
+    icons: "/assets/greenusericon.png",
   },
 ];
 
 export default function StatsCards() {
   return (
-    <div className="flex w-full -mt-4 -ml-2 gap-2 mb-4">
+    <div className="flex flex-wrap justify-center sm:justify-start w-full gap-4">
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="flex-1 flex items-center justify-between bg-white rounded-[22px] px-8 py-6 shadow-sm border border-[#F2F2F2] w-[320px]  h-[118px]"
+          className="flex items-center justify-between bg-white rounded-[20px] px-6 py-5 shadow-sm border border-[#F2F2F2]
+                     w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)] min-w-[250px] h-[110px]"
         >
-          {/* Left: Text */}
+          {/* Left Side - Text */}
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-[#A1A1A1] font-medium">{stat.label}</span>
-            <span className="text-[22px] font-bold text-[#222] leading-tight">{stat.value}</span>
-            <span className={`text-xs font-medium ${stat.subClass}`}>{stat.sub}</span>
+            <span className="text-xs sm:text-sm text-[#A1A1A1] font-medium">{stat.label}</span>
+            <span className="text-[20px] sm:text-[22px] font-bold text-[#222] leading-tight">{stat.value}</span>
+            <span className={`text-xs sm:text-sm font-medium ${stat.subClass}`}>{stat.sub}</span>
           </div>
-          {/* Right: Icon in colored circle */}
-          <div className={` flex items-center justify-center pt-2`}>
-       <Image
-  src={stat.icons}
-  alt={stat.label}
-  width={41}
-  height={45}
-  className={stat.iconColor}
-/>
+
+          {/* Right Side - Icon */}
+          <div
+            className={`flex items-center justify-center rounded-full ${stat.iconBg} p-3 w-12 h-12`}
+          >
+            <Image
+              src={stat.icons}
+              alt={stat.label}
+              width={30}
+              height={30}
+              className="object-contain"
+            />
           </div>
         </div>
       ))}
