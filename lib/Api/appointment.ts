@@ -56,3 +56,18 @@ export const getUpcomingAppointments = async (doctorId: number | string) => {
         throw error;
     }
 };
+
+// Get recent appointments for the logged-in doctor (token required)
+export const getRecentAppointmentsForDoctor = async (token: string) => {
+  try {
+    const response = await axiosInstance.get('/appointments/doctor/recent', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching recent appointments for doctor:', error);
+    throw error;
+  }
+};
