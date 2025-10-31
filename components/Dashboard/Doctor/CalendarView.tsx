@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { getUpcomingAppointments } from "@/lib/Api/appointment"
+import { getAppointmentsForLoggedInDoctor } from "@/lib/Api/appointment"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { ChevronLeft, ChevronRight, User } from "lucide-react"
 import dayjs from "dayjs"
@@ -33,8 +33,10 @@ export default function CalendarView() {
       if (!user?.doctorId) return
       setLoading(true)
       try {
-        const data = await getUpcomingAppointments(user.doctorId)
-        setAppointments(data || [])
+        const data = await getAppointmentsForLoggedInDoctor()
+        // If data is not an array, try to extract the array property
+        let arr = Array.isArray(data) ? data : (Array.isArray(data?.appointments) ? data.appointments : [])
+        setAppointments(arr)
       } catch {
         setAppointments([])
       } finally {
@@ -44,7 +46,12 @@ export default function CalendarView() {
     fetchAppointments()
   }, [user?.doctorId])
 
-  const filteredAppointments = appointments.filter((a) => a.appointmentDate === selectedDate)
+  const filteredAppointments = appointments.filter((a) => {
+    if (!a.appointmentDate) return false;
+    // Format appointmentDate to DD-MM-YYYY
+    const formatted = dayjs(a.appointmentDate).format("DD-MM-YYYY");
+    return formatted === selectedDate;
+  });
 
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#F2F2F2] flex flex-col ">

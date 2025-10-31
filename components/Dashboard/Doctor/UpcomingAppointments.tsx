@@ -1,31 +1,13 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { getUpcomingAppointments } from "@/lib/Api/appointment";
-import { useAuth } from "@/src/contexts/AuthContext";
 
-export default function UpcomingAppointments() {
-  const { user } = useAuth();
-  const [appointments, setAppointments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface UpcomingAppointmentsProps {
+  appointments: any[];
+  loading: boolean;
+}
 
-  useEffect(() => {
-    async function fetchAppointments() {
-      if (!user?.doctorId) return;
-      setLoading(true);
-      try {
-        const data = await getUpcomingAppointments(user.doctorId);
-        setAppointments(data || []);
-      } catch (err) {
-        console.error("Error fetching appointments:", err);
-        setAppointments([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchAppointments();
-  }, [user?.doctorId]);
-
+export default function UpcomingAppointments({ appointments, loading }: UpcomingAppointmentsProps) {
   return (
     <div className="bg-white rounded-[22px] p-4 shadow-sm border border-[#F2F2F2] flex-1 max-w-[950px] ">
       <h2 className="text-[20px] md:text-[22px] font-bold text-[#52525B] mb-2">Upcoming Appointments</h2>

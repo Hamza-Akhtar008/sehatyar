@@ -1,34 +1,45 @@
 import Image from "next/image";
 import React from "react";
 
-const stats = [
-  {
-    label: "Total Appointments",
-    value: 24,
-    sub: "12% from yesterday",
-    subClass: "text-[#2DC36A]",
-    iconBg: "bg-[#E6F9F0]",
-    icons: "/assets/greenusericon.png",
-  },
-  {
-    label: "Upcoming Appointments",
-    value: 16,
-    sub: "Next at 2:30 PM",
-    subClass: "text-[#2D7CF3]",
-    iconBg: "bg-[#E6F0FA]",
-    icons: "/assets/greenusericon.png",
-  },
-  {
-    label: "Completed Appointments",
-    value: 8,
-    sub: "2 urgent reviews",
-    subClass: "text-[#F04438]",
-    iconBg: "bg-[#FFE6DC]",
-    icons: "/assets/greenusericon.png",
-  },
-];
+interface StatsCardsProps {
+  appointments: any[];
+  loading: boolean;
+}
 
-export default function StatsCards() {
+export default function StatsCards({ appointments, loading }: StatsCardsProps) {
+  // Example stats using appointments data
+  const total = appointments.length;
+  const upcoming = appointments.filter(a => a.status === "pending" || a.status === "Scheduled").length;
+  const completed = appointments.filter(a => a.status === "completed").length;
+  const nextAppointment = appointments[0]?.appointmentTime || "-";
+
+  const stats = [
+    {
+      label: "Total Appointments",
+      value: loading ? "..." : total,
+      // sub: loading ? "" : `${upcoming} upcoming` ,
+      subClass: "text-[#2DC36A]",
+      iconBg: "bg-[#E6F9F0]",
+      icons: "/assets/greenusericon.png",
+    },
+    {
+      label: "Upcoming Appointments",
+      value: loading ? "..." : upcoming,
+      sub: loading ? "" : `Next at ${nextAppointment}`,
+      subClass: "text-[#2D7CF3]",
+      iconBg: "bg-[#E6F0FA]",
+      icons: "/assets/greenusericon.png",
+    },
+    {
+      label: "Completed Appointments",
+      value: loading ? "..." : completed,
+      sub: loading ? "" : `${completed} completed` ,
+      subClass: "text-[#F04438]",
+      iconBg: "bg-[#FFE6DC]",
+      icons: "/assets/greenusericon.png",
+    },
+  ];
+
   return (
     <div className="flex flex-wrap justify-center sm:justify-start w-full gap-4">
       {stats.map((stat) => (
