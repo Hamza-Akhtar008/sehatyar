@@ -2961,7 +2961,7 @@
 /* Patient Section Styles */
 .patient-container {
   width: 100%;
-  max-width: 1061px;
+  /* max-width: 1061px; */
   background: white;
   border-radius: 22px;
   padding: 20px;

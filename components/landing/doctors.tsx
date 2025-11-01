@@ -66,7 +66,7 @@ export default function Doctors() {
         </div>
 
         {/* Doctors Grid */}
-        <div className="w-full md:w-[86%] mx-auto overflow-hidden">
+        <div className="w-full  mx-auto overflow-hidden">
           <div 
             ref={scrollContainerRef}
             className="flex gap-19 flex-nowrap overflow-x-auto hide-scrollbar w-full my-10">
@@ -80,7 +80,7 @@ export default function Doctors() {
                     alt="Doctor"
                     width={50}
                     height={50}
-                    className="doctors-image w-auto h-84 sm:h-100 xl:w-auto  xl:h-110 2xl:w-100 2xl:h-110"
+                    className="doctors-image w-auto h-84 sm:h-100 xl:w-auto  xl:h-110 2xl:w-100 2xl:h-110 object-contain "
                     />
                     <span className="w-12 h-12 sm:w-15 sm:h-15 -ml-13 sm:-ml-16  xl:mt-2 bg-[#4ADE80] hover:bg-[#3cbb6c] p-4.5  rounded-full cursor-pointer transition text-white rotate-320 items-center justify-center flex mt-1 md:mt-0">
                       {/* <span className=""> */}

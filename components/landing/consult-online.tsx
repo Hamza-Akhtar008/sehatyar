@@ -27,15 +27,15 @@ const DoctorCard = ({ name, isOnline, icon }: {
   icon: string;
 }) => {
   return (
-    <div className="group flex items-center py-4 px-6.5 transition-all rounded-4xl border-[1px] border-[#A6A6A6] gap-2.5 hover:bg-[#F4F4F4] hover:border-none">
-      <div className='bg-[#003F31] group-hover:bg-[#5FE089] p-3 rounded-full'>
-        <Image src={icon} alt={name} width={20} height={20} className=''/>
+    <div className="group flex items-center py-3 px-3 sm:py-4 sm:px-6.5 transition-all rounded-2xl sm:rounded-4xl border-[1px] border-[#A6A6A6] gap-2 sm:gap-2.5 hover:bg-[#F4F4F4] hover:border-none">
+      <div className='bg-[#003F31] group-hover:bg-[#5FE089] p-2 sm:p-3 rounded-full flex-shrink-0'>
+        <Image src={icon} alt={name} width={20} height={20} className='w-4 h-4 sm:w-5 sm:h-5'/>
       </div>
-      <div className='flex flex-col gap-1'>
-      <h3 className="text-base font-medium text-gray-900 mb-0">{name}</h3>
+      <div className='flex flex-col gap-0.5 sm:gap-1 min-w-0'>
+      <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-900 mb-0 truncate">{name}</h3>
       <button className='text-start'>
         <span className={cn(
-        "px-3 py-0.5 text-xs font-medium rounded-full",
+        "px-2 sm:px-3 py-0.5 text-[10px] sm:text-xs font-medium rounded-full",
         isOnline ? "bg-green-100 group-hover:bg-[#5FE089] text-green-800" : "bg-gray-100 text-gray-800"
       )}>
         {isOnline ? 'Online' : 'Offline'}
@@ -55,19 +55,20 @@ export default function ConsultOnline() {
   );
   
   return (
-    <div className="w-full mx-auto">
-      {/* <h2 className="text-2xl font-bold mb-6 text-center">Consult Online With Our Specialists</h2> */}
+    <div className="w-full mx-auto px-2 sm:px-0">
+      {/* Title - visible on mobile */}
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-center block sm:hidden">Consult Online</h2>
       
       {/* Search Input */}
-      <div className="flex items-center text-[16px] bg-[#F4F4F4] text-[#616161] rounded-full px-5 py-4 mb-6  mx-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#616161]">
+      <div className="flex items-center text-sm sm:text-base bg-[#F4F4F4] text-[#616161] rounded-full px-3 sm:px-5 py-2.5 sm:py-4 mb-4 sm:mb-6 mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#616161] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.3-4.3"></path>
         </svg>
         <Input
           type="text"
           placeholder="Search for specialization"
-          className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#616161] placeholder:text-sm placeholder:font-light"
+          className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full placeholder:text-[#616161] placeholder:text-xs sm:placeholder:text-sm placeholder:font-light"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -75,7 +76,7 @@ export default function ConsultOnline() {
 
 
       {/* Grid of doctors */}
-      <div className='grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 mt-4 sm:mt-6 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto pr-1'>
         {filteredDoctors.map((doctor) => (
           <DoctorCard
             key={doctor.id}

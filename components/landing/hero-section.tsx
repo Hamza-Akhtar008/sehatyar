@@ -431,7 +431,7 @@ export default function HeroSection() {
               </p>
             </div>
             <Dialog open={isConsultModalOpen} onOpenChange={setIsConsultModalOpen}>
-              <DialogContent className="max-w-4xl">
+              <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
                 <ConsultOnline />
               </DialogContent>
             </Dialog>

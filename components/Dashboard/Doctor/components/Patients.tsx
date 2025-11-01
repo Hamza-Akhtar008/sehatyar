@@ -69,7 +69,7 @@ export default function Patients() {
           patients.map((patient: any, index: number) => (
             <div
               key={index}
-              className=" bg-white flex flex-col sm:flex-row lg:flex-col items-start sm:items-center gap-4 p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100"
+              className=" bg-[#F4F4F4] flex flex-col sm:flex-row lg:flex-col items-start sm:items-center gap-4 p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100"
             >
               {/* Avatar */}
               <div className="patient-avatar flex-shrink-0 self-center sm:self-auto">
