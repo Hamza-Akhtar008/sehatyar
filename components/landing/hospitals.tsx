@@ -4,15 +4,19 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import React, { useRef } from "react";
+import { useIsMobile } from "../../hooks/use-mobile";
+
 
 export default function Hospitals() {
+    const isMobile = useIsMobile();
+  
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const scrollAmount = 450; // Adjust this value based on your card width
+    const scrollAmount = isMobile ? 295 : 450; // Smaller scroll amount for mobile
     const newScrollPosition = direction === 'left' 
       ? container.scrollLeft - scrollAmount 
       : container.scrollLeft + scrollAmount;

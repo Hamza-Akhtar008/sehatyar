@@ -127,10 +127,10 @@ export default function Footer() {
                     <div className=''>
 
                     </div>
-                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/fbIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/instaIcon.png" width={24} height={24} alt="tick-icon"/>
-                    <Image src="/images/githubIcon.png" width={24} height={24} alt="tick-icon"/>
+                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="twitter-icon" priority/>
+                    <Image src="/images/fbIcon.png" width={24} height={24} alt="facebook-icon" priority/>
+                    <Image src="/images/instaIcon.png" width={24} height={24} alt="instagram-icon" priority/>
+                    <Image src="/images/githubIcon.png" width={24} height={24} alt="github-icon" priority/>
                     {/* <span className='text-sm text-[#01503F] font-semibold'>100% Satisfaction Guarantee</span> */}
                 </div>
             </div>

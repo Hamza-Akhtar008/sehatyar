@@ -14,7 +14,7 @@ export default function Doctors() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const scrollAmount = isMobile ? 292 : 450; // Smaller scroll amount for mobile
+    const scrollAmount = isMobile ? 295 : 450; // Smaller scroll amount for mobile
     const newScrollPosition = direction === 'left' 
       ? container.scrollLeft - scrollAmount 
       : container.scrollLeft + scrollAmount;
