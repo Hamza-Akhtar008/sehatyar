@@ -56,7 +56,7 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center overflow-hidden">
+		<div className="min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6">
 			{/* <Toaster position="top-right" /> */}
 			{/* Main Container */}
 			<div className="flex w-full max-w-[1200px] min-h-[700px] md:justify-center lg:justify-start">
@@ -65,9 +65,9 @@ const LoginPage = () => {
 					className="
 					flex flex-col justify-center
 					w-full max-w-[500px]
-					ml-4 lg:ml-16
+					ml-0 sm:ml-4 lg:ml-16
 					rounded-[24px]
-					lg:px-12 py-10
+					px-4 sm:px-6 lg:px-12 py-10
 					"
 				>
 					{/* Logo */}
@@ -77,13 +77,13 @@ const LoginPage = () => {
 							alt="Sehatyar"
 							width={159}
 							height={42}
-							className="object-contain mb-2"
+							className="object-contain mb-2 w-[120px] sm:w-[159px]"
 							priority
 						/>
 					</div>
 					{/* Title */}
 					<h2
-						className="text-[22px] font-semibold mb-8"
+						className="text-[18px] sm:text-[22px] font-semibold mb-8"
 						style={{ color: "#000000" }}
 					>
 						Please Login to your{" "}
@@ -94,7 +94,7 @@ const LoginPage = () => {
 						<div className="mb-5">
 							<label
 								htmlFor="email"
-								className="block text-[16px] mb-2 font-medium"
+								className="block text-[14px] sm:text-[16px] mb-2 font-medium"
 								style={{ color: "#000000" }}
 							>
 								Email
@@ -103,7 +103,7 @@ const LoginPage = () => {
 								id="email"
 								type="email"
 								placeholder="lendar@gmail.com"
-								className="w-full max-w-[400px] lg:max-w-[480px] h-[48px] rounded-[12px] border px-4 text-[15px] font-normal outline-none"
+								className="w-full max-w-[400px] lg:max-w-[480px] h-[48px] rounded-[12px] border px-4 text-[14px] sm:text-[15px] font-normal outline-none"
 								style={{ borderColor: BORDER, color: "#000000" }}
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -113,7 +113,7 @@ const LoginPage = () => {
 						<div className="mb-5">
 							<label
 								htmlFor="password"
-								className="block text-[16px] mb-2 font-medium"
+								className="block text-[14px] sm:text-[16px] mb-2 font-medium"
 								style={{ color: "#000000" }}
 							>
 								Password
@@ -123,7 +123,7 @@ const LoginPage = () => {
 									id="password"
 									type={showPassword ? "text" : "password"}
 									placeholder="**********"
-									className="w-full h-[48px] rounded-[12px] border px-4 text-[15px] font-normal outline-none"
+									className="w-full h-[48px] rounded-[12px] border px-4 text-[14px] sm:text-[15px] font-normal outline-none"
 									style={{ borderColor: BORDER, color: "#000000" }}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
@@ -142,9 +142,9 @@ const LoginPage = () => {
 						</div>
 
 						{/* Remember me & Forgot Password */}
-						<div className="flex items-center justify-between mb-6 max-w-[400px]">
+						<div className="flex items-center justify-between mb-6 max-w-[400px] flex-wrap gap-2">
 							<label
-								className="flex items-center text-[15px]"
+								className="flex items-center text-[13px] sm:text-[15px]"
 								style={{ color: "#000000" }}
 							>
 								<input 
@@ -156,7 +156,7 @@ const LoginPage = () => {
 							</label>
 							<a
 								href="#"
-								className="text-[15px] font-medium"
+								className="text-[13px] sm:text-[15px] font-medium"
 								style={{ color: PRIMARY }}
 							>
 								Forgot Password ?
@@ -165,7 +165,7 @@ const LoginPage = () => {
 						{/* Sign In Button */}
 						<button
 							type="submit"
-							className="w-full max-w-[400px] h-[48px] rounded-[99px] font-semibold text-[16px] bg-[#5fe089] mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+							className="w-full max-w-[400px] h-[48px] rounded-[99px] font-semibold text-[15px] sm:text-[16px] bg-[#5fe089] mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
 							style={{ color: "#000000" }}
 							disabled={isLoading}
 						>
@@ -173,22 +173,22 @@ const LoginPage = () => {
 						</button>
 						{/* Sign Up Link */}
 						<div className="text-center mb-6 max-w-[400px]">
-							<span className="text-base" style={{ color: "#000000" }}>
+							<span className="text-[14px] sm:text-base" style={{ color: "#000000" }}>
 								Don't have an account?
 							</span>
 							<a
 								href="/register"
-								className="ml-2 text-base font-semibold"
+								className="ml-2 text-[14px] sm:text-base font-semibold"
 								style={{ color: PRIMARY }}
 							>
 								Sign Up
 							</a>
 						</div>
 						{/* Social Login Buttons */}
-						<div className="flex gap-4 justify-center max-w-[400px]">
+						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-[400px]">
 							<button
 								type="button"
-								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white disabled:opacity-50"
+								className="flex items-center justify-center gap-[10px] w-full sm:w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[12px] sm:text-[13px] font-medium bg-white disabled:opacity-50"
 								style={{ color: "#000000" }}
 								disabled={isLoading}
 							>
@@ -207,7 +207,7 @@ const LoginPage = () => {
 							</button>
 							<button
 								type="button"
-								className="flex items-center justify-center gap-[10px] w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[13px] font-medium bg-white disabled:opacity-50"
+								className="flex items-center justify-center gap-[10px] w-full sm:w-[180px] h-[44px] rounded-[99px] border px-[12px] py-0 text-[12px] sm:text-[13px] font-medium bg-white disabled:opacity-50"
 								style={{ color: "#000000" }}
 								disabled={isLoading}
 							>
@@ -230,8 +230,15 @@ const LoginPage = () => {
 				{/* End Left Card */}
 			</div>
 			{/* Right Side Card */}
-			<div className="hidden lg:flex items-center justify-center w-full lg:w-1/2 px-6">
-				<div className="relative min-w-[800px] max-w-[600px] h-[720px] bg-transparent flex items-center justify-center">
+			<div className="hidden lg:flex items-center justify-center w-full lg:w-1/2 px-4 lg:px-4 xl:px-6">
+				<div
+					className="
+					relative
+					lg:min-w-[440px] lg:max-w-[480px] lg:h-[560px]
+					xl:min-w-[720px] xl:max-w-[600px] xl:h-[720px]
+					bg-transparent flex items-center justify-center
+					"
+				>
 					<div className="absolute inset-0 rounded-[32px] shadow-xl overflow-hidden">
 						<Image
 							src="/images/leftSide.webp"

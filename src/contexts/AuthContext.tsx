@@ -9,7 +9,7 @@ export type User = {
   doctorId?: string
   fullName: string
   email: string
-  role: 'doctor' | 'patient'
+  role: 'doctor' | 'patient' | 'admin'
   token?: string
 }
 type AuthContextType = {

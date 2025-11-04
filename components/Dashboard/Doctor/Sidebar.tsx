@@ -3,8 +3,42 @@ import Image from "next/image"
 import Link from "next/link"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { useRouter, usePathname } from "next/navigation"
+import {
+  LayoutDashboard,
+  Hospital,
+  UserCog,
+  UserRound,
+  Users,
+  CalendarDays,
+  FileText,
+  BarChart3,
+  MessageSquare,
+  Settings,
+  LogOut,
+  LucideIcon,
+} from "lucide-react"
 
-const adminsidebar = [
+// ✅ Add proper type for icons
+type SidebarItem = {
+  label: string
+  icon: string | LucideIcon
+  href: string
+}
+
+const adminSidebar: SidebarItem[] = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/admin-dashboard" },
+  { label: "Hospitals", icon: Hospital, href: "/admin-dashboard/hospitals" },
+  { label: "Doctors", icon: UserRound, href: "/admin-dashboard/doctors" },
+  { label: "Patients", icon: Users, href: "/admin-dashboard/patients" },
+  { label: "Receptionists", icon: UserCog, href: "/admin-dashboard/receptionists" },
+  { label: "Appointments", icon: CalendarDays, href: "/admin-dashboard/appointments" },
+  { label: "Invoices", icon: FileText, href: "/admin-dashboard/invoices" },
+  // { label: "Analytics", icon: BarChart3, href: "/admin-dashboard/analytics" },
+  { label: "Message", icon: MessageSquare, href: "/admin-dashboard/messages" },
+  { label: "Settings", icon: Settings, href: "/admin-dashboard/settings" },
+]
+
+const doctorsidebar: SidebarItem[] = [
   { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard" },
   { label: "Hospitals", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/Hospital" },
   { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/appointment" },
@@ -15,7 +49,7 @@ const adminsidebar = [
   { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
 ]
 
-const patientsidebar = [
+const patientsidebar: SidebarItem[] = [
   { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/patient-dashboard" },
   { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/patient-dashboard/appointment" },
   { label: "Medical Records", icon: "/assets/sidebar/patients.svg", href: "/patient-dashboard/medical" },
@@ -33,8 +67,9 @@ export default function DoctorSidebar() {
     router.push("/login")
   }
 
-  // Determine which sidebar to render
-  const sidebarItems = user?.role === "doctor" ? adminsidebar : patientsidebar
+  let sidebarItems: SidebarItem[] = patientsidebar
+  if (user?.role === "doctor") sidebarItems = doctorsidebar
+  else if (user?.role === "admin") sidebarItems = adminSidebar
 
   return (
     <aside
@@ -56,8 +91,7 @@ export default function DoctorSidebar() {
       {/* Navigation */}
       <nav className="flex flex-col gap-1 flex-1">
         {sidebarItems.map((item) => {
-          const isActive = pathname === item.href
-
+          const isActive = pathname === item.href;
           return (
             <Link
               key={item.label}
@@ -68,11 +102,18 @@ export default function DoctorSidebar() {
                           ${isActive ? "bg-[#E6F9F0] text-[#2DC36A]" : "text-[#222] hover:bg-[#F2F2F2]"}`}
             >
               <span className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center flex-shrink-0">
-                <Image src={item.icon || "/placeholder.svg"} alt={item.label} width={24} height={24} />
+                {typeof item.icon === "string" ? (
+                  <Image src={item.icon} alt={item.label} width={24} height={24} />
+                ) : (
+                  item.icon && ( // Only render if icon is defined
+                    // @ts-ignore
+                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                  )
+                )}
               </span>
               <span className="hidden md:inline">{item.label}</span>
             </Link>
-          )
+          );
         })}
       </nav>
 
