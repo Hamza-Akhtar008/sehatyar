@@ -190,7 +190,7 @@ export function withRole<P extends object>(
               : user?.role === "admin"
               ? "/admin-dashboard"
               : user?.role === "receptionist"
-              ? "/receptionist"
+              ? "/receptionist-dashboard"
               : "/patient-dashboard"
           );
         }
