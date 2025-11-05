@@ -1,27 +1,23 @@
-"use client"
+"use client";
 
-import { AuthProvider } from "@/src/contexts/AuthContext"
-import { Toaster } from "react-hot-toast"
-import "./globals.css"
-import { Geist, Geist_Mono, Montserrat, Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { AuthProvider } from "@/src/contexts/AuthContext";
+import { Toaster } from "react-hot-toast";
+import "./globals.css";
+import {
+  Geist,
+  Geist_Mono,
+  Montserrat,
+  Plus_Jakarta_Sans,
+} from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["300","400","500","600","700","800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
-
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plusjakarta",
   subsets: ["latin"],
@@ -29,13 +25,21 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${plusJakarta.variable} ${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${montserrat.variable} ${plusJakarta.variable} ${geistSans.variable} ${geistMono.variable}`}
+    >
       <body suppressHydrationWarning>
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
             <Toaster position="top-right" />
           </ThemeProvider>

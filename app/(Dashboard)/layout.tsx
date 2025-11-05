@@ -13,6 +13,7 @@ import {
   Plus_Jakarta_Sans,
   Inter,
 } from "next/font/google";
+import { UserRole } from "@/src/types/enums";
 
 interface LayoutProps {
   children: ReactNode;
@@ -54,29 +55,45 @@ export default function DashboardLayout({ children }: LayoutProps) {
   const [isClient, setIsClient] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
+useEffect(() => {
+  setIsClient(true);
 
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login");
-      return;
-    }
+  if (isLoading) return;
 
-    if (!isLoading && isAuthenticated && user) {
-      const currentPath = window.location.pathname;
-      const isOnDoctorDashboard = currentPath.includes("doctor-dashboard");
-      const isOnPatientDashboard = currentPath.includes("patient-dashboard");
-      const isOnAdminDashboard = currentPath.includes("admin-dashboard");
+  if (!isAuthenticated || !user) {
+    router.push("/login");
+    return;
+  }
 
-      if (user.role === "doctor" && isOnPatientDashboard) {
+  const currentPath = window.location.pathname;
+  
+  // Use UserRole enum to ensure type safety
+  switch (user.role) {
+    case UserRole.DOCTOR:
+      if (!currentPath.includes("doctor-dashboard")) {
         router.push("/doctor-dashboard");
-      } else if (user.role === "patient" && isOnDoctorDashboard) {
+      }
+      break;
+    case UserRole.PATIENT:
+      if (!currentPath.includes("patient-dashboard")) {
         router.push("/patient-dashboard");
-      } else if (user.role === "admin" && !isOnAdminDashboard) {
+      }
+      break;
+    case UserRole.ADMIN:
+      if (!currentPath.includes("admin-dashboard")) {
         router.push("/admin-dashboard");
       }
-    }
-  }, [isLoading, isAuthenticated, user, router]);
+      break;
+    case UserRole.RECEPTIONIST:
+      if (!currentPath.includes("receptionist-dashboard")) {
+        router.push("/receptionist-dashboard");
+      }
+      break;
+    default:
+      router.push("/login");
+  }
+}, [isLoading, isAuthenticated, user, router]);
+
 
   if (isLoading || !isClient) {
     return (

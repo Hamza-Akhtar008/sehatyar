@@ -17,6 +17,7 @@ import {
   LogOut,
   LucideIcon,
 } from "lucide-react"
+import { UserRole } from "@/src/types/enums"
 
 // ✅ Add proper type for icons
 type SidebarItem = {
@@ -57,6 +58,16 @@ const patientsidebar: SidebarItem[] = [
   { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
 ]
 
+const receptionistSidebar: SidebarItem[] = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/receptionist-dashboard" },
+  { label: "Appointments", icon: CalendarDays, href: "/receptionist-dashboard/appointments" },
+  { label: "Doctors", icon: UserRound, href: "/receptionist-dashboard/doctors" },
+  { label: "Patients", icon: Users, href: "/receptionist-dashboard/patients" },
+  { label: "Invoices", icon: FileText, href: "/receptionist-dashboard/invoices" },
+  { label: "Messages", icon: MessageSquare, href: "/receptionist-dashboard/messages" },
+  { label: "Settings", icon: Settings, href: "/receptionist-dashboard/settings" },
+]
+
 export default function DoctorSidebar() {
   const { logout, user } = useAuth()
   const pathname = usePathname()
@@ -68,8 +79,9 @@ export default function DoctorSidebar() {
   }
 
   let sidebarItems: SidebarItem[] = patientsidebar
-  if (user?.role === "doctor") sidebarItems = doctorsidebar
-  else if (user?.role === "admin") sidebarItems = adminSidebar
+  if (user?.role === UserRole.DOCTOR) sidebarItems = doctorsidebar
+  else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar
+  else if (user?.role === UserRole.RECEPTIONIST) sidebarItems = receptionistSidebar
 
   return (
     <aside
