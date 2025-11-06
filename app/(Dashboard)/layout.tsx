@@ -5,7 +5,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import DoctorSidebar from "@/components/Dashboard/Doctor/Sidebar";
 import DoctorDashboardHeader from "@/components/Dashboard/Doctor/Header";
 import { useAuth } from "@/src/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Geist,
   Geist_Mono,
@@ -52,55 +52,91 @@ export const inter = Inter({
 export default function DashboardLayout({ children }: LayoutProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hasRedirected, setHasRedirected] = useState(false);
 
-useEffect(() => {
-  setIsClient(true);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-  if (isLoading) return;
+  useEffect(() => {
+    if (!isClient || isLoading) return;
 
-  if (!isAuthenticated || !user) {
-    router.push("/login");
-    return;
-  }
+    console.log("🔍 DASHBOARD LAYOUT CHECK:", {
+      isLoading,
+      isAuthenticated,
+      userRole: user?.role,
+      pathname,
+      hasRedirected
+    });
 
-  const currentPath = window.location.pathname;
-  
-  // Use UserRole enum to ensure type safety
-  switch (user.role) {
-    case UserRole.DOCTOR:
-      if (!currentPath.includes("doctor-dashboard")) {
-        router.push("/doctor-dashboard");
-      }
-      break;
-    case UserRole.PATIENT:
-      if (!currentPath.includes("patient-dashboard")) {
-        router.push("/patient-dashboard");
-      }
-      break;
-    case UserRole.ADMIN:
-      if (!currentPath.includes("admin-dashboard")) {
-        router.push("/admin-dashboard");
-      }
-      break;
-    case UserRole.RECEPTIONIST:
-      if (!currentPath.includes("receptionist-dashboard")) {
-        router.push("/receptionist-dashboard");
-      }
-      break;
-    default:
-      router.push("/login");
-  }
-}, [isLoading, isAuthenticated, user, router]);
+    // If not authenticated, go to login
+    if (!isAuthenticated) {
+      console.log("🚫 Not authenticated -> /login");
+      router.replace("/login");
+      return;
+    }
 
+    // Wait until we have user data
+    if (!user) {
+      console.log("⏳ Waiting for user data...");
+      return;
+    }
 
-  if (isLoading || !isClient) {
+    // Only redirect once per session
+    if (hasRedirected) {
+      console.log("✅ Already redirected in this session");
+      return;
+    }
+
+    const rolePaths = {
+      [UserRole.DOCTOR]: "/doctor-dashboard",
+      [UserRole.PATIENT]: "/patient-dashboard",
+      [UserRole.ADMIN]: "/admin-dashboard",
+      [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
+    };
+
+    const targetPath = rolePaths[user.role as UserRole];
+    const isOnTargetPath = pathname.startsWith(targetPath);
+
+    console.log("🎯 REDIRECT CHECK:", {
+      currentRole: user.role,
+      targetPath,
+      currentPath: pathname,
+      isOnTargetPath
+    });
+
+    if (!isOnTargetPath) {
+      console.log(`🔄 REDIRECTING: ${user.role} -> ${targetPath}`);
+      setHasRedirected(true);
+      router.replace(targetPath);
+    } else {
+      console.log("✅ Already on correct path");
+      setHasRedirected(true);
+    }
+  }, [isLoading, isAuthenticated, user, router, pathname, isClient, hasRedirected]);
+
+  // Show loading until everything is settled
+  if (isLoading || !isClient || (isAuthenticated && user && !hasRedirected)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        Loading...
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Setting up your dashboard...</p>
+          <div className="mt-2 text-xs text-gray-500 space-y-1">
+            <p>Role: <strong>{user?.role || "Loading..."}</strong></p>
+            <p>Path: {pathname}</p>
+            <p>Status: {hasRedirected ? "Ready" : "Checking access..."}</p>
+          </div>
+        </div>
       </div>
     );
+  }
+
+  if (!isAuthenticated || !user) {
+    return null;
   }
 
   return (

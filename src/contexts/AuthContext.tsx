@@ -13,6 +13,7 @@ export type User = {
   role: UserRole;
   token?: string;
 };
+
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
@@ -41,7 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Check for saved auth token on initial load
   useEffect(() => {
     const checkAuth = async () => {
-      // Check if we have user data in localStorage
       try {
         const userData = localStorage.getItem("user");
         if (userData) {
@@ -80,31 +80,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           response.id,
           response.access_token
         );
-        // Example profile: { id, fullName, email, role }
+        
         const userData: User = {
           id: profile.id,
-          doctorId: response.doctorId?.toString(), // Get doctorId from login response
+          doctorId: response.doctorId?.toString(),
           fullName: profile.fullName || "",
           email: profile.email || "",
           role: profile.role || "patient",
           token: response.access_token,
         };
+        
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
 
-       const role = userData.role?.toLowerCase();
-
-if (role === "doctor") {
-  router.push("/doctor-dashboard");
-} else if (role === "admin") {
-  router.push("/admin-dashboard");
-} else if (role === "receptionist") {
-  router.push("/receptionist-dashboard");
-} else {
-  router.push("/patient-dashboard");
-}
-
-
+        // ⚠️ REMOVED THE REDIRECT FROM HERE ⚠️
+        // Let the DashboardLayout handle the redirect based on role
+        // This prevents double redirects
+        
         return response;
       }
       throw new Error(
@@ -119,14 +111,15 @@ if (role === "doctor") {
   };
 
   const logout = () => {
-    // Clear user data and redirect to login
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("authToken");
+    // Clear the session storage flag too
+    sessionStorage.removeItem('dashboard-redirected');
     router.push("/login");
   };
 
   const setUserData = (userData: User) => {
-    // Save user to state and localStorage
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
@@ -142,6 +135,7 @@ if (role === "doctor") {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
 // Custom hook to use the auth context
 export const useAuth = () => useContext(AuthContext);
 
@@ -183,7 +177,6 @@ export function withRole<P extends object>(
         if (!isAuthenticated) {
           router.push("/login");
         } else if (user?.role !== role) {
-          // Redirect based on role
           router.push(
             user?.role === "doctor"
               ? "/doctor-dashboard"
@@ -205,7 +198,6 @@ export function withRole<P extends object>(
       );
     }
 
-    // Only render if authenticated and has the correct role
     return isAuthenticated && user?.role === role ? (
       <Component {...(props as P)} />
     ) : null;

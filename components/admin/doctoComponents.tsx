@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Stethoscope, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
+import Image from "next/image"
 
 // --- Types ---
 type DoctorType = {
@@ -13,6 +14,7 @@ type DoctorType = {
   hospital: string;
   experience: string;
   status: string;
+  profilePic?: string; // added profilePic for rendering
 };
 
 interface DoctorModalProps {
@@ -232,12 +234,47 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteCo
   )
 }
 
+const BASE_URL =
+  process.env.NEXT_BASE_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  "https://sehatyarr-c23468ec8014.herokuapp.com";
+
 export function DoctorsManagement() {
   const [doctors, setDoctors] = useState<DoctorType[]>(doctorsData);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingDoctor, setEditingDoctor] = useState<DoctorType | null>(null);
   const [deletingDoctor, setDeletingDoctor] = useState<DoctorType | null>(null);
+
+  useEffect(() => {
+    async function fetchDoctors() {
+      try {
+        const res = await fetch(`${BASE_URL}/doctor-profile`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch doctors");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setDoctors(
+            data.map((doc: any) => ({
+              id: doc.id,
+              name: doc.user?.fullName || "",
+              specialty: Array.isArray(doc.primarySpecialization)
+                ? doc.primarySpecialization.join(", ")
+                : "",
+              email: doc.user?.email || "",
+              phone: doc.user?.phoneNumber || "",
+              hospital: doc.hospitals?.[0]?.name || "",
+              experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
+              status: doc.isActive ? "Active" : "Inactive",
+              profilePic: doc.profilePic || "", // add profilePic for rendering
+            }))
+          );
+        }
+      } catch {
+        setDoctors([]);
+      }
+    }
+    fetchDoctors();
+  }, []);
 
   const handleSaveDoctor = (formData: DoctorType) => {
     if (editingDoctor) {
@@ -249,8 +286,15 @@ export function DoctorsManagement() {
     setIsAddModalOpen(false);
   };
 
-  const handleDeleteDoctor = () => {
+  const handleDeleteDoctor = async () => {
     if (!deletingDoctor) return;
+    try {
+      await fetch(`${BASE_URL}/doctor-profile/${deletingDoctor.id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      // Optionally handle error
+    }
     setDoctors(doctors.filter((d) => d.id !== deletingDoctor.id));
     setIsDeleteModalOpen(false);
     setDeletingDoctor(null);
@@ -278,7 +322,7 @@ export function DoctorsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
-            <button
+            {/* <button
               onClick={() => {
                 setEditingDoctor(null)
                 setIsAddModalOpen(true)
@@ -288,7 +332,7 @@ export function DoctorsManagement() {
             >
               <Plus className="w-5 h-5" />
               Add Doctor
-            </button>
+            </button> */}
           </div>
           <p className="text-gray-600">Manage doctor accounts and information</p>
         </div>
@@ -336,12 +380,13 @@ export function DoctorsManagement() {
         </div>
 
         {/* Doctors Table */}
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-          <table className="w-full">
+        <div className="border border-gray-200 rounded-lg overflow-x-auto">
+          <table className="w-full min-w-[900px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Doctor Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialty</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Profile</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Hospital</th>
@@ -353,6 +398,22 @@ export function DoctorsManagement() {
             <tbody>
               {doctors.map((doctor) => (
                 <tr key={doctor.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                  {/* Profile Pic column */}
+                  <td className="px-6 py-4">
+                    {doctor.profilePic ? (
+                      <Image
+                        src={doctor.profilePic}
+                        alt={doctor.name}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                        {doctor.name ? doctor.name.charAt(0) : "?"}
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Stethoscope style={{ color: "#62e18b" }} className="w-5 h-5" />
@@ -384,15 +445,18 @@ export function DoctorsManagement() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button
+                      {/* <button
                         onClick={() => handleEditClick(doctor)}
                         className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4" />
-                      </button>
+                      </button> */}
                       <button
-                        onClick={() => handleDeleteClick(doctor)}
+                        onClick={async () => {
+                          setDeletingDoctor(doctor);
+                          setIsDeleteModalOpen(true);
+                        }}
                         className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
                         title="Delete"
                       >
@@ -402,7 +466,13 @@ export function DoctorsManagement() {
                   </td>
                 </tr>
               ))}
-            </tbody>
+            </tbody>{/* <button
+                        onClick={() => handleEditClick(doctor)}
+                        className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button> */}
           </table>
         </div>
       </div>

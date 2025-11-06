@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { UserCog, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 
 // --- Types ---
@@ -26,6 +26,11 @@ interface DeleteConfirmModalProps {
   onConfirm: () => void;
   receptionistName?: string;
 }
+
+const BASE_URL =
+  process.env.NEXT_BASE_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  "https://sehatyarr-c23468ec8014.herokuapp.com";
 
 const receptionistsData: ReceptionistType[] = [
   {
@@ -193,11 +198,38 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, receptionistName }: De
 }
 
 export function ReceptionistsManagement() {
-  const [receptionists, setReceptionists] = useState<ReceptionistType[]>(receptionistsData);
+  const [receptionists, setReceptionists] = useState<ReceptionistType[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingReceptionist, setEditingReceptionist] = useState<ReceptionistType | null>(null);
   const [deletingReceptionist, setDeletingReceptionist] = useState<ReceptionistType | null>(null);
+
+  useEffect(() => {
+    async function fetchReceptionists() {
+      try {
+        const res = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setReceptionists(
+            data
+              .filter((u: any) => u.role === "receptionist")
+              .map((u: any) => ({
+                id: u.id,
+                name: u.fullName || "",
+                email: u.email || "",
+                phone: u.phoneNumber || "",
+                hospital: u.hospital || "",
+                status: u.isActive ? "Active" : "Inactive",
+              }))
+          );
+        }
+      } catch {
+        setReceptionists([]);
+      }
+    }
+    fetchReceptionists();
+  }, []);
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
@@ -209,8 +241,15 @@ export function ReceptionistsManagement() {
     setIsAddModalOpen(false);
   };
 
-  const handleDeleteReceptionist = () => {
+  const handleDeleteReceptionist = async () => {
     if (!deletingReceptionist) return;
+    try {
+      await fetch(`${BASE_URL}/users/${deletingReceptionist.id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      // Optionally handle error
+    }
     setReceptionists(receptionists.filter((r) => r.id !== deletingReceptionist.id));
     setIsDeleteModalOpen(false);
     setDeletingReceptionist(null);
@@ -238,7 +277,7 @@ export function ReceptionistsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Receptionists</h1>
-            <button
+            {/* <button
               onClick={() => {
                 setEditingReceptionist(null)
                 setIsAddModalOpen(true)
@@ -248,7 +287,7 @@ export function ReceptionistsManagement() {
             >
               <Plus className="w-5 h-5" />
               Add Receptionist
-            </button>
+            </button> */}
           </div>
           <p className="text-gray-600">Manage receptionist accounts and information</p>
         </div>
@@ -317,13 +356,13 @@ export function ReceptionistsManagement() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button
+                      {/* <button
                         onClick={() => handleEditClick(receptionist)}
                         className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4" />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => handleDeleteClick(receptionist)}
                         className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
