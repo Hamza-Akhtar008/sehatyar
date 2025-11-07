@@ -319,23 +319,27 @@ export function DoctorsManagement() {
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
-            {/* <button
-              onClick={() => {
-                setEditingDoctor(null)
-                setIsAddModalOpen(true)
-              }}
-              style={{ backgroundColor: "#62e18b" }}
-              className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-            >
-              <Plus className="w-5 h-5" />
-              Add Doctor
-            </button> */}
-          </div>
-          <p className="text-gray-600">Manage doctor accounts and information</p>
-        </div>
+      <div className="mb-8">
+  <div className="flex items-center justify-between mb-2">
+    <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
+
+    {/* ✅ Add Doctor Button */}
+    <button
+      onClick={() => {
+        setEditingDoctor(null);
+        setIsAddModalOpen(true);
+      }}
+      style={{ backgroundColor: "#62e18b" }}
+      className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
+    >
+      <Plus className="w-5 h-5" />
+      Add Doctor
+    </button>
+  </div>
+
+  <p className="text-gray-600">Manage doctor accounts and information</p>
+</div>
+
 
         {/* Stats */}
         {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -389,7 +393,7 @@ export function DoctorsManagement() {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Hospital</th>
+            
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Experience</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>

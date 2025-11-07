@@ -292,7 +292,7 @@ export function ReceptionistDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
@@ -320,20 +320,12 @@ export function ReceptionistDashboard() {
               <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Daily Revenue</p>
-                <p className="text-3xl font-bold text-gray-900">${totalRevenue}</p>
-              </div>
-              <DollarSign style={{ color: "#62e18b" }} className="w-10 h-10" />
-            </div>
-          </div>
+         
         </div>
 
         {/* Tabs */}
         <div className="mb-6 border-b border-gray-200 flex flex-wrap gap-4">
-          {["appointments", "doctors", "patients", "invoices"].map((tab) => (
+          {["appointments", "doctors"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -352,7 +344,7 @@ export function ReceptionistDashboard() {
         {activeTab === "appointments" && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Appointments</h2>
+            
               <button
                 onClick={() => setIsAddAppointmentModalOpen(true)}
                 style={{ backgroundColor: "#62e18b" }}
@@ -418,16 +410,7 @@ export function ReceptionistDashboard() {
         {/* Doctors Tab */}
         {activeTab === "doctors" && (
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Doctors</h2>
-              <button
-                style={{ backgroundColor: "#62e18b" }}
-                className="px-4 py-2 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                Add Doctor
-              </button>
-            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {doctorsData.map((doctor) => (
                 <div key={doctor.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
@@ -452,12 +435,7 @@ export function ReceptionistDashboard() {
                     >
                       View
                     </button>
-                    <button
-                      onClick={() => handleDeleteClick("Doctor")}
-                      className="flex-1 p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition text-sm font-semibold"
-                    >
-                      Delete
-                    </button>
+                  
                   </div>
                 </div>
               ))}
@@ -465,126 +443,7 @@ export function ReceptionistDashboard() {
           </div>
         )}
 
-        {/* Patients Tab */}
-        {activeTab === "patients" && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Patients</h2>
-              <button
-                style={{ backgroundColor: "#62e18b" }}
-                className="px-4 py-2 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                Add Patient
-              </button>
-            </div>
-            <div className="border border-gray-200 rounded-lg overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Age</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Blood Group</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patientsData.map((patient) => (
-                    <tr key={patient.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                      <td className="px-4 md:px-6 py-4 font-semibold text-gray-900">{patient.name}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{patient.age}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{patient.bloodGroup}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{patient.phone}</td>
-                      <td className="px-4 md:px-6 py-4">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleViewDetails(patient, "Patient")}
-                            className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteClick("Patient")}
-                            className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
 
-        {/* Invoices Tab */}
-        {activeTab === "invoices" && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Invoices</h2>
-              <button
-                style={{ backgroundColor: "#62e18b" }}
-                className="px-4 py-2 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                Create Invoice
-              </button>
-            </div>
-            <div className="border border-gray-200 rounded-lg overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Invoice No</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Amount</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invoicesData.map((invoice) => (
-                    <tr key={invoice.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                      <td className="px-4 md:px-6 py-4 font-semibold text-gray-900">{invoice.invoiceNo}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{invoice.patientName}</td>
-                      <td className="px-4 md:px-6 py-4 font-semibold text-gray-900">${invoice.amount}</td>
-                      <td className="px-4 md:px-6 py-4">
-                        <span
-                          style={{
-                            backgroundColor: invoice.status === "Paid" ? "#62e18b" : "#fcd34d",
-                          }}
-                          className="px-3 py-1 rounded-full text-sm font-semibold text-black"
-                        >
-                          {invoice.status}
-                        </span>
-                      </td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{invoice.date}</td>
-                      <td className="px-4 md:px-6 py-4">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleViewDetails(invoice, "Invoice")}
-                            className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteClick("Invoice")}
-                            className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Modals */}

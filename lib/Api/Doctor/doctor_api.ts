@@ -57,3 +57,15 @@ export const getPatientAppointmentsByDoctorId = async () => {
         throw error;
     }
 };
+
+
+//get doctor profile by doctor id
+export const deletePatientById = async (id: number) => {
+    try {
+        const response = await axiosInstance.delete(`/users/soft/Delete/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching doctor profile by doctor ID:", error);
+        throw error;
+    }
+};

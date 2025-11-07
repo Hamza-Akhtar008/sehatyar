@@ -3,13 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
 import HospitalModal from "@/components/Dashboard/Doctor/components/Hospital";
-import { GetHospital } from "@/lib/Api/Hospital/Api";
+import { deleteHospital, GetHospital } from "@/lib/Api/Hospital/Api";
 import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function Hospital() {
-  const {user}=useAuth();
+  const { user } = useAuth();
   const [showFilter, setShowFilter] = useState(false);
   const [showHospitalModal, setShowHospitalModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<null | { id: string; name: string }>(null);
   const filterRef = useRef<HTMLDivElement>(null);
   const [hospitals, setHospitals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ export default function Hospital() {
       setLoading(true);
       setError(null);
       try {
-        const data = await GetHospital(user?.doctorId||"0");
+        const data = await GetHospital(user?.doctorId || "0");
         setHospitals(data);
       } catch (err: any) {
         setError(err?.message || "Failed to fetch hospitals");
@@ -31,7 +32,7 @@ export default function Hospital() {
       }
     }
     fetchHospitals();
-  }, []);
+  }, [user?.doctorId]);
 
   // Close filter when clicking outside
   useEffect(() => {
@@ -59,19 +60,10 @@ export default function Hospital() {
               className="flex items-center gap-2 bg-white border border-gray-200 rounded-md px-3 py-2 text-sm hover:bg-gray-50 transition"
               onClick={() => setShowFilter(!showFilter)}
             >
-              <Image
-                src="/assets/filter.svg"
-                alt="Filter Icon"
-                width={16}
-                height={16}
-              />
+              <Image src="/assets/filter.svg" alt="Filter Icon" width={16} height={16} />
               <span className="flex items-center gap-1">
                 Filters
-                <span
-                  className={`transition-transform ${showFilter ? "rotate-180" : ""}`}
-                >
-                  ^
-                </span>
+                <span className={`transition-transform ${showFilter ? "rotate-180" : ""}`}>^</span>
               </span>
             </button>
 
@@ -112,9 +104,7 @@ export default function Hospital() {
         ) : hospitals.length === 0 ? (
           <div>No hospitals or clinics found.</div>
         ) : (
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {hospitals.map((hospital, index) => (
               <div
                 key={index}
@@ -140,11 +130,19 @@ export default function Hospital() {
                 </div>
 
                 {/* Right Info */}
-                <div className="flex flex-col sm:items-end mt-2 sm:mt-0">
+                <div className="flex flex-col sm:items-end mt-3 sm:mt-0 gap-3">
                   <p className="text-sm text-gray-500">{hospital.address}</p>
-                  <span className="mt-1 inline-block px-3 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
-                    Active
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
+                      Active
+                    </span>
+                    <button
+                      onClick={() => setConfirmDelete({ id: hospital.id, name: hospital.name })}
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -152,14 +150,48 @@ export default function Hospital() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Add Hospital Modal */}
       <HospitalModal
         isOpen={showHospitalModal}
         onClose={() => setShowHospitalModal(false)}
-        onHospitalAdded={(newHospital: any) =>
-          setHospitals([...hospitals, newHospital])
-        }
+        onHospitalAdded={(newHospital: any) => setHospitals([...hospitals, newHospital])}
       />
+
+      {/* Delete Confirmation Modal */}
+      {confirmDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-xl p-6 w-[90%] sm:w-[400px] shadow-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Delete Hospital</h3>
+            <p className="text-sm text-gray-600 mb-6">
+              Are you sure you want to delete <strong>{confirmDelete.name}</strong>? This action
+              cannot be undone.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await deleteHospital(confirmDelete.id);
+                    setHospitals((prev) => prev.filter((h) => h.id !== confirmDelete.id));
+                    setConfirmDelete(null);
+                  } catch (error: any) {
+                    alert(error?.message || "Failed to delete hospital");
+                  }
+                }}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

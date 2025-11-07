@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Calendar, Clock, User, Phone, Mail, MapPin, DollarSign, Trash2, Plus, X, Eye, Search } from "lucide-react"
 
 // --- Types ---
@@ -41,7 +41,7 @@ interface AddAppointmentModalProps {
   onAdd: (formData: AppointmentType) => void;
 }
 
-const appointmentsData = [
+export const appointmentsData = [
   {
     id: 1,
     patientName: "John Anderson",
@@ -67,7 +67,7 @@ const appointmentsData = [
     paymentMethod: "card",
     amount: "200",
     notes: "Follow-up consultation",
-    appointmentDate: "2025-11-12",
+    appointmentDate: "2025-11-08",
     appointmentTime: "2:00 PM",
     appointmentFor: "myself",
     doctorId: 2,
@@ -127,7 +127,263 @@ const appointmentsData = [
     hospitalName: "North Star Medical",
     status: "Confirmed",
   },
-]
+  {
+    id: 6,
+    patientName: "Olivia Taylor",
+    phoneNumber: "+1-800-777-8888",
+    email: "olivia.taylor@email.com",
+    paymentMethod: "card",
+    amount: "180",
+    notes: "Heart follow-up",
+    appointmentDate: "2025-11-08",
+    appointmentTime: "4:00 PM",
+    appointmentFor: "myself",
+    doctorId: 1,
+    doctorName: "Dr. Sarah Johnson",
+    specialty: "Cardiology",
+    hospitalName: "City Medical Center",
+    status: "Pending",
+  },
+  {
+    id: 7,
+    patientName: "Daniel Clark",
+    phoneNumber: "+1-800-999-0000",
+    email: "daniel.clark@email.com",
+    paymentMethod: "cash",
+    amount: "220",
+    notes: "Neurological evaluation",
+    appointmentDate: "2025-11-02",
+    appointmentTime: "1:00 PM",
+    appointmentFor: "myself",
+    doctorId: 2,
+    doctorName: "Dr. Michael Chen",
+    specialty: "Neurology",
+    hospitalName: "Green Valley Hospital",
+    status: "Confirmed",
+  },
+  {
+    id: 8,
+    patientName: "Sophia Lee",
+    phoneNumber: "+1-800-101-2020",
+    email: "sophia.lee@email.com",
+    paymentMethod: "card",
+    amount: "90",
+    notes: "Child vaccination",
+    appointmentDate: "2025-11-09",
+    appointmentTime: "11:30 AM",
+    appointmentFor: "child",
+    doctorId: 3,
+    doctorName: "Dr. Emily Rodriguez",
+    specialty: "Pediatrics",
+    hospitalName: "Sunset Health Clinic",
+    status: "Confirmed",
+  },
+  {
+    id: 9,
+    patientName: "Liam Martinez",
+    phoneNumber: "+1-800-303-4040",
+    email: "liam.martinez@email.com",
+    paymentMethod: "cash",
+    amount: "160",
+    notes: "Joint pain treatment",
+    appointmentDate: "2025-11-08",
+    appointmentTime: "10:45 AM",
+    appointmentFor: "myself",
+    doctorId: 4,
+    doctorName: "Dr. James Wilson",
+    specialty: "Orthopedics",
+    hospitalName: "Downtown Care Hospital",
+    status: "Confirmed",
+  },
+  {
+    id: 10,
+    patientName: "Ava White",
+    phoneNumber: "+1-800-505-6060",
+    email: "ava.white@email.com",
+    paymentMethod: "card",
+    amount: "130",
+    notes: "Facial treatment",
+    appointmentDate: "2025-11-08",
+    appointmentTime: "1:00 PM",
+    appointmentFor: "myself",
+    doctorId: 5,
+    doctorName: "Dr. Lisa Anderson",
+    specialty: "Dermatology",
+    hospitalName: "North Star Medical",
+    status: "Pending",
+  },
+  {
+    id: 11,
+    patientName: "James Turner",
+    phoneNumber: "+1-800-707-8080",
+    email: "james.turner@email.com",
+    paymentMethod: "cash",
+    amount: "250",
+    notes: "Cardiac stress test",
+    appointmentDate: "2025-11-18",
+    appointmentTime: "9:30 AM",
+    appointmentFor: "myself",
+    doctorId: 1,
+    doctorName: "Dr. Sarah Johnson",
+    specialty: "Cardiology",
+    hospitalName: "City Medical Center",
+    status: "Confirmed",
+  },
+  {
+    id: 12,
+    patientName: "Grace Hill",
+    phoneNumber: "+1-800-808-9090",
+    email: "grace.hill@email.com",
+    paymentMethod: "card",
+    amount: "190",
+    notes: "Migraine follow-up",
+    appointmentDate: "2025-11-19",
+    appointmentTime: "2:45 PM",
+    appointmentFor: "myself",
+    doctorId: 2,
+    doctorName: "Dr. Michael Chen",
+    specialty: "Neurology",
+    hospitalName: "Green Valley Hospital",
+    status: "Pending",
+  },
+  {
+    id: 13,
+    patientName: "Ella Scott",
+    phoneNumber: "+1-800-111-5555",
+    email: "ella.scott@email.com",
+    paymentMethod: "cash",
+    amount: "110",
+    notes: "Child fever consultation",
+    appointmentDate: "2025-11-13",
+    appointmentTime: "3:15 PM",
+    appointmentFor: "child",
+    doctorId: 3,
+    doctorName: "Dr. Emily Rodriguez",
+    specialty: "Pediatrics",
+    hospitalName: "Sunset Health Clinic",
+    status: "Confirmed",
+  },
+  {
+    id: 14,
+    patientName: "William Young",
+    phoneNumber: "+1-800-121-2121",
+    email: "william.young@email.com",
+    paymentMethod: "card",
+    amount: "230",
+    notes: "Bone fracture follow-up",
+    appointmentDate: "2025-11-11",
+    appointmentTime: "5:00 PM",
+    appointmentFor: "myself",
+    doctorId: 4,
+    doctorName: "Dr. James Wilson",
+    specialty: "Orthopedics",
+    hospitalName: "Downtown Care Hospital",
+    status: "Confirmed",
+  },
+  {
+    id: 15,
+    patientName: "Charlotte Hall",
+    phoneNumber: "+1-800-131-3131",
+    email: "charlotte.hall@email.com",
+    paymentMethod: "cash",
+    amount: "100",
+    notes: "Allergy consultation",
+    appointmentDate: "2025-11-09",
+    appointmentTime: "9:00 AM",
+    appointmentFor: "myself",
+    doctorId: 5,
+    doctorName: "Dr. Lisa Anderson",
+    specialty: "Dermatology",
+    hospitalName: "North Star Medical",
+    status: "Confirmed",
+  },
+  {
+    id: 16,
+    patientName: "Henry Adams",
+    phoneNumber: "+1-800-141-4141",
+    email: "henry.adams@email.com",
+    paymentMethod: "cash",
+    amount: "150",
+    notes: "Heart pressure monitoring",
+    appointmentDate: "2025-11-21",
+    appointmentTime: "2:30 PM",
+    appointmentFor: "myself",
+    doctorId: 1,
+    doctorName: "Dr. Sarah Johnson",
+    specialty: "Cardiology",
+    hospitalName: "City Medical Center",
+    status: "Pending",
+  },
+  {
+    id: 17,
+    patientName: "Amelia Parker",
+    phoneNumber: "+1-800-151-5151",
+    email: "amelia.parker@email.com",
+    paymentMethod: "card",
+    amount: "210",
+    notes: "Brain scan review",
+    appointmentDate: "2025-10-28",
+    appointmentTime: "4:15 PM",
+    appointmentFor: "myself",
+    doctorId: 2,
+    doctorName: "Dr. Michael Chen",
+    specialty: "Neurology",
+    hospitalName: "Green Valley Hospital",
+    status: "Confirmed",
+  },
+  {
+    id: 18,
+    patientName: "Benjamin Evans",
+    phoneNumber: "+1-800-161-6161",
+    email: "benjamin.evans@email.com",
+    paymentMethod: "cash",
+    amount: "140",
+    notes: "Child nutrition consultation",
+    appointmentDate: "2025-11-07",
+    appointmentTime: "11:00 AM",
+    appointmentFor: "child",
+    doctorId: 3,
+    doctorName: "Dr. Emily Rodriguez",
+    specialty: "Pediatrics",
+    hospitalName: "Sunset Health Clinic",
+    status: "Confirmed",
+  },
+  {
+    id: 19,
+    patientName: "Isabella Wright",
+    phoneNumber: "+1-800-171-7171",
+    email: "isabella.wright@email.com",
+    paymentMethod: "card",
+    amount: "185",
+    notes: "Knee replacement follow-up",
+    appointmentDate: "2025-11-22",
+    appointmentTime: "12:00 PM",
+    appointmentFor: "myself",
+    doctorId: 4,
+    doctorName: "Dr. James Wilson",
+    specialty: "Orthopedics",
+    hospitalName: "Downtown Care Hospital",
+    status: "Pending",
+  },
+  {
+    id: 20,
+    patientName: "Lucas Green",
+    phoneNumber: "+1-800-181-8181",
+    email: "lucas.green@email.com",
+    paymentMethod: "cash",
+    amount: "95",
+    notes: "Skin rash treatment",
+    appointmentDate: "2025-11-03",
+    appointmentTime: "10:30 AM",
+    appointmentFor: "myself",
+    doctorId: 5,
+    doctorName: "Dr. Lisa Anderson",
+    specialty: "Dermatology",
+    hospitalName: "North Star Medical",
+    status: "Confirmed",
+  },
+];
+
 
 function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDetailModalProps) {
   if (!isOpen || !appointment) return null
@@ -475,11 +731,8 @@ export function AppointmentsManagement() {
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  // 🔍 Filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [dateFilter, setDateFilter] = useState("");
+  const [timeframe, setTimeframe] = useState<"daily" | "weekly" | "monthly" | "total">("daily");
 
   // 🔹 Handlers
   const handleViewDetails = (appointment: AppointmentType) => {
@@ -502,22 +755,51 @@ export function AppointmentsManagement() {
     setAppointments([...appointments, formData]);
   };
 
-  // 🔹 Filter logic
-  const filteredAppointments = appointments.filter((appointment) => {
-    const matchesName = appointment.patientName
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "All" || appointment.status === statusFilter;
-    const matchesDate =
-      !dateFilter || appointment.appointmentDate === dateFilter;
+  // 🔹 Helper to filter appointments by timeframe
+  function filterAppointmentsByTimeframe(appointments: AppointmentType[], timeframe: string) {
+    const now = new Date();
 
-    return matchesName && matchesStatus && matchesDate;
-  });
+    return appointments.filter((a) => {
+      const appointmentDate = new Date(a.appointmentDate);
 
-  const confirmedCount = appointments.filter((a) => a.status === "Confirmed").length;
-  const pendingCount = appointments.filter((a) => a.status === "Pending").length;
-  const totalRevenue = appointments.reduce((sum, a) => sum + Number.parseFloat(a.amount), 0);
+      switch (timeframe) {
+        case "daily":
+          return appointmentDate.toDateString() === now.toDateString();
+
+        case "weekly": {
+          const weekStart = new Date(now);
+          weekStart.setDate(now.getDate() - now.getDay()); // Sunday
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStart.getDate() + 7);
+          return appointmentDate >= weekStart && appointmentDate < weekEnd;
+        }
+
+        case "monthly":
+          return (
+            appointmentDate.getMonth() === now.getMonth() &&
+            appointmentDate.getFullYear() === now.getFullYear()
+          );
+
+        case "total":
+        default:
+          return true;
+      }
+    });
+  }
+
+  // 🔹 Group Appointments by Doctor
+  const groupedByDoctor = useMemo(() => {
+    const filtered = appointments.filter((a) =>
+      a.doctorName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return filtered.reduce((acc: any, curr) => {
+      if (!acc[curr.doctorName]) acc[curr.doctorName] = [];
+      acc[curr.doctorName].push(curr);
+      return acc;
+    }, {});
+  }, [appointments, searchQuery]);
+
+  const doctorNames = Object.keys(groupedByDoctor);
 
   return (
     <div className="min-h-screen bg-white p-8">
@@ -525,7 +807,7 @@ export function AppointmentsManagement() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-4xl font-bold text-gray-900">Appointments</h1>
+            <h1 className="text-4xl font-bold text-gray-900">Doctor-wise Appointments</h1>
             <button
               style={{ backgroundColor: "#62e18b" }}
               className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
@@ -535,133 +817,146 @@ export function AppointmentsManagement() {
               Add Appointment
             </button>
           </div>
-          <p className="text-gray-600">
-            Manage all patient appointments and schedules
-          </p>
+          <p className="text-gray-600">View and manage appointments by doctor</p>
         </div>
 
-     
-
-        {/* 🔍 Filter Section */}
-        <div className="flex flex-col md:flex-row items-center gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-          {/* Search */}
+        {/* 🔍 Search Doctor */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="relative w-full md:w-1/3">
             <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search by patient name..."
+              placeholder="Search doctor by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#62e18b] outline-none"
             />
           </div>
 
-          {/* Date */}
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="w-full md:w-1/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#62e18b] outline-none"
-          />
+          {/* Timeframe Filter */}
+          <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+            {["daily", "weekly", "monthly", "total"].map((option) => (
+              <button
+                key={option}
+                onClick={() => setTimeframe(option as any)}
+                className={`px-4 py-2 rounded-md font-medium capitalize transition ${
+                  timeframe === option
+                    ? "bg-[#62e18b] text-black"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
 
-          {/* Status */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full md:w-1/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#62e18b] outline-none"
-          >
-            <option value="All">All Status</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Pending">Pending</option>
-          </select>
-
-          {/* Clear Filters */}
           <button
-            onClick={() => {
-              setSearchQuery("");
-              setStatusFilter("All");
-              setDateFilter("");
-            }}
+            onClick={() => setSearchQuery("")}
             className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
           >
             Reset
           </button>
         </div>
 
-        {/* 🧾 Appointments Table */}
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Doctor</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date & Time</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Hospital</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Amount</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((appointment) => (
-                  <tr key={appointment.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <User style={{ color: "#62e18b" }} className="w-5 h-5" />
-                        <span className="font-semibold text-gray-900">{appointment.patientName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{appointment.doctorName}</td>
-                    <td className="px-6 py-4">
-                      <div className="text-gray-600">
-                        <div className="font-semibold">{appointment.appointmentDate}</div>
-                        <div className="text-sm">{appointment.appointmentTime}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{appointment.hospitalName}</td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">${appointment.amount}</td>
-                    <td className="px-6 py-4">
-                      <span
-                        style={{
-                          backgroundColor:
-                            appointment.status === "Confirmed" ? "#62e18b" : "#fcd34d",
-                        }}
-                        className="px-3 py-1 rounded-full text-sm font-semibold text-black"
-                      >
-                        {appointment.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleViewDetails(appointment)}
-                          className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                          title="View Details"
+        {/* 🧾 Doctor-wise Tables */}
+        {doctorNames.length > 0 ? (
+          doctorNames.map((doctorName) => {
+            const doctorAppointments = groupedByDoctor[doctorName];
+            const filteredAppointments = filterAppointmentsByTimeframe(doctorAppointments, timeframe);
+
+            const confirmedCount = filteredAppointments.filter((a) => a.status === "Confirmed").length;
+            const pendingCount = filteredAppointments.filter((a) => a.status === "Pending").length;
+          const totalRevenue = filteredAppointments
+  .filter((a) => a.status === "Confirmed")
+  .reduce((sum, a) => sum + parseFloat(a.amount), 0);
+
+            return (
+              <div key={doctorName} className="mb-10 border border-gray-200 rounded-lg shadow-sm">
+                {/* Doctor Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">{doctorName}</h2>
+                    <p className="text-gray-600 text-sm">
+                      {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} — 
+                      Appointments: {filteredAppointments.length} | Confirmed: {confirmedCount} | 
+                      Pending: {pendingCount} | Revenue: ${totalRevenue.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Appointments Table */}
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date & Time</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Amount</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredAppointments.length > 0 ? (
+                      filteredAppointments.map((appointment) => (
+                        <tr
+                          key={appointment.id}
+                          className="border-b border-gray-200 hover:bg-gray-50 transition"
                         >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(appointment.id)}
-                          className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                          title="Cancel"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-500">
-                    No appointments found matching your filters.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                          <td className="px-6 py-4 flex items-center gap-3">
+                            <User style={{ color: "#62e18b" }} className="w-5 h-5" />
+                            <span className="font-semibold text-gray-900">{appointment.patientName}</span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            <div className="font-semibold">{appointment.appointmentDate}</div>
+                            <div className="text-sm">{appointment.appointmentTime}</div>
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900">${appointment.amount}</td>
+                          <td className="px-6 py-4">
+                            <span
+                              style={{
+                                backgroundColor:
+                                  appointment.status === "Confirmed" ? "#62e18b" : "#fcd34d",
+                              }}
+                              className="px-3 py-1 rounded-full text-sm font-semibold text-black"
+                            >
+                              {appointment.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleViewDetails(appointment)}
+                                className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(appointment.id)}
+                                className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                                title="Cancel"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="text-center py-4 text-gray-500">
+                          No {timeframe} appointments.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center py-8 text-gray-500">No appointments found.</div>
+        )}
       </div>
 
       {/* Modals */}
@@ -686,4 +981,3 @@ export function AppointmentsManagement() {
     </div>
   );
 }
-

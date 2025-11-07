@@ -47,6 +47,30 @@ const adminSidebar: SidebarItem[] = [
   { label: "Settings", icon: Settings, href: "/admin-dashboard/settings" },
 ];
 
+
+
+const ClinicSideBar: SidebarItem[] = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/clinic-dashboard" },
+
+  { label: "Doctors", icon: UserRound, href: "/clinic-dashboard/doctors" },
+  { label: "Patients", icon: Users, href: "/clinic-dashboard/patients" },
+  {
+    label: "Receptionists",
+    icon: UserCog,
+    href: "/clinic-dashboard/receptionists",
+  },
+  {
+    label: "Appointments",
+    icon: CalendarDays,
+    href: "/clinic-dashboard/appointments",
+  },
+  { label: "Invoices", icon: FileText, href: "/clinic-dashboard/invoices" },
+  // { label: "Analytics", icon: BarChart3, href: "/admin-dashboard/analytics" },
+  { label: "Message", icon: MessageSquare, href: "/clinic-dashboard/messages" },
+  { label: "Settings", icon: Settings, href: "/clinic-dashboard/settings" },
+];
+
+
 const doctorsidebar: SidebarItem[] = [
   {
     label: "Dashboard",
@@ -134,12 +158,7 @@ const receptionistSidebar: SidebarItem[] = [
     icon: UserRound,
     href: "/receptionist-dashboard/doctors",
   },
-  { label: "Patients", icon: Users, href: "/receptionist-dashboard/patients" },
-  {
-    label: "Invoices",
-    icon: FileText,
-    href: "/receptionist-dashboard/invoices",
-  },
+  
   {
     label: "Messages",
     icon: MessageSquare,
@@ -167,8 +186,10 @@ export default function DoctorSidebar() {
   if (user?.role === UserRole.PATIENT) sidebarItems = patientsidebar;
   else if (user?.role === UserRole.DOCTOR) sidebarItems = doctorsidebar;
   else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar;
-  else if (user?.role === UserRole.RECEPTIONIST)
-    sidebarItems = receptionistSidebar;
+  else if (user?.role === UserRole.RECEPTIONIST) sidebarItems = receptionistSidebar;
+  else 
+    sidebarItems = ClinicSideBar;
+
 
   return (
     <aside

@@ -12,6 +12,7 @@ export enum SlotType {
 export enum UserRole {
   ADMIN = 'admin',
   DOCTOR = 'doctor',
+  clinic='clinic',
   RECEPTIONIST = 'receptionist',
   PATIENT = 'patient',
 }

@@ -14,6 +14,7 @@ import {
   Inter,
 } from "next/font/google";
 import { UserRole } from "@/src/types/enums";
+import { User } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -73,15 +74,15 @@ export default function DashboardLayout({ children }: LayoutProps) {
     });
 
     // If not authenticated, go to login
-    if (!isAuthenticated) {
-      router.replace("/login");
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   router.replace("/login");
+    //   return;
+    // }
 
     // Wait until we have user data
-    if (!user) {
-      return;
-    }
+    // if (!user) {
+    //   return;
+    // }
 
     // Only redirect once per session
     if (hasRedirected) {
@@ -93,17 +94,13 @@ export default function DashboardLayout({ children }: LayoutProps) {
       [UserRole.PATIENT]: "/patient-dashboard",
       [UserRole.ADMIN]: "/admin-dashboard",
       [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
+      [UserRole.clinic]:'/clinic-dashboard'
     };
 
-    const targetPath = rolePaths[user.role as UserRole];
+    const targetPath = rolePaths[user?.role as UserRole];
     const isOnTargetPath = pathname.startsWith(targetPath);
 
-    console.log("🎯 REDIRECT CHECK:", {
-      currentRole: user.role,
-      targetPath,
-      currentPath: pathname,
-      isOnTargetPath
-    });
+   
 
     if (!isOnTargetPath) {
       setHasRedirected(true);
@@ -125,9 +122,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return null;
-  }
+  // if (!isAuthenticated || !user) {
+  //   return null;
+  // }
 
   return (
     <ThemeProvider
