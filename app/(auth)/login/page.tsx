@@ -14,6 +14,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const { login, isAuthenticated, user } = useAuth();
   const router = useRouter();
 
@@ -30,7 +31,7 @@ const LoginPage = () => {
       } else if (user.role === "receptionist") {
         router.push("/receptionist-dashboard");
       } else {
-        router.push("/"); // default fallback
+        router.push("/"); 
       }
     }
   }, [isAuthenticated, user, router]);
@@ -40,24 +41,30 @@ const LoginPage = () => {
 
     // Basic validation
     if (!email || !password) {
-      toast.error("Please fill in all fields");
+      setLoginError("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
+    setLoginError(null);
 
     try {
       const response = await login(email, password);
       console.log("LOGIN RESPONSE:", response);
       return response;
       // The login function from AuthContext will handle redirects based on user role
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 Invalid credentials
+      if (error?.response?.status === 401 || error?.response?.data?.statusCode === 401) {
+        setLoginError("Invalid credentials. Please check your email or password.");
+      } else {
+        setLoginError(
+          error instanceof Error
+            ? error.message
+            : "Login failed. Please check your credentials and try again."
+        );
+      }
       console.error("Login failed:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please check your credentials and try again."
-      );
     } finally {
       setIsLoading(false);
     }
@@ -169,6 +176,12 @@ const LoginPage = () => {
                 Forgot Password ?
               </a>
             </div>
+            {/* Error message above Sign In button */}
+            {loginError && (
+              <div className="w-full max-w-[400px] mb-2 text-red-600 text-center text-sm font-medium">
+                {loginError}
+              </div>
+            )}
             {/* Sign In Button */}
             <button
               type="submit"

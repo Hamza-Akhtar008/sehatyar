@@ -74,20 +74,17 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
     // If not authenticated, go to login
     if (!isAuthenticated) {
-      console.log("🚫 Not authenticated -> /login");
       router.replace("/login");
       return;
     }
 
     // Wait until we have user data
     if (!user) {
-      console.log("⏳ Waiting for user data...");
       return;
     }
 
     // Only redirect once per session
     if (hasRedirected) {
-      console.log("✅ Already redirected in this session");
       return;
     }
 
@@ -109,11 +106,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
     });
 
     if (!isOnTargetPath) {
-      console.log(`🔄 REDIRECTING: ${user.role} -> ${targetPath}`);
       setHasRedirected(true);
       router.replace(targetPath);
     } else {
-      console.log("✅ Already on correct path");
       setHasRedirected(true);
     }
   }, [isLoading, isAuthenticated, user, router, pathname, isClient, hasRedirected]);
@@ -123,13 +118,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Setting up your dashboard...</p>
-          <div className="mt-2 text-xs text-gray-500 space-y-1">
-            <p>Role: <strong>{user?.role || "Loading..."}</strong></p>
-            <p>Path: {pathname}</p>
-            <p>Status: {hasRedirected ? "Ready" : "Checking access..."}</p>
-          </div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#62e18b] mx-auto"></div>
+        
         </div>
       </div>
     );

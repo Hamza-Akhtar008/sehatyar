@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
+import axios from "axios";
 
 // --- Types ---
 type PatientType = {
@@ -35,7 +36,14 @@ const BASE_URL =
   "https://sehatyarr-c23468ec8014.herokuapp.com";
 
 function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
-  const [formData, setFormData] = useState<PatientType>(
+  const [formData, setFormData] = useState<PatientType & {
+    fullName?: string;
+    country?: string;
+    city?: string;
+    phoneNumber?: string;
+    password?: string;
+    role?: string;
+  }>(
     patient || {
       id: 0,
       name: "",
@@ -44,20 +52,68 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
       phone: "",
       address: "",
       status: "Active",
+      fullName: "",
+      country: "",
+      city: "",
+      phoneNumber: "",
+      password: "",
+      role: "receptionist", // default role
     }
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    onSave(formData)
-    onClose()
+    try {
+      const postData = {
+        fullName: formData.name,
+        gender: formData.gender.toLowerCase(), // Convert to lowercase to match API
+        country: formData.country,
+        city: formData.city,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        role: "patient" // Keep this static
+      };
+
+      const response = await axios.post(`${BASE_URL}/users`, postData);
+      
+      if (response.data) {
+        // Clear form only after successful API call
+        setFormData({
+          id: 0,
+          name: "",
+          gender: "",
+          email: "",
+          phone: "",
+          address: "",
+          status: "Active",
+          fullName: "",
+          country: "",
+          city: "",
+          phoneNumber: "",
+          password: "",
+          role: "patient",
+        });
+        onSave(formData);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+      <div
+        className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4"
+        style={{
+          width: "600px",
+          maxHeight: "90vh",
+          overflowY: "auto"
+        }}
+      >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">{patient ? "Edit Patient" : "Add New Patient"}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
@@ -67,7 +123,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
             <input
               type="text"
               value={formData.name}
@@ -101,16 +157,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
+          
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-2">Address</label>
             <input
@@ -118,6 +165,47 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
               value={formData.address}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, address: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Country</label>
+            <input
+              type="text"
+              value={formData.country || ""}
+              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">City</label>
+            <input
+              type="text"
+              value={formData.city || ""}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone Number</label>
+            <input
+              type="text"
+              value={formData.phoneNumber || ""}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+            <input
+              type="password"
+              value={formData.password || ""}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
             />
           </div>
@@ -254,7 +342,7 @@ export function PatientsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Patients</h1>
-            {/* <button
+            <button
               onClick={() => {
                 setEditingPatient(null)
                 setIsAddModalOpen(true)
@@ -264,7 +352,7 @@ export function PatientsManagement() {
             >
               <Plus className="w-5 h-5" />
               Add Patient
-            </button> */}
+            </button>
           </div>
           <p className="text-gray-600">Manage patient accounts and information</p>
         </div>
