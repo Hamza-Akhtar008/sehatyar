@@ -22,7 +22,7 @@ export default function Hospital() {
       setLoading(true);
       setError(null);
       try {
-        const data = await GetHospital(user?.doctorId);
+        const data = await GetHospital(user?.doctorId||"0");
         setHospitals(data);
       } catch (err: any) {
         setError(err?.message || "Failed to fetch hospitals");
