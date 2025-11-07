@@ -55,14 +55,26 @@ const LoginPage = () => {
       // The login function from AuthContext will handle redirects based on user role
     } catch (error: any) {
       // Handle 401 Invalid credentials
-      if (error?.response?.status === 401 || error?.response?.data?.statusCode === 401) {
+      if (
+        error?.response?.status === 401 ||
+        error?.response?.data?.statusCode === 401
+      ) {
         setLoginError("Invalid credentials. Please check your email or password.");
+      } else if (
+        error?.response?.status === 404 ||
+        error?.response?.data?.statusCode === 404
+      ) {
+        setLoginError("Login failed. Please check your credentials and try again.");
+      } else if (
+        error?.response?.data?.message
+      ) {
+        setLoginError(error.response.data.message);
+      } else if (error?.message && error.message.includes("404")) {
+        setLoginError("Login failed. Please check your credentials and try again.");
+      } else if (error?.message) {
+        setLoginError(error.message);
       } else {
-        setLoginError(
-          error instanceof Error
-            ? error.message
-            : "Login failed. Please check your credentials and try again."
-        );
+        setLoginError("Login failed. Please check your credentials and try again.");
       }
       console.error("Login failed:", error);
     } finally {
