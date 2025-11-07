@@ -56,7 +56,7 @@ const Availability: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getAvailability(), GetHospital()])
+    Promise.all([getAvailability(parseInt(user?.doctorId||"0")), GetHospital(user?.doctorId||"0")])
       .then(([slotData, hospitalData]) => {
         setSlots(slotData);
         setHospitals(hospitalData);
@@ -149,7 +149,7 @@ const Availability: React.FC = () => {
       }
 
       toast.success("Availability saved successfully");
-      const updatedData = await getAvailability();
+      const updatedData = await getAvailability(parseInt(user?.doctorId||'0'));
       setSlots(updatedData);
     } catch (error) {
       console.error("Error saving availability:", error);
@@ -315,7 +315,7 @@ const Availability: React.FC = () => {
           className="border-gray-300 text-gray-700 bg-white px-4 py-2 text-sm rounded-full w-full sm:w-auto"
           onClick={() => {
             setPendingSlots([]);
-            getAvailability().then((data) => setSlots(data));
+            getAvailability(parseInt(user?.doctorId||"0")).then((data) => setSlots(data));
           }}
         >
           Cancel

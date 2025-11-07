@@ -3,6 +3,7 @@ import { registerDoctor } from "@/lib/Api/Auth/api";
 import { toast, Toaster } from "react-hot-toast";
 import { useState, useRef, useEffect, useMemo } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation";
 
 const PRIMARY = "#5fe089"
 const GENDER_BG = "#01503f"
@@ -10,7 +11,7 @@ const GENDER_ACTIVE = "#003227"
 const BORDER = "#BDBDBD"
 
 const RegisterPage = () => {
-  // Add state for user fields
+  const router = useRouter();
   const [userFields, setUserFields] = useState({
     fullName: "",
     gender: "male",
@@ -23,13 +24,36 @@ const RegisterPage = () => {
   });
   // Add state for profilePic
   const [profilePic, setProfilePic] = useState("");
+  // Add state for file upload
+  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
+
+  // Password error state
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  // Validation for all required fields
+  const allFieldsFilled =
+    userFields.fullName.trim() &&
+    userFields.country.trim() &&
+    userFields.city.trim() &&
+    userFields.email.trim() &&
+    userFields.phoneNumber.trim() &&
+    userFields.password.trim() &&
+    userFields.confirmPassword.trim();
+
   // Handler for registration submit
   const handleRegister = async () => {
+    // Prevent submit if passwords don't match
+    if (userFields.password !== userFields.confirmPassword) {
+      setPasswordError("Password and Confirm Password do not match.");
+      return;
+    }
+    setPasswordError(null);
+
     if (step !== 2) {
       setStep(2);
       return;
     }
-    
+
     // Check if we have at least one education entry
     if (educationList.length === 0 && formData.education) {
       // Create default education entry from the simple field
@@ -47,7 +71,7 @@ const RegisterPage = () => {
         gender: gender // Ensure gender is updated
       },
       doctorProfile: {
-        profilePic: profilePic || "https://example.com/profile.jpg", // Replace with actual upload logic
+        file: profilePic, 
         yearsOfExperience: Number(formData.yearsOfExperience),
         primarySpecialization: formData.primarySpecializations,
         servicesTreatementOffered: formData.servicesTreatment,
@@ -66,6 +90,7 @@ const RegisterPage = () => {
       await registerDoctor(payload);
       toast.success("Registration successful!");
       // Optionally redirect or reset form
+      router.push("/login");  
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
       console.error("Registration error:", error);
@@ -518,6 +543,32 @@ const RegisterPage = () => {
     )
   }
 
+  // Add this function to handle file upload
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setProfilePicFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Password match check on change
+  useEffect(() => {
+    if (
+      userFields.password &&
+      userFields.confirmPassword &&
+      userFields.password !== userFields.confirmPassword
+    ) {
+      setPasswordError("Password and Confirm Password do not match.");
+    } else {
+      setPasswordError(null);
+    }
+  }, [userFields.password, userFields.confirmPassword]);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-white">
       {/* <Toaster position="top-right" /> */}
@@ -657,15 +708,60 @@ const RegisterPage = () => {
               </div>
             </div>
 
+            {/* Show password error below confirm password */}
+            {passwordError && (
+              <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
+                {passwordError}
+              </div>
+            )}
+
             {/* Next Button */}
             <button
               type="button"
-              onClick={() => setStep(2)}
+              onClick={() => {
+                if (userFields.password !== userFields.confirmPassword) {
+                  setPasswordError("Password and Confirm Password do not match.");
+                  return;
+                }
+                setPasswordError(null);
+                setStep(2);
+              }}
               className="w-full mt-6 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold"
               style={{ background: PRIMARY }}
+              disabled={
+                !(
+                  userFields.fullName.trim() &&
+                  userFields.country.trim() &&
+                  userFields.city.trim() &&
+                  userFields.email.trim() &&
+                  userFields.phoneNumber.trim() &&
+                  userFields.password.trim() &&
+                  userFields.confirmPassword.trim() &&
+                  userFields.password === userFields.confirmPassword
+                )
+              }
             >
               Next
             </button>
+            {/* Show error message if button is disabled */}
+            {(
+              !userFields.fullName.trim() ||
+              !userFields.country.trim() ||
+              !userFields.city.trim() ||
+              !userFields.email.trim() ||
+              !userFields.phoneNumber.trim() ||
+              !userFields.password.trim() ||
+              !userFields.confirmPassword.trim()
+            ) && (
+              <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
+                Please fill all fields to continue.
+              </div>
+            )}
+            {userFields.password !== userFields.confirmPassword && (
+              <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
+                Password and Confirm Password do not match.
+              </div>
+            )}
           </>
         )}
 
@@ -674,24 +770,41 @@ const RegisterPage = () => {
             {/* Upload Icon */}
             <div className="mt-8 flex justify-center">
               <div
-                className="w-[100px] h-[100px] rounded-full border-2 border-dashed flex items-center justify-center"
+                className="w-[100px] h-[100px] rounded-full border-2 border-dashed flex items-center justify-center relative"
                 style={{ borderColor: BORDER }}
               >
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
+                {profilePic ? (
+                  <img
+                    src={profilePic}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
                   />
-                </svg>
+                ) : (
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
+                    />
+                  </svg>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePicChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  style={{ width: "100%", height: "100%" }}
+                />
               </div>
             </div>
 
             {/* Title / Years of Experience */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">Title</label>
+                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+                  Title <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   placeholder="Dr."
@@ -702,7 +815,9 @@ const RegisterPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">Year of Experience</label>
+                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+                  Year of Experience <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="number"
                   placeholder="15"
@@ -713,36 +828,43 @@ const RegisterPage = () => {
                 />
               </div>
             </div>
-
             {/* Specialization and Treatment Sections */}
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Primary Specialization */}
-              <AutocompleteField
-                label="Primary Specialization"
-                placeholder="Search or type specialization..."
-                inputValue={specializationInput}
-                setInputValue={setSpecializationInput}
-                selectedItems={formData.primarySpecializations}
-                allOptions={specializations}
-                fieldName="primarySpecializations"
-                dropdownOpen={openDropdown === "specialization"}
-                setDropdownOpen={(open) => setOpenDropdown(open ? "specialization" : null)}
-              />
-
+              <div>
+                <label className="block text-[12px] font-medium text-[#343434] mb-3">
+                  Primary Specialization <span className="text-red-500">*</span>
+                </label>
+                <AutocompleteField
+                  label=" "
+                  placeholder="Search or type specialization..."
+                  inputValue={specializationInput}
+                  setInputValue={setSpecializationInput}
+                  selectedItems={formData.primarySpecializations}
+                  allOptions={specializations}
+                  fieldName="primarySpecializations"
+                  dropdownOpen={openDropdown === "specialization"}
+                  setDropdownOpen={(open) => setOpenDropdown(open ? "specialization" : null)}
+                />
+              </div>
               {/* Services Treatment Offer */}
-              <AutocompleteField
-                label="Services Treatment Offer"
-                placeholder="Search or type treatment..."
-                inputValue={treatmentInput}
-                setInputValue={setTreatmentInput}
-                selectedItems={formData.servicesTreatment}
-                allOptions={treatments}
-                fieldName="servicesTreatment"
-                dropdownOpen={openDropdown === "treatment"}
-                setDropdownOpen={(open) => setOpenDropdown(open ? "treatment" : null)}
-              />
+              <div>
+                <label className="block text-[12px] font-medium text-[#343434] mb-3">
+                  Services Treatment Offer <span className="text-red-500">*</span>
+                </label>
+                <AutocompleteField
+                  label=''
+                  placeholder="Search or type treatment..."
+                  inputValue={treatmentInput}
+                  setInputValue={setTreatmentInput}
+                  selectedItems={formData.servicesTreatment}
+                  allOptions={treatments}
+                  fieldName="servicesTreatment"
+                  dropdownOpen={openDropdown === "treatment"}
+                  setDropdownOpen={(open) => setOpenDropdown(open ? "treatment" : null)}
+                />
+              </div>
             </div>
-
             {/* Conditions and Education Sections */}
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Conditions Treatment */}
@@ -760,7 +882,9 @@ const RegisterPage = () => {
 
               {/* Education */}
               <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-3">Education</label>
+                <label className="block text-[12px] font-medium text-[#343434] mb-3">
+                  Education <span className="text-red-500">*</span>
+                </label>
                 <div
                   className="border rounded-[12px] p-4 min-h-[120px] flex flex-col"
                   style={{ borderColor: BORDER }}
@@ -823,10 +947,31 @@ const RegisterPage = () => {
                 className="flex-1 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold"
                 style={{ background: PRIMARY }}
                 onClick={handleRegister}
+                disabled={
+                  !(
+                    allFieldsFilled &&
+                    formData.yearsOfExperience.trim() &&
+                    formData.primarySpecializations.length > 0 &&
+                    formData.servicesTreatment.length > 0 &&
+                    formData.education.trim()
+                  ) ||
+                  !!passwordError
+                }
               >
                 Submit
               </button>
             </div>
+            {/* Show error message if button is disabled */}
+            {(
+              !formData.yearsOfExperience.trim() ||
+              formData.primarySpecializations.length === 0 ||
+              formData.servicesTreatment.length === 0 ||
+              !formData.education.trim()
+            ) && (
+              <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
+                Please fill all required fields .
+              </div>
+            )}
           </>
         )}
         

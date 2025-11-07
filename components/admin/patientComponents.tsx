@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
+import Image from "next/image"
+import axios from "axios";
 
 // --- Types ---
 type PatientType = {
   id: number;
   name: string;
-  age: string;
   gender: string;
   email: string;
   phone: string;
@@ -29,84 +30,90 @@ interface DeleteConfirmModalProps {
   patientName?: string;
 }
 
-const patientsData: PatientType[] = [
-  {
-    id: 1,
-    name: "Ali Raza",
-    age: "32",
-    gender: "Male",
-    email: "ali.raza@email.com",
-    phone: "+92-300-1234567",
-    address: "Lahore, Pakistan",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Fatima Noor",
-    age: "28",
-    gender: "Female",
-    email: "fatima.noor@email.com",
-    phone: "+92-300-2345678",
-    address: "Karachi, Pakistan",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Ahmed Khan",
-    age: "45",
-    gender: "Male",
-    email: "ahmed.khan@email.com",
-    phone: "+92-300-3456789",
-    address: "Islamabad, Pakistan",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Sana Tariq",
-    age: "36",
-    gender: "Female",
-    email: "sana.tariq@email.com",
-    phone: "+92-300-4567890",
-    address: "Faisalabad, Pakistan",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Bilal Hussain",
-    age: "52",
-    gender: "Male",
-    email: "bilal.hussain@email.com",
-    phone: "+92-300-5678901",
-    address: "Multan, Pakistan",
-    status: "Active",
-  },
-]
+const BASE_URL =
+  process.env.NEXT_BASE_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  "https://sehatyarr-c23468ec8014.herokuapp.com";
 
 function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
-  const [formData, setFormData] = useState<PatientType>(
+  const [formData, setFormData] = useState<PatientType & {
+    fullName?: string;
+    country?: string;
+    city?: string;
+    phoneNumber?: string;
+    password?: string;
+    role?: string;
+  }>(
     patient || {
       id: 0,
       name: "",
-      age: "",
       gender: "",
       email: "",
       phone: "",
       address: "",
       status: "Active",
+      fullName: "",
+      country: "",
+      city: "",
+      phoneNumber: "",
+      password: "",
+      role: "receptionist", // default role
     }
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    onSave(formData)
-    onClose()
+    try {
+      const postData = {
+        fullName: formData.name,
+        gender: formData.gender.toLowerCase(), // Convert to lowercase to match API
+        country: formData.country,
+        city: formData.city,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        role: "patient" // Keep this static
+      };
+
+      const response = await axios.post(`${BASE_URL}/users`, postData);
+      
+      if (response.data) {
+        // Clear form only after successful API call
+        setFormData({
+          id: 0,
+          name: "",
+          gender: "",
+          email: "",
+          phone: "",
+          address: "",
+          status: "Active",
+          fullName: "",
+          country: "",
+          city: "",
+          phoneNumber: "",
+          password: "",
+          role: "patient",
+        });
+        onSave(formData);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+      <div
+        className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4"
+        style={{
+          width: "600px",
+          maxHeight: "90vh",
+          overflowY: "auto"
+        }}
+      >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">{patient ? "Edit Patient" : "Add New Patient"}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
@@ -116,7 +123,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
             <input
               type="text"
               value={formData.name}
@@ -126,16 +133,6 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
             />
           </div>
           <div className="flex gap-3">
-            <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Age</label>
-              <input
-                type="text"
-                value={formData.age}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, age: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                required
-              />
-            </div>
             <div className="flex-1">
               <label className="block text-sm font-semibold text-gray-900 mb-2">Gender</label>
               <select
@@ -160,16 +157,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
+          
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-2">Address</label>
             <input
@@ -177,6 +165,47 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
               value={formData.address}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, address: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Country</label>
+            <input
+              type="text"
+              value={formData.country || ""}
+              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">City</label>
+            <input
+              type="text"
+              value={formData.city || ""}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone Number</label>
+            <input
+              type="text"
+              value={formData.phoneNumber || ""}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+            <input
+              type="password"
+              value={formData.password || ""}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
             />
           </div>
@@ -232,11 +261,40 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, patientName }: DeleteC
 }
 
 export function PatientsManagement() {
-  const [patients, setPatients] = useState<PatientType[]>(patientsData);
+  const [patients, setPatients] = useState<PatientType[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingPatient, setEditingPatient] = useState<PatientType | null>(null);
   const [deletingPatient, setDeletingPatient] = useState<PatientType | null>(null);
+
+  useEffect(() => {
+    async function fetchPatients() {
+      try {
+        const res = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setPatients(
+            data
+              .filter((u: any) => u.role === "patient")
+              .map((u: any) => ({
+                id: u.id,
+                name: u.fullName || "",
+                gender: u.gender || "",
+                email: u.email || "",
+                phone: u.phoneNumber || "",
+                address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
+                status: u.isActive ? "Active" : "Inactive",
+                profilePic: u.profilePic || "",
+              }))
+          );
+        }
+      } catch {
+        setPatients([]);
+      }
+    }
+    fetchPatients();
+  }, []);
 
   const handleSavePatient = (formData: PatientType) => {
     if (editingPatient) {
@@ -248,8 +306,15 @@ export function PatientsManagement() {
     setIsAddModalOpen(false);
   };
 
-  const handleDeletePatient = () => {
+  const handleDeletePatient = async () => {
     if (!deletingPatient) return;
+    try {
+      await fetch(`${BASE_URL}/users/${deletingPatient.id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      // Optionally handle error
+    }
     setPatients(patients.filter((p) => p.id !== deletingPatient.id));
     setIsDeleteModalOpen(false);
     setDeletingPatient(null);
@@ -343,8 +408,8 @@ export function PatientsManagement() {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
+                {/* Removed Profile and Age columns */}
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Age</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Gender</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
@@ -356,20 +421,15 @@ export function PatientsManagement() {
             <tbody>
               {patients.map((patient) => (
                 <tr key={patient.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                  {/* Removed Profile and Age columns */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Users style={{ color: "#62e18b" }} className="w-5 h-5" />
                       <span className="font-semibold text-gray-900">{patient.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{patient.age}</td>
                   <td className="px-6 py-4 text-gray-600">{patient.gender}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Mail className="w-4 h-4" style={{ color: "#62e18b" }} />
-                      {patient.email}
-                    </div>
-                  </td>
+                  <td className="px-6 py-4 text-gray-600">{patient.email}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-gray-600">
                       <Phone className="w-4 h-4" style={{ color: "#62e18b" }} />
@@ -387,13 +447,13 @@ export function PatientsManagement() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button
+                      {/* <button
                         onClick={() => handleEditClick(patient)}
                         className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4" />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => handleDeleteClick(patient)}
                         className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"

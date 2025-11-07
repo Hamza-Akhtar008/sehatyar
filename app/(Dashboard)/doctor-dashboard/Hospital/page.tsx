@@ -4,8 +4,10 @@ import Image from "next/image";
 
 import HospitalModal from "@/components/Dashboard/Doctor/components/Hospital";
 import { GetHospital } from "@/lib/Api/Hospital/Api";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function Hospital() {
+  const {user}=useAuth();
   const [showFilter, setShowFilter] = useState(false);
   const [showHospitalModal, setShowHospitalModal] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -20,7 +22,7 @@ export default function Hospital() {
       setLoading(true);
       setError(null);
       try {
-        const data = await GetHospital();
+        const data = await GetHospital(user?.doctorId);
         setHospitals(data);
       } catch (err: any) {
         setError(err?.message || "Failed to fetch hospitals");

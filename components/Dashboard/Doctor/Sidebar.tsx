@@ -1,8 +1,8 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import { useAuth } from "@/src/contexts/AuthContext"
-import { useRouter, usePathname } from "next/navigation"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Hospital,
@@ -16,72 +16,159 @@ import {
   Settings,
   LogOut,
   LucideIcon,
-} from "lucide-react"
-import { UserRole } from "@/src/types/enums"
+} from "lucide-react";
+import { UserRole } from "@/src/types/enums";
 
 // ✅ Add proper type for icons
 type SidebarItem = {
-  label: string
-  icon: string | LucideIcon
-  href: string
-}
+  label: string;
+  icon: string | LucideIcon;
+  href: string;
+};
 
 const adminSidebar: SidebarItem[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/admin-dashboard" },
   { label: "Hospitals", icon: Hospital, href: "/admin-dashboard/hospitals" },
   { label: "Doctors", icon: UserRound, href: "/admin-dashboard/doctors" },
   { label: "Patients", icon: Users, href: "/admin-dashboard/patients" },
-  { label: "Receptionists", icon: UserCog, href: "/admin-dashboard/receptionists" },
-  { label: "Appointments", icon: CalendarDays, href: "/admin-dashboard/appointments" },
+  {
+    label: "Receptionists",
+    icon: UserCog,
+    href: "/admin-dashboard/receptionists",
+  },
+  {
+    label: "Appointments",
+    icon: CalendarDays,
+    href: "/admin-dashboard/appointments",
+  },
   { label: "Invoices", icon: FileText, href: "/admin-dashboard/invoices" },
   // { label: "Analytics", icon: BarChart3, href: "/admin-dashboard/analytics" },
   { label: "Message", icon: MessageSquare, href: "/admin-dashboard/messages" },
   { label: "Settings", icon: Settings, href: "/admin-dashboard/settings" },
-]
+];
 
 const doctorsidebar: SidebarItem[] = [
-  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/doctor-dashboard" },
-  { label: "Hospitals", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/Hospital" },
-  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/doctor-dashboard/appointment" },
-  { label: "Patients", icon: "/assets/sidebar/patients.svg", href: "/doctor-dashboard/patients" },
-  { label: "Availability", icon: "/assets/sidebar/availability.svg", href: "/doctor-dashboard/availability" },
-  { label: "Message", icon: "/assets/sidebar/message.svg", href: "/doctor-dashboard/messages" },
-  { label: "Analytics", icon: "/assets/sidebar/analytics.svg", href: "/doctor-dashboard/analytics" },
-  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
-]
+  {
+    label: "Dashboard",
+    icon: "/assets/sidebar/dashboard.svg",
+    href: "/doctor-dashboard",
+  },
+  {
+    label: "Hospitals",
+    icon: "/assets/sidebar/appointment.svg",
+    href: "/doctor-dashboard/Hospital",
+  },
+  {
+    label: "Appointment",
+    icon: "/assets/sidebar/appointment.svg",
+    href: "/doctor-dashboard/appointment",
+  },
+  {
+    label: "Patients",
+    icon: "/assets/sidebar/patients.svg",
+    href: "/doctor-dashboard/patients",
+  },
+  {
+    label: "Availability",
+    icon: "/assets/sidebar/availability.svg",
+    href: "/doctor-dashboard/availability",
+  },
+  {
+    label: "Message",
+    icon: "/assets/sidebar/message.svg",
+    href: "/doctor-dashboard/messages",
+  },
+  {
+    label: "Analytics",
+    icon: "/assets/sidebar/analytics.svg",
+    href: "/doctor-dashboard/analytics",
+  },
+  {
+    label: "Settings",
+    icon: "/assets/sidebar/settings.svg",
+    href: "/doctor-dashboard/settings",
+  },
+];
 
 const patientsidebar: SidebarItem[] = [
-  { label: "Dashboard", icon: "/assets/sidebar/dashboard.svg", href: "/patient-dashboard" },
-  { label: "Appointment", icon: "/assets/sidebar/appointment.svg", href: "/patient-dashboard/appointment" },
-  { label: "Medical Records", icon: "/assets/sidebar/patients.svg", href: "/patient-dashboard/medical" },
-  { label: "Message", icon: "/assets/sidebar/message.svg", href: "/doctor-dashboard/messages" },
-  { label: "Settings", icon: "/assets/sidebar/settings.svg", href: "/doctor-dashboard/settings" },
-]
+  {
+    label: "Dashboard",
+    icon: "/assets/sidebar/dashboard.svg",
+    href: "/patient-dashboard",
+  },
+  {
+    label: "Appointment",
+    icon: "/assets/sidebar/appointment.svg",
+    href: "/patient-dashboard/appointment",
+  },
+  {
+    label: "Medical Records",
+    icon: "/assets/sidebar/patients.svg",
+    href: "/patient-dashboard/medical",
+  },
+  {
+    label: "Message",
+    icon: "/assets/sidebar/message.svg",
+    href: "/doctor-dashboard/messages",
+  },
+  {
+    label: "Settings",
+    icon: "/assets/sidebar/settings.svg",
+    href: "/doctor-dashboard/settings",
+  },
+];
 
 const receptionistSidebar: SidebarItem[] = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/receptionist-dashboard" },
-  { label: "Appointments", icon: CalendarDays, href: "/receptionist-dashboard/appointments" },
-  { label: "Doctors", icon: UserRound, href: "/receptionist-dashboard/doctors" },
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/receptionist-dashboard",
+  },
+  {
+    label: "Appointments",
+    icon: CalendarDays,
+    href: "/receptionist-dashboard/appointments",
+  },
+  {
+    label: "Doctors",
+    icon: UserRound,
+    href: "/receptionist-dashboard/doctors",
+  },
   { label: "Patients", icon: Users, href: "/receptionist-dashboard/patients" },
-  { label: "Invoices", icon: FileText, href: "/receptionist-dashboard/invoices" },
-  { label: "Messages", icon: MessageSquare, href: "/receptionist-dashboard/messages" },
-  { label: "Settings", icon: Settings, href: "/receptionist-dashboard/settings" },
-]
+  {
+    label: "Invoices",
+    icon: FileText,
+    href: "/receptionist-dashboard/invoices",
+  },
+  {
+    label: "Messages",
+    icon: MessageSquare,
+    href: "/receptionist-dashboard/messages",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    href: "/receptionist-dashboard/settings",
+  },
+];
 
 export default function DoctorSidebar() {
-  const { logout, user } = useAuth()
-  const pathname = usePathname()
-  const router = useRouter()
+  const { logout, user } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = () => {
-    logout()
-    router.push("/login")
-  }
+    logout();
+    router.push("/login");
+  };
 
-  let sidebarItems: SidebarItem[] = patientsidebar
-  if (user?.role === UserRole.DOCTOR) sidebarItems = doctorsidebar
-  else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar
-  else if (user?.role === UserRole.RECEPTIONIST) sidebarItems = receptionistSidebar
+  let sidebarItems: SidebarItem[] = [];
+
+  if (user?.role === UserRole.PATIENT) sidebarItems = patientsidebar;
+  else if (user?.role === UserRole.DOCTOR) sidebarItems = doctorsidebar;
+  else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar;
+  else if (user?.role === UserRole.RECEPTIONIST)
+    sidebarItems = receptionistSidebar;
 
   return (
     <aside
@@ -111,11 +198,20 @@ export default function DoctorSidebar() {
               className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 
                           rounded-lg font-medium text-xs sm:text-sm md:text-base
                           transition-colors whitespace-nowrap
-                          ${isActive ? "bg-[#E6F9F0] text-[#2DC36A]" : "text-[#222] hover:bg-[#F2F2F2]"}`}
+                          ${
+                            isActive
+                              ? "bg-[#E6F9F0] text-[#2DC36A]"
+                              : "text-[#222] hover:bg-[#F2F2F2]"
+                          }`}
             >
               <span className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center flex-shrink-0">
                 {typeof item.icon === "string" ? (
-                  <Image src={item.icon} alt={item.label} width={24} height={24} />
+                  <Image
+                    src={item.icon}
+                    alt={item.label}
+                    width={24}
+                    height={24}
+                  />
                 ) : (
                   item.icon && ( // Only render if icon is defined
                     // @ts-ignore
@@ -136,9 +232,13 @@ export default function DoctorSidebar() {
                    px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 rounded-lg hover:bg-[#F2F2F2] 
                    text-xs sm:text-sm md:text-base transition-colors"
       >
-        <img src="/images/exit.png" alt="logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+        <img
+          src="/images/exit.png"
+          alt="logout"
+          className="w-5 h-5 sm:w-6 sm:h-6"
+        />
         <span className="hidden md:inline">Logout</span>
       </button>
     </aside>
-  )
+  );
 }

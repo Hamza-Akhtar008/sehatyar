@@ -15,9 +15,9 @@ export async function AddHospital(name: string, address: string,phone:string,isC
     }
 }
 
-export async function GetHospital() {
+export async function GetHospital( doctorId:string) {
     try {
-        const response = await axiosInstance.get('hospital');
+        const response = await axiosInstance.get(`/hospital/doctor/${doctorId}`);
         return response.data;
     } catch (error: any) {
         throw error;
