@@ -121,6 +121,7 @@ if (role === "doctor") {
   const logout = () => {
     // Clear user data and redirect to login
     setUser(null);
+    localStorage.removeItem('authToken')
     localStorage.removeItem("user");
     router.push("/login");
   };

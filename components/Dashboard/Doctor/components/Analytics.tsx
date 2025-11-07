@@ -28,8 +28,8 @@ const barData = {
 	labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
 	datasets: [
 		{
-			label: "Appointments",
-			data: [120, 140, 130, 160, 150, 175],
+			label: "Income",
+			data: [120*500, 140*500, 130*500, 160*500, 150*500, 175*500],
 			backgroundColor: "#4FC3F7",
 			borderRadius: 4,
 		},
@@ -39,50 +39,12 @@ const barData = {
 const Analytics = () => {
 	return (
 		<>
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div
-					style={{
-						width: 556,
-						height: 377,
-						background: "#FFFFFF",
-						border: "1px solid #F3F4F6",
-						boxShadow: "0px 1px 2px 0px #0000000D",
-						borderRadius: 20,
-						padding: 1,
-						opacity: 1,
-					}}
-					className="overflow-hidden"
-				>
-										<div style={{ display: "flex", alignItems: "center", height: 48, paddingLeft: 12 }}>
-											<h2 style={{
-												fontFamily: "Roboto, sans-serif",
-												fontWeight: 600,
-												fontStyle: "normal",
-												fontSize: 18,
-												lineHeight: "28px",
-												letterSpacing: "0px",
-												verticalAlign: "middle",
-												color: "#1F2937",
-												margin: 0,
-											}}>Patient Demographics</h2>
-										</div>
-										<div style={{ width: "100%", height: "calc(100% - 48px)" }}>
-									<Pie
-										data={pieData}
-										options={{
-											maintainAspectRatio: false,
-											radius: "85%",
-											layout: { padding: 8 },
-											plugins: { legend: { position: "right" } },
-										}}
-									/>
-					</div>
-				</div>
+			<div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
+			
 
 				<div
 					style={{
-						width: 556,
-						height: 377,
+					
 						background: "#FFFFFF",
 						border: "1px solid #F3F4F6",
 						boxShadow: "0px 1px 2px 0px #0000000D",
@@ -121,38 +83,31 @@ const Analytics = () => {
 			{/* Reports & Export region (below charts) */}
 			<div className="mt-8 space-y-6">
 				{/* Patient Reports card */}
-				<div className="bg-white rounded-xl p-6 shadow">
-					<h3 className="text-xl font-semibold mb-4">Patient Reports</h3>
-					<div className="bg-gray-100 rounded-lg p-4">
-						<table className="w-full text-left">
-							<thead>
-								<tr className="text-sm text-gray-600">
-									<th className="py-3">Patient Name</th>
-									<th className="py-3">Appointment Date</th>
-									<th className="py-3">Diagnosis Summary</th>
-									<th className="py-3">Status</th>
-									<th className="py-3">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								{[1, 2, 3, 4].map((i) => (
-									<tr key={i} className="border-t border-gray-200">
-										<td className="py-4 flex items-center gap-3">
-											<img src="/images/doctors/default.png" alt="avatar" className="w-8 h-8 rounded-full" />
-											<span className="text-sm text-gray-800">Sarah Johnson</span>
-										</td>
-										<td className="py-4 text-sm text-gray-700">Oct 12, 2024</td>
-										<td className="py-4 text-sm text-gray-700">Hypertension follow-up, medication adjustment</td>
-										<td className="py-4">
-											<span className="inline-block bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm">Complete</span>
-										</td>
-										<td className="py-4 text-sm text-emerald-600">View Report</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+				<div className="mt-8">
+				<h2 className="text-xl font-semibold mb-4 text-gray-800">Revenue Analytics</h2>
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+					{/* Daily Revenue */}
+					<div className="bg-white rounded-xl p-6 shadow border border-gray-100">
+						<h4 className="text-sm text-gray-500 mb-1">Daily Revenue</h4>
+						<p className="text-2xl font-semibold text-emerald-600">$2,450</p>
+						<p className="text-xs text-gray-400 mt-1">+8% from yesterday</p>
+					</div>
+
+					{/* Weekly Revenue */}
+					<div className="bg-white rounded-xl p-6 shadow border border-gray-100">
+						<h4 className="text-sm text-gray-500 mb-1">Weekly Revenue</h4>
+						<p className="text-2xl font-semibold text-emerald-600">$15,860</p>
+						<p className="text-xs text-gray-400 mt-1">+12% from last week</p>
+					</div>
+
+					{/* Monthly Revenue */}
+					<div className="bg-white rounded-xl p-6 shadow border border-gray-100">
+						<h4 className="text-sm text-gray-500 mb-1">Monthly Revenue</h4>
+						<p className="text-2xl font-semibold text-emerald-600">$68,420</p>
+						<p className="text-xs text-gray-400 mt-1">+5% from last month</p>
 					</div>
 				</div>
+			</div>
 
 				{/* Export Reports card */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">

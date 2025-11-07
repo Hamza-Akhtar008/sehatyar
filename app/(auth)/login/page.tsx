@@ -39,6 +39,8 @@ const LoginPage = () => {
 		try {
 			const response = await login(email, password);
 			console.log('LOGIN RESPONSE:', response);
+			
+
 			return response;
 			// The login function from AuthContext will handle redirects based on user role
 

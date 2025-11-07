@@ -23,9 +23,16 @@ export const getUserById = async (userId: string | number) => {
 
 
 //post a user 
-export const postUserByDoctor = async (data: User) => {
+export const postUserByDoctor = async (data:  FormData) => {
   try {
-    const response = await axiosInstance.post("/users/created/By", data);
+  
+
+    const response = await axiosInstance.post("/users/created/By", data, {
+      headers:
+      { "Content-Type": "multipart/form-data" }
+      
+    });
+
     return response.data;
   } catch (error: any) {
     throw error?.response?.data || error;

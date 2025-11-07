@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios"
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "https://sehatyarr-c23468ec8014.herokuapp.com/",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 
   headers: {
     "Content-Type": "application/json",

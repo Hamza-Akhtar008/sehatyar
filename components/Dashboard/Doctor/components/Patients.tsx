@@ -14,19 +14,19 @@ export default function Patients() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchPatients() {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getPatientAppointmentsByDoctorId();
-        setPatients(data);
-      } catch (err: any) {
-        setError(err?.message || "Failed to fetch patients");
-      } finally {
-        setLoading(false);
-      }
+  async function fetchPatients() {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getPatientAppointmentsByDoctorId();
+      setPatients(data);
+    } catch (err: any) {
+      setError(err?.message || "Failed to fetch patients");
+    } finally {
+      setLoading(false);
     }
+  }
+  useEffect(() => {
     fetchPatients();
   }, []);
 
@@ -38,7 +38,7 @@ export default function Patients() {
   return (
     <div className="patient-container w-full px-4 sm:px-6 md:px-8 lg:px-10">
       {/* Header */}
-      <div className="patient-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+      <div className="patient-header flex flex-col sm:flex-row sm:items-center sm:justify-between mt-5 gap-3 mb-6">
         <h2 className="patient-title text-lg sm:text-2xl font-semibold text-gray-800">
           Patients
         </h2>
@@ -170,6 +170,7 @@ export default function Patients() {
 
       <AddPatientsModal
         open={showAddPatientModal}
+        onSubmit={fetchPatients}
         onClose={() => setShowAddPatientModal(false)}
         onSchedule={() => {}}
       />

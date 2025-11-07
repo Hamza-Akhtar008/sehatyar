@@ -6,7 +6,7 @@ export default function PatientsPage() {
     return (
         <>
           <div
-      className="w-full h-[calc(100vh-89.6px)] overflow-y-auto overflow-x-hidden"
+      className="w-full h-[calc(100vh-69.6px)] overflow-y-auto overflow-x-hidden"
       style={{
         scrollbarWidth: "none", // Firefox
         msOverflowStyle: "none", // IE/Edge

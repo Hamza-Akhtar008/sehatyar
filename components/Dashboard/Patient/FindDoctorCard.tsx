@@ -6,12 +6,7 @@ import { Star, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Base URL usable in client (NEXT_PUBLIC_). Falls back to Heroku if not set.
-const BASE =
-	(process.env.NEXT_PUBLIC_BASE_URL ||
-		process.env.NEXT_BASE_URL || // kept as no-op fallback if you set it at build time
-		"https://sehatyarr-c23468ec8014.herokuapp.com"
-	).replace(/\/$/, "");
-
+const BASE =process.env.NEXT_PUBLIC_BASE_URL;
 // helper formatters
 const capitalizeWords = (s: string) => s.replace(/\b\w/g, c => c.toUpperCase());
 const formatSpecializations = (spec?: string | string[]) => {
