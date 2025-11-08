@@ -235,9 +235,9 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteCo
 }
 
 const BASE_URL =
-  process.env.NEXT_BASE_URL ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://sehatyarr-c23468ec8014.herokuapp.com";
+
+  process.env.NEXT_PUBLIC_BASE_URL 
+  
 
 export function DoctorsManagement() {
   const [doctors, setDoctors] = useState<DoctorType[]>(doctorsData);
@@ -249,7 +249,7 @@ export function DoctorsManagement() {
   useEffect(() => {
     async function fetchDoctors() {
       try {
-        const res = await fetch(`${BASE_URL}/doctor-profile`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}doctor-profile`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch doctors");
         const data = await res.json();
         if (Array.isArray(data)) {

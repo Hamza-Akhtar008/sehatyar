@@ -31,9 +31,8 @@ interface DeleteConfirmModalProps {
 }
 
 const BASE_URL =
-  process.env.NEXT_BASE_URL ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://sehatyarr-c23468ec8014.herokuapp.com";
+  process.env.NEXT_PUBLIC_BASE_URL
+
 
 function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
   const [formData, setFormData] = useState<PatientType & {
@@ -75,7 +74,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
         role: "patient" // Keep this static
       };
 
-      const response = await axios.post(`${BASE_URL}/users`, postData);
+      const response = await axios.post(`${BASE_URL}users`, postData);
       
       if (response.data) {
         // Clear form only after successful API call
@@ -270,7 +269,7 @@ export function PatientsManagement() {
   useEffect(() => {
     async function fetchPatients() {
       try {
-        const res = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}users`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch users");
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -309,7 +308,7 @@ export function PatientsManagement() {
   const handleDeletePatient = async () => {
     if (!deletingPatient) return;
     try {
-      await fetch(`${BASE_URL}/users/${deletingPatient.id}`, {
+      await fetch(`${BASE_URL}users/${deletingPatient.id}`, {
         method: "DELETE",
       });
     } catch (err) {
