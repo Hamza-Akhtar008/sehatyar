@@ -23,3 +23,12 @@ export async function GetHospital( doctorId:string) {
         throw error;
     }
 }
+
+export const deleteHospital = async (hospitalId: string | number) => {
+  try {
+    const response = await axiosInstance.delete(`/hospital/${hospitalId}`);
+    return response.data;
+  } catch (error: any) {
+    throw error?.response?.data || error;
+  }
+};

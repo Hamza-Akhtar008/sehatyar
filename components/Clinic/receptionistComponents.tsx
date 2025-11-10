@@ -9,7 +9,7 @@ type ReceptionistType = {
   name: string;
   email: string;
   phone: string;
-  hospital?: string;
+  hospital: string;
   status: string;
 };
 
@@ -82,7 +82,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
       name: "",
       email: "",
       phone: "",
-     
+      hospital: "",
       status: "Active",
     }
   );
@@ -136,7 +136,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
               required
             />
           </div>
-          {/* <div>
+          <div>
             <label className="block text-sm font-semibold text-gray-900 mb-2">Hospital</label>
             <input
               type="text"
@@ -145,7 +145,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
-          </div> */}
+          </div>
           <div className="flex gap-3 mt-6">
             <button
               type="button"
@@ -277,7 +277,7 @@ export function ReceptionistsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Receptionists</h1>
-            <button
+            {/* <button
               onClick={() => {
                 setEditingReceptionist(null)
                 setIsAddModalOpen(true)
@@ -287,7 +287,7 @@ export function ReceptionistsManagement() {
             >
               <Plus className="w-5 h-5" />
               Add Receptionist
-            </button>
+            </button> */}
           </div>
           <p className="text-gray-600">Manage receptionist accounts and information</p>
         </div>
