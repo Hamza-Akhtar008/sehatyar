@@ -28,7 +28,7 @@ type SidebarItem = {
 
 const adminSidebar: SidebarItem[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/admin-dashboard" },
-  { label: "Hospitals", icon: Hospital, href: "/admin-dashboard/hospitals" },
+  { label: "clinics", icon: Hospital, href: "/admin-dashboard/clinics" },
   { label: "Doctors", icon: UserRound, href: "/admin-dashboard/doctors" },
   { label: "Patients", icon: Users, href: "/admin-dashboard/patients" },
   {
