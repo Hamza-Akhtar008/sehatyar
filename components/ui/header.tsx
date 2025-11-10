@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDownIcon,  ArrowRight } from "lucide-react";
+import { ChevronDownIcon,  ArrowRight, User, Settings, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -20,68 +20,62 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-
+const {user,isAuthenticated,logout}=useAuth();
  
   const specialties = [
     {
-      name: "Dermatologist",
+      name: "Cardiology",
       cities: [
-        "Dermatologist in Lahore",
-        "Dermatologist in Islamabad",
-        "Dermatologist in Karachi",
+        "Cardiologist in Abbottobad",
+        "Cardiologist in Lahore",
+        "Cardiologist in Islamabad",
       ],
     },
     {
-      name: "Gynecologist",
+      name: "Gynecology",
       cities: [
+        "Gynecologist in Abbottobad",
         "Gynecologist in Lahore",
         "Gynecologist in Islamabad",
-        "Gynecologist in Karachi",
       ],
     },
     {
-      name: "Urologist",
+      name: "Urology",
       cities: [
+        "Urologist in Abbottobad",
         "Urologist in Lahore",
         "Urologist in Islamabad",
-        "Urologist in Karachi",
       ],
     },
     {
-      name: "Gastroenterologist",
+      name: "Gastroenterology",
       cities: [
+        "Gastroenterologist in Abbottobad",
         "Gastroenterologist in Lahore",
         "Gastroenterologist in Islamabad",
-        "Gastroenterologist in Karachi",
       ],
     },
     {
-      name: "Neurologist",
+      name: "Neurology",
       cities: [
+        "Neurologist in Abbottobad",
         "Neurologist in Lahore",
         "Neurologist in Islamabad",
-        "Neurologist in Karachi",
       ],
     },
     {
-      name: "ENT Specialist",
+      name: "Dental Sugery",
       cities: [
-        "ENT Specialist in Lahore",
-        "ENT Specialist in Islamabad",
-        "ENT Specialist in Karachi",
+        " Dental Sugery in Abbottobad",
+        " Dental Sugery in Lahore",
+        " Dental Sugery in Islamabad",
       ],
     },
-    {
-      name: "Dentist",
-      cities: [
-        "Dentist in Lahore",
-        "Dentist in Islamabad",
-        "Dentist in Karachi",
-      ],
-    },
+   
   ];
 
 
@@ -146,10 +140,23 @@ export default function Header() {
                           <ChevronDownIcon size={16} style={{ marginLeft: 8, transform: expanded === spec.name ? "rotate(180deg)" : "none" }} />
                         </button>
                         {expanded === spec.name && (
+                          
                           <div className="doctor-cities-list">
                             {spec.cities.map((city) => (
                               <div key={city} className="doctor-city-item">
-                                {city}
+                             <Link
+          key={city}
+          href={{
+            pathname: "/doctor",
+            query: {
+              query: spec.name, // specialization name
+              city: city.split(" in ")[1],
+            },
+          }}
+          className="doctor-city-item hover:underline text-gray-700"
+        >
+          {city}
+        </Link>
                               </div>
                             ))}
                           </div>
@@ -200,7 +207,7 @@ export default function Header() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/about" className={navigationMenuTriggerStyle()}>
+                  <Link href="/about-us" className={navigationMenuTriggerStyle()}>
                     About Us
                   </Link>
                 </NavigationMenuLink>
@@ -208,40 +215,74 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="header-desktop-actions ml-auto flex items-center gap-2 md:gap-3 lg:gap-[12px] ">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center  gap-1 lang-dropdown-trigger">
-             <span className="font-plus-jakarta font-medium text-[14px] leading-[24px] text-black flex items-center gap-1">
-             EN  </span> <ChevronDownIcon className="w-4 h-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="lang-dropdown-content z-[9999]">
-              <DropdownMenuItem className="lang-dropdown-item">English</DropdownMenuItem>
-              <DropdownMenuItem className="lang-dropdown-item">اردو</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="header-desktop-actions ml-auto flex items-center gap-2 md:gap-3 lg:gap-[12px] ">
+  {isAuthenticated ? (
+<DropdownMenu>
+  <DropdownMenuTrigger
+    className="flex items-center justify-center w-10 h-10 rounded-full border-none transition-colors duration-200"
+    style={{
+      backgroundColor: 'var(--background)',
+      color: 'var(--foreground)',
+    }}
+  >
+    <User className="w-5 h-5" />
+  </DropdownMenuTrigger>
 
-       <Link
-  href="/login"
-  className="hide-on-mobile flex flex-row justify-center items-center px-4 py-2 gap-[10px] lg:px-[22px] lg:py-[12px] w-auto h-10 lg:w-[159px] lg:h-[48px] border border-black rounded-[99px] whitespace-nowrap"
->
-<span className="font-jakarta font-semibold text-[14px] leading-[24px] text-black">
-  Login / Sign Up
-</span>
-</Link>
+  <DropdownMenuContent
+    className="z-[9999] w-48 rounded-md shadow-md overflow-hidden"
+    style={{
+      backgroundColor: 'var(--card)',
+      color: 'var(--card-foreground)',
+      border: '1px solid var(--border)',
+    }}
+  >
+    <DropdownMenuItem
+      className="flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-var(--brand-green-300) hover:text-var(--brand-green-900) hover:scale-105 cursor-pointer"
+      style={{ borderRadius: 'var(--radius)' }}
+    >
+      <Link href="/doctor-dashboard" className="flex items-center gap-2 w-full">
+        <Settings className="w-4 h-4" /> Dashboard
+      </Link>
+    </DropdownMenuItem>
+
+    <DropdownMenuItem
+      className="flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-var(--brand-green-300) hover:text-var(--brand-green-900) hover:scale-105 cursor-pointer"
+      style={{ borderRadius: 'var(--radius)' }}
+    >
+      <button
+        onClick={logout}
+        className="flex items-center gap-2 w-full text-left"
+      >
+        <LogOut className="w-4 h-4" /> Logout
+      </button>
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
 
 
+  ) : (
+    <>
+      <Link
+        href="/login"
+        className="hide-on-mobile flex flex-row justify-center items-center px-4 py-2 gap-[10px] lg:px-[22px] lg:py-[12px] w-auto h-10 lg:w-[159px] lg:h-[48px] border border-black rounded-[99px] whitespace-nowrap"
+      >
+        <span className="font-jakarta font-semibold text-[14px] leading-[24px] text-black">
+          Login / Sign Up
+        </span>
+      </Link>
 
-         <Link
-  href="/register"
-  className="hide-on-mobile btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center  px-4 py-2 rounded-full whitespace-nowrap"
->
-  Join As Doctor
-  <div className="icon-container rounded-full bg-white p-[13px] gap-[10px] flex justify-center items-center">
-    <ArrowRight className="w-4 h-4 rotate-[-25deg]" />
-  </div>
-</Link>
-
+      <Link
+        href="/register"
+        className="hide-on-mobile btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center px-4 py-2 rounded-full whitespace-nowrap"
+      >
+        Join As Doctor
+        <div className="icon-container rounded-full bg-white p-[13px] gap-[10px] flex justify-center items-center">
+          <ArrowRight className="w-4 h-4 rotate-[-25deg]" />
         </div>
+      </Link>
+    </>
+  )}
+</div>
 
         {/* Mobile navigation toggle */}
         <button className="md:hidden mobile-toggle" aria-label="Toggle menu" onClick={() => setOpen(!open)}>

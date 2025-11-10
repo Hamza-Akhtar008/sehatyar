@@ -2,6 +2,7 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function Specialists() {
 
@@ -51,6 +52,13 @@ const specialityList = [
   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-6 md:gap-8 lg:gap-19">
         {specialityList.map((speciality) => (
     <div key={speciality.name} className="mx-auto text-center group cursor-pointer">
+            <Link    href={{
+            pathname: "/doctor",
+            query: {
+              query: speciality.name, // specialization name
+              city: "Abbottobad",
+            },
+          }}>
       <div className="w-25 h-25 rounded-full bg-[#003F31] transition-colors mb-3.5 p-2 hover:bg-[#5FE089]">
           <div className="mx-auto">
             <Image 
@@ -65,6 +73,7 @@ const specialityList = [
             <p className="text-sm font-medium text-gray-700  transition-colors">
               {speciality.name}
             </p>
+            </Link>
     </div>
         ))}
     

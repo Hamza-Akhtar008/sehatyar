@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { Input } from '../ui/input'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import Link from 'next/link';
 
 const doctorSpecialties = [
-  { id: 1, name: 'Dermatologist', icon: '/assets/specialityIcons/Dermatologist.png', isOnline: true },
+  { id: 1, name: 'Cardiology', icon: '/assets/specialityIcons/Dermatologist.png', isOnline: true },
   { id: 2, name: 'Gynecologist', icon: '/assets/specialityIcons/Gynecologist.png', isOnline: true },
   { id: 3, name: 'Gastroenterologist', icon: '/assets/specialityIcons/Cardiologist.png', isOnline: true },
   { id: 4, name: 'Urologist', icon: '/assets/specialityIcons/Urologist.png', isOnline: true },
@@ -27,6 +28,13 @@ const DoctorCard = ({ name, isOnline, icon }: {
   icon: string;
 }) => {
   return (
+    <Link href={{
+            pathname: "/doctor",
+            query: {
+              query: name, // specialization name
+              
+            },
+          }}>
     <div className="group flex items-center py-3 px-3 sm:py-4 sm:px-6.5 transition-all rounded-2xl sm:rounded-4xl border-[1px] border-[#A6A6A6] gap-2 sm:gap-2.5 hover:bg-[#F4F4F4] hover:border-none">
       <div className='bg-[#003F31] group-hover:bg-[#5FE089] p-2 sm:p-3 rounded-full flex-shrink-0'>
         <Image src={icon} alt={name} width={20} height={20} className='w-4 h-4 sm:w-5 sm:h-5'/>
@@ -43,6 +51,7 @@ const DoctorCard = ({ name, isOnline, icon }: {
         </button>
       </div>
     </div>
+    </Link>
   );
 };
 
