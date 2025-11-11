@@ -1,15 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { UserCog, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
+import Image from "next/image"
+import axios from "axios";
+import { UserRole } from "@/src/types/enums";
 
 // --- Types ---
 type ReceptionistType = {
   id: number;
   name: string;
+  gender: string;
   email: string;
   phone: string;
-  hospital: string;
+  address: string;
   status: string;
 };
 
@@ -28,78 +32,90 @@ interface DeleteConfirmModalProps {
 }
 
 const BASE_URL =
-  process.env.NEXT_BASE_URL ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://sehatyarr-c23468ec8014.herokuapp.com";
+  process.env.NEXT_PUBLIC_BASE_URL
 
-const receptionistsData: ReceptionistType[] = [
-  {
-    id: 1,
-    name: "Ayesha Siddiqui",
-    email: "ayesha.siddiqui@hospital.com",
-    phone: "+92-300-1234567",
-    hospital: "City Medical Center",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Bilal Ahmed",
-    email: "bilal.ahmed@hospital.com",
-    phone: "+92-300-2345678",
-    hospital: "Green Valley Hospital",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Sadia Khan",
-    email: "sadia.khan@hospital.com",
-    phone: "+92-300-3456789",
-    hospital: "Sunset Health Clinic",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Imran Raza",
-    email: "imran.raza@hospital.com",
-    phone: "+92-300-4567890",
-    hospital: "Downtown Care Hospital",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Nida Farooq",
-    email: "nida.farooq@hospital.com",
-    phone: "+92-300-5678901",
-    hospital: "North Star Medical",
-    status: "Active",
-  },
-]
 
 function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: ReceptionistModalProps) {
-  const [formData, setFormData] = useState<ReceptionistType>(
+  const [formData, setFormData] = useState<ReceptionistType & {
+    fullName?: string;
+    country?: string;
+    city?: string;
+    phoneNumber?: string;
+    password?: string;
+    role?: string;
+  }>(
     receptionist || {
       id: 0,
       name: "",
+      gender: "",
       email: "",
       phone: "",
-      hospital: "",
+      address: "",
       status: "Active",
+      fullName: "",
+      country: "",
+      city: "",
+      phoneNumber: "",
+      password: "",
+      role: "receptionist", 
     }
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    onSave(formData)
-    onClose()
+    try {
+      const postData = {
+        fullName: formData.name,
+        gender: formData.gender.toLowerCase(), // Convert to lowercase to match API
+        country: formData.country,
+        city: formData.city,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        role: "receptionist" // Keep this static
+      };
+
+      const response = await axios.post(`${BASE_URL}users`, postData);
+      
+      if (response.data) {
+        // Clear form only after successful API call
+        setFormData({
+          id: 0,
+          name: "",
+          gender: "",
+          email: "",
+          phone: "",
+          address: "",
+          status: "Active",
+          fullName: "",
+          country: "",
+          city: "",
+          phoneNumber: "",
+          password: "",
+          role: "patient",
+        });
+        onSave(formData);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+      <div
+        className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4"
+        style={{
+          width: "600px",
+          maxHeight: "90vh",
+          overflowY: "auto"
+        }}
+      >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">{receptionist ? "Edit Receptionist" : "Add New Receptionist"}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{receptionist ? "Edit Patient" : "Add New Patient"}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
             <X className="w-6 h-6" />
           </button>
@@ -107,7 +123,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
             <input
               type="text"
               value={formData.name}
@@ -115,6 +131,21 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
+          </div>
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Gender</label>
+              <select
+                value={formData.gender}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, gender: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                required
+              >
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
@@ -126,23 +157,55 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
               required
             />
           </div>
+          
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Address</label>
             <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phone: e.target.value })}
+              type="text"
+              value={formData.address}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, address: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
+          
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Hospital</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Country</label>
             <input
               type="text"
-              value={formData.hospital}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, hospital: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              value={formData.country || ""}
+              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">City</label>
+            <input
+              type="text"
+              value={formData.city || ""}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone Number</label>
+            <input
+              type="text"
+              value={formData.phoneNumber || ""}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+            <input
+              type="password"
+              value={formData.password || ""}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
             />
           </div>
@@ -174,7 +237,7 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, receptionistName }: De
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Receptionist</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Patient</h2>
         <p className="text-gray-600 mb-6">
           Are you sure you want to delete <strong>{receptionistName ?? ""}</strong>? This action cannot be undone.
         </p>
@@ -203,29 +266,39 @@ export function ReceptionistsManagement() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingReceptionist, setEditingReceptionist] = useState<ReceptionistType | null>(null);
   const [deletingReceptionist, setDeletingReceptionist] = useState<ReceptionistType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [maleCount, setMaleCount] = useState(0);
+  const [femaleCount, setFemaleCount] = useState(0);
 
   useEffect(() => {
     async function fetchReceptionists() {
+      setLoading(true);
       try {
-        const res = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}users?role=${UserRole.RECEPTIONIST}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch users");
         const data = await res.json();
         if (Array.isArray(data)) {
           setReceptionists(
-            data
-              .filter((u: any) => u.role === "receptionist")
-              .map((u: any) => ({
-                id: u.id,
-                name: u.fullName || "",
-                email: u.email || "",
-                phone: u.phoneNumber || "",
-                hospital: u.hospital || "",
-                status: u.isActive ? "Active" : "Inactive",
-              }))
+            data.map((u: any) => ({
+              id: u.id,
+              name: u.fullName || "",
+              gender: u.gender?.toLowerCase() || "",
+              email: u.email || "",
+              phone: u.phoneNumber || "",
+              address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
+              status: u.isActive ? "Active" : "Inactive",
+              profilePic: u.profilePic || "",
+            }))
           );
+          setMaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "male").length);
+          setFemaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "female").length);
         }
       } catch {
         setReceptionists([]);
+        setMaleCount(0);
+        setFemaleCount(0);
+      } finally {
+        setLoading(false);
       }
     }
     fetchReceptionists();
@@ -233,7 +306,7 @@ export function ReceptionistsManagement() {
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
-      setReceptionists(receptionists.map((r) => (r.id === editingReceptionist.id ? { ...formData, id: r.id } : r)));
+      setReceptionists(receptionists.map((r) => (r.id === editingReceptionist.id ? { ...formData, id: r.id } : r  )));
       setEditingReceptionist(null);
     } else {
       setReceptionists([...receptionists, { ...formData, id: Date.now(), status: "Active" }]);
@@ -244,7 +317,7 @@ export function ReceptionistsManagement() {
   const handleDeleteReceptionist = async () => {
     if (!deletingReceptionist) return;
     try {
-      await fetch(`${BASE_URL}/users/${deletingReceptionist.id}`, {
+      await fetch(`${BASE_URL}users/${deletingReceptionist.id}`, {
         method: "DELETE",
       });
     } catch (err) {
@@ -273,11 +346,17 @@ export function ReceptionistsManagement() {
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Loader */}
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e18b" }}></div>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Receptionists</h1>
-            {/* <button
+            <button
               onClick={() => {
                 setEditingReceptionist(null)
                 setIsAddModalOpen(true)
@@ -287,7 +366,7 @@ export function ReceptionistsManagement() {
             >
               <Plus className="w-5 h-5" />
               Add Receptionist
-            </button> */}
+            </button>
           </div>
           <p className="text-gray-600">Manage receptionist accounts and information</p>
         </div>
@@ -300,7 +379,7 @@ export function ReceptionistsManagement() {
                 <p className="text-gray-600 text-sm">Total Receptionists</p>
                 <p className="text-3xl font-bold text-gray-900">{receptionists.length}</p>
               </div>
-              <UserCog style={{ color: "#62e18b" }} className="w-10 h-10" />
+              <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -314,17 +393,37 @@ export function ReceptionistsManagement() {
               <div style={{ backgroundColor: "#62e18b" }} className="w-10 h-10 rounded-full"></div>
             </div>
           </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Male</p>
+                <p className="text-3xl font-bold text-gray-900">{maleCount}</p>
+              </div>
+              <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Female</p>
+                <p className="text-3xl font-bold text-gray-900">{femaleCount}</p>
+              </div>
+              <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
+            </div>
+          </div>
         </div>
 
-        {/* Receptionists Table */}
+        {/* Patients Table */}
         <div className="border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
+                {/* Removed Profile and Age columns */}
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Gender</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Hospital</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Address</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
               </tr>
@@ -332,12 +431,14 @@ export function ReceptionistsManagement() {
             <tbody>
               {receptionists.map((receptionist) => (
                 <tr key={receptionist.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                  {/* Removed Profile and Age columns */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <UserCog style={{ color: "#62e18b" }} className="w-5 h-5" />
+                      <Users style={{ color: "#62e18b" }} className="w-5 h-5" />
                       <span className="font-semibold text-gray-900">{receptionist.name}</span>
                     </div>
                   </td>
+                  <td className="px-6 py-4 text-gray-600">{receptionist.gender}</td>
                   <td className="px-6 py-4 text-gray-600">{receptionist.email}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-gray-600">
@@ -345,7 +446,7 @@ export function ReceptionistsManagement() {
                       {receptionist.phone}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{receptionist.hospital}</td>
+                  <td className="px-6 py-4 text-gray-600">{receptionist.address}</td>
                   <td className="px-6 py-4">
                     <span
                       style={{ backgroundColor: "#62e18b" }}
@@ -357,7 +458,7 @@ export function ReceptionistsManagement() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       {/* <button
-                        onClick={() => handleEditClick(receptionist)}
+                        onClick={() => handleEditClick(patient)}
                         className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                         title="Edit"
                       >
@@ -384,7 +485,7 @@ export function ReceptionistsManagement() {
         isOpen={isAddModalOpen}
         onClose={handleCloseModal}
         receptionist={editingReceptionist}
-        onSave={handleSaveReceptionist}
+        onSave={handleSaveReceptionist} 
       />
 
       <DeleteConfirmModal

@@ -1,5 +1,5 @@
 "use client";
-
+import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@/components/theme-provider";
 import { type ReactNode, useEffect, useState } from "react";
 import DoctorSidebar from "@/components/Dashboard/Doctor/Sidebar";
@@ -174,6 +174,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           </main>
         </div>
       </div>
+        <ToastContainer position="top-right" autoClose={3000} />
     </ThemeProvider>
   );
 }

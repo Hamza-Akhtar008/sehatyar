@@ -30,7 +30,10 @@ const LoginPage = () => {
         router.push("/admin-dashboard");
       } else if (user.role === "receptionist") {
         router.push("/receptionist-dashboard");
-      } else {
+      } else if (user.role === "clinic") {
+        router.push("/receptionist-dashboard");
+      }
+      else {
         router.push("/"); 
       }
     }

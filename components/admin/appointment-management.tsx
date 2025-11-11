@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { toast } from "react-hot-toast"
 import { Calendar, Clock, User, Phone, Mail, MapPin, DollarSign, Trash2, Plus, X, Eye, Search } from "lucide-react"
 
 // --- Types ---
@@ -411,8 +412,9 @@ export function AppointmentsManagement() {
         { method: "DELETE" }
       );
       setAppointments(appointments.filter((a) => a.id !== deletingAppointmentId));
+      toast.success("Appointment deleted");
     } catch {
-      // Optionally handle error
+      toast.error("Failed to delete appointment");
     } finally {
       setLoading(false);
       setIsDeleteModalOpen(false);

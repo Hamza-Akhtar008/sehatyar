@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import { UserRole } from "@/src/types/enums";
 
 // --- Types ---
@@ -87,6 +88,7 @@ function ClinicModal({ isOpen, onClose, clinic, onSave }: ClinicModalProps) {
       const response = await axios.post(`${BASE_URL}users`, postData);
       
       if (response.data) {
+        toast.success("Clinic created successfully");
         // Clear form only after successful API call
         setFormData({
           id: 0,
@@ -106,8 +108,13 @@ function ClinicModal({ isOpen, onClose, clinic, onSave }: ClinicModalProps) {
         onSave(formData);
         onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        toast.error("Clinic already exists");
+        return;
+      }
       console.error("Error creating user:", error);
+      toast.error("Failed to create clinic. Please try again.");
     }
   }
 

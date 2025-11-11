@@ -5,6 +5,7 @@ import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import axios from "axios";
 import { UserRole } from "@/src/types/enums";
+import { toast } from "react-hot-toast";
 
 // --- Types ---
 type PatientType = {
@@ -78,6 +79,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
       const response = await axios.post(`${BASE_URL}users`, postData);
       
       if (response.data) {
+        toast.success("Patient created successfully");
         // Clear form only after successful API call
         setFormData({
           id: 0,
@@ -97,8 +99,13 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
         onSave(formData);
         onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        toast.error(error.response?.data?.message || "User already exists");
+        return;
+      }
       console.error("Error creating user:", error);
+      toast.error("Failed to create user. Please try again.");
     }
   }
 
