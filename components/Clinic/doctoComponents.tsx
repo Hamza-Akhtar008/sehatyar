@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Stethoscope, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
+import { UserRole } from "@/src/types/enums";
 
 // --- Types ---
 type DoctorType = {
@@ -235,18 +236,23 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteCo
 }
 
 const BASE_URL =
+
   process.env.NEXT_PUBLIC_BASE_URL 
+  
+
 export function DoctorsManagement() {
   const [doctors, setDoctors] = useState<DoctorType[]>(doctorsData);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingDoctor, setEditingDoctor] = useState<DoctorType | null>(null);
   const [deletingDoctor, setDeletingDoctor] = useState<DoctorType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // loader state
 
   useEffect(() => {
     async function fetchDoctors() {
+      setLoading(true);
       try {
-        const res = await fetch(`${BASE_URL}doctor-profile`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}doctor-profile?role=${UserRole.DOCTOR}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch doctors");
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -262,12 +268,14 @@ export function DoctorsManagement() {
               hospital: doc.hospitals?.[0]?.name || "",
               experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
               status: doc.isActive ? "Active" : "Inactive",
-              profilePic: doc.profilePic || "", // add profilePic for rendering
+              profilePic: doc.profilePic || "",
             }))
           );
         }
       } catch {
         setDoctors([]);
+      } finally {
+        setLoading(false);
       }
     }
     fetchDoctors();
@@ -286,7 +294,7 @@ export function DoctorsManagement() {
   const handleDeleteDoctor = async () => {
     if (!deletingDoctor) return;
     try {
-      await fetch(`${BASE_URL}/doctor-profile/${deletingDoctor.id}`, {
+      await fetch(`${BASE_URL}doctor-profile/${deletingDoctor.id}`, {
         method: "DELETE",
       });
     } catch (err) {
@@ -315,28 +323,30 @@ export function DoctorsManagement() {
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Loader */}
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e18b" }}></div>
+          </div>
+        )}
         {/* Header */}
-      <div className="mb-8">
-  <div className="flex items-center justify-between mb-2">
-    <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
-
-    {/* ✅ Add Doctor Button */}
-    <button
-      onClick={() => {
-        setEditingDoctor(null);
-        setIsAddModalOpen(true);
-      }}
-      style={{ backgroundColor: "#62e18b" }}
-      className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-    >
-      <Plus className="w-5 h-5" />
-      Add Doctor
-    </button>
-  </div>
-
-  <p className="text-gray-600">Manage doctor accounts and information</p>
-</div>
-
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
+            {/* <button
+              onClick={() => {
+                setEditingDoctor(null)
+                setIsAddModalOpen(true)
+              }}
+              style={{ backgroundColor: "#62e18b" }}
+              className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add Doctor
+            </button> */}
+          </div>
+          <p className="text-gray-600">Manage doctor accounts and information</p>
+        </div>
 
         {/* Stats */}
         {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -381,101 +391,101 @@ export function DoctorsManagement() {
         </div> */}
 
         {/* Doctors Table */}
-        <div className="border border-gray-200 rounded-lg overflow-x-auto">
-          <table className="w-full min-w-[900px]">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Profile</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-            
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Experience</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {doctors.map((doctor) => (
-                <tr key={doctor.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                  {/* Profile Pic column */}
-                  <td className="px-6 py-4">
-                    {doctor.profilePic ? (
-                      <Image
-                        src={doctor.profilePic}
-                        alt={doctor.name}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover border border-gray-200"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
-                        {doctor.name ? doctor.name.charAt(0) : "?"}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <Stethoscope style={{ color: "#62e18b" }} className="w-5 h-5" />
-                      <span className="font-semibold text-gray-900">{doctor.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{doctor.specialty}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Mail className="w-4 h-4" style={{ color: "#62e18b" }} />
-                      {doctor.email}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Phone className="w-4 h-4" style={{ color: "#62e18b" }} />
-                      {doctor.phone}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{doctor.hospital}</td>
-                  <td className="px-6 py-4 font-semibold text-gray-900">{doctor.experience}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      style={{ backgroundColor: "#62e18b" }}
-                      className="px-3 py-1 rounded-full text-sm font-semibold text-black"
-                    >
-                      {doctor.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2">
-                      {/* <button
-                        onClick={() => handleEditClick(doctor)}
-                        className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button> */}
-                      <button
-                        onClick={async () => {
-                          setDeletingDoctor(doctor);
-                          setIsDeleteModalOpen(true);
-                        }}
-                        className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        {!loading && (
+          <div className="border border-gray-200 rounded-lg overflow-x-auto">
+            <table className="w-full min-w-[900px]">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Profile</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Experience</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                 </tr>
-              ))}
-            </tbody>{/* <button
-                        onClick={() => handleEditClick(doctor)}
-                        className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                        title="Edit"
+              </thead>
+              <tbody>
+                {doctors.map((doctor) => (
+                  <tr key={doctor.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                    {/* Profile Pic column */}
+                    <td className="px-6 py-4">
+                      {doctor.profilePic ? (
+                        <Image
+                          src={doctor.profilePic}
+                          alt={doctor.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover border border-gray-200"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                          {doctor.name ? doctor.name.charAt(0) : "?"}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Stethoscope style={{ color: "#62e18b" }} className="w-5 h-5" />
+                        <span className="font-semibold text-gray-900">{doctor.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{doctor.specialty}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Mail className="w-4 h-4" style={{ color: "#62e18b" }} />
+                        {doctor.email}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Phone className="w-4 h-4" style={{ color: "#62e18b" }} />
+                        {doctor.phone}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-gray-900">{doctor.experience}</td>
+                    <td className="px-6 py-4">
+                      <span
+                        style={{ backgroundColor: "#62e18b" }}
+                        className="px-3 py-1 rounded-full text-sm font-semibold text-black"
                       >
-                        <Edit2 className="w-4 h-4" />
-                      </button> */}
-          </table>
-        </div>
+                        {doctor.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
+                        {/* <button
+                          onClick={() => handleEditClick(doctor)}
+                          className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button> */}
+                        <button
+                          onClick={async () => {
+                            setDeletingDoctor(doctor);
+                            setIsDeleteModalOpen(true);
+                          }}
+                          className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>{/* <button
+                          onClick={() => handleEditClick(doctor)}
+                          className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button> */}
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
