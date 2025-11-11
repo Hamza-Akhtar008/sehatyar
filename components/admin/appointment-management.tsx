@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Calendar, Clock, User, Phone, Mail, MapPin, DollarSign, Trash2, Plus, X, Eye, Search } from "lucide-react"
 
 // --- Types ---
@@ -41,93 +41,6 @@ interface AddAppointmentModalProps {
   onAdd: (formData: AppointmentType) => void;
 }
 
-const appointmentsData = [
-  {
-    id: 1,
-    patientName: "John Anderson",
-    phoneNumber: "+1-800-111-2222",
-    email: "john.anderson@email.com",
-    paymentMethod: "cash",
-    amount: "150",
-    notes: "Regular checkup",
-    appointmentDate: "2025-11-10",
-    appointmentTime: "10:00 AM",
-    appointmentFor: "myself",
-    doctorId: 1,
-    doctorName: "Dr. Sarah Johnson",
-    specialty: "Cardiology",
-    hospitalName: "City Medical Center",
-    status: "Confirmed",
-  },
-  {
-    id: 2,
-    patientName: "Emily Roberts",
-    phoneNumber: "+1-800-222-3333",
-    email: "emily.roberts@email.com",
-    paymentMethod: "card",
-    amount: "200",
-    notes: "Follow-up consultation",
-    appointmentDate: "2025-11-12",
-    appointmentTime: "2:00 PM",
-    appointmentFor: "myself",
-    doctorId: 2,
-    doctorName: "Dr. Michael Chen",
-    specialty: "Neurology",
-    hospitalName: "Green Valley Hospital",
-    status: "Confirmed",
-  },
-  {
-    id: 3,
-    patientName: "Michael Smith",
-    phoneNumber: "+1-800-333-4444",
-    email: "michael.smith@email.com",
-    paymentMethod: "cash",
-    amount: "100",
-    notes: "Initial consultation",
-    appointmentDate: "2025-11-08",
-    appointmentTime: "9:00 AM",
-    appointmentFor: "myself",
-    doctorId: 3,
-    doctorName: "Dr. Emily Rodriguez",
-    specialty: "Pediatrics",
-    hospitalName: "Sunset Health Clinic",
-    status: "Pending",
-  },
-  {
-    id: 4,
-    patientName: "Sarah Williams",
-    phoneNumber: "+1-800-444-5555",
-    email: "sarah.williams@email.com",
-    paymentMethod: "card",
-    amount: "175",
-    notes: "Physical therapy session",
-    appointmentDate: "2025-11-15",
-    appointmentTime: "3:30 PM",
-    appointmentFor: "myself",
-    doctorId: 4,
-    doctorName: "Dr. James Wilson",
-    specialty: "Orthopedics",
-    hospitalName: "Downtown Care Hospital",
-    status: "Confirmed",
-  },
-  {
-    id: 5,
-    patientName: "David Brown",
-    phoneNumber: "+1-800-555-6666",
-    email: "david.brown@email.com",
-    paymentMethod: "cash",
-    amount: "120",
-    notes: "Skin treatment",
-    appointmentDate: "2025-11-20",
-    appointmentTime: "11:00 AM",
-    appointmentFor: "myself",
-    doctorId: 5,
-    doctorName: "Dr. Lisa Anderson",
-    specialty: "Dermatology",
-    hospitalName: "North Star Medical",
-    status: "Confirmed",
-  },
-]
 
 function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDetailModalProps) {
   if (!isOpen || !appointment) return null
@@ -151,21 +64,21 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
                 <User style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Name</p>
-                  <p className="font-semibold text-gray-900">{appointment.patientName}</p>
+                  <p className="font-semibold text-gray-900">{appointment.patientName || "N/A"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Phone style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Phone</p>
-                  <p className="font-semibold text-gray-900">{appointment.phoneNumber}</p>
+                  <p className="font-semibold text-gray-900">{appointment.phoneNumber || "N/A"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Mail style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Email</p>
-                  <p className="font-semibold text-gray-900">{appointment.email}</p>
+                  <p className="font-semibold text-gray-900">{appointment.email || "N/A"}</p>
                 </div>
               </div>
             </div>
@@ -177,14 +90,14 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
             <div className="space-y-3">
               <div>
                 <p className="text-xs text-gray-600">Doctor</p>
-                <p className="font-semibold text-gray-900">{appointment.doctorName}</p>
-                <p className="text-sm text-gray-600">{appointment.specialty}</p>
+                <p className="font-semibold text-gray-900">{appointment.doctorName || "N/A"}</p>
+                <p className="text-sm text-gray-600">{appointment.specialty || "N/A"}</p>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Hospital</p>
-                  <p className="font-semibold text-gray-900">{appointment.hospitalName}</p>
+                  <p className="font-semibold text-gray-900">{appointment.hospitalName || "N/A"}</p>
                 </div>
               </div>
             </div>
@@ -198,15 +111,19 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
                 <Calendar style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Date</p>
-                  <p className="font-semibold text-gray-900">{appointment.appointmentDate}</p>
+                  <p className="font-semibold text-gray-900">{appointment.appointmentDate || "N/A"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Clock style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Time</p>
-                  <p className="font-semibold text-gray-900">{appointment.appointmentTime}</p>
+                  <p className="font-semibold text-gray-900">{appointment.appointmentTime || "N/A"}</p>
                 </div>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Appointment For</p>
+                <p className="font-semibold text-gray-900">{appointment.appointmentFor || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -217,13 +134,13 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
             <div className="space-y-3">
               <div>
                 <p className="text-xs text-gray-600">Payment Method</p>
-                <p className="font-semibold text-gray-900 capitalize">{appointment.paymentMethod}</p>
+                <p className="font-semibold text-gray-900 capitalize">{appointment.paymentMethod || "N/A"}</p>
               </div>
               <div className="flex items-center gap-3">
                 <DollarSign style={{ color: "#62e18b" }} className="w-5 h-5" />
                 <div>
                   <p className="text-xs text-gray-600">Amount</p>
-                  <p className="font-semibold text-gray-900">${appointment.amount}</p>
+                  <p className="font-semibold text-gray-900">${appointment.amount || "N/A"}</p>
                 </div>
               </div>
             </div>
@@ -231,12 +148,10 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
         </div>
 
         {/* Notes */}
-        {appointment.notes && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h3 className="text-sm font-semibold text-gray-600 mb-2">Notes</h3>
-            <p className="text-gray-700">{appointment.notes}</p>
-          </div>
-        )}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-600 mb-2">Notes</h3>
+          <p className="text-gray-700">{appointment.notes || "N/A"}</p>
+        </div>
 
         <div className="flex gap-3 mt-8">
           <button
@@ -244,12 +159,6 @@ function AppointmentDetailModal({ isOpen, onClose, appointment }: AppointmentDet
             className="flex-1 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition"
           >
             Close
-          </button>
-          <button
-            style={{ backgroundColor: "#62e18b" }}
-            className="flex-1 px-4 py-2 text-black rounded-lg font-semibold hover:opacity-90 transition"
-          >
-            Confirm Appointment
           </button>
         </div>
       </div>
@@ -263,16 +172,16 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, appointmentId }: Delet
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Cancel Appointment</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Appointment</h2>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to cancel this appointment? This action cannot be undone.
+          Are you sure you want to delete this appointment? This action cannot be undone.
         </p>
         <div className="flex gap-3">
           <button
             onClick={onClose}
             className="flex-1 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition"
           >
-            Keep
+            Delete
           </button>
           <button
             onClick={onConfirm}
@@ -469,12 +378,13 @@ function AddAppointmentModal({ isOpen, onClose, onAdd }: AddAppointmentModalProp
 
 
 export function AppointmentsManagement() {
-  const [appointments, setAppointments] = useState<AppointmentType[]>(appointmentsData);
+  const [appointments, setAppointments] = useState<AppointmentType[]>([]);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 🔍 Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -492,10 +402,22 @@ export function AppointmentsManagement() {
     setIsDeleteModalOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    setAppointments(appointments.filter((a) => a.id !== deletingAppointmentId));
-    setIsDeleteModalOpen(false);
-    setDeletingAppointmentId(null);
+  const handleDeleteConfirm = async () => {
+    if (!deletingAppointmentId) return;
+    setLoading(true);
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}appointments/${deletingAppointmentId}`,
+        { method: "DELETE" }
+      );
+      setAppointments(appointments.filter((a) => a.id !== deletingAppointmentId));
+    } catch {
+      // Optionally handle error
+    } finally {
+      setLoading(false);
+      setIsDeleteModalOpen(false);
+      setDeletingAppointmentId(null);
+    }
   };
 
   const handleAddAppointment = (formData: AppointmentType) => {
@@ -519,21 +441,69 @@ export function AppointmentsManagement() {
   const pendingCount = appointments.filter((a) => a.status === "Pending").length;
   const totalRevenue = appointments.reduce((sum, a) => sum + Number.parseFloat(a.amount), 0);
 
+  useEffect(() => {
+    async function fetchAppointments() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}appointments`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch appointments");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setAppointments(
+            data.map((item: any) => ({
+              id: item.id,
+              patientName: item.patientName || "",
+              phoneNumber: item.phoneNumber || "",
+              email: item.email || "",
+              paymentMethod: item.paymentMethod || "",
+              amount: item.amount ? String(item.amount) : "",
+              notes: item.notes || "",
+              appointmentDate: item.appointmentDate
+                ? (typeof item.appointmentDate === "string" && item.appointmentDate.includes("T")
+                    ? item.appointmentDate.split("T")[0]
+                    : item.appointmentDate)
+                : "",
+              appointmentTime: item.appointmentTime || "",
+              appointmentFor: item.appointmentFor || "",
+              doctorId: item.doctorId || 0,
+              doctorName: item.doctorName || "",
+              specialty: item.specialty || "",
+              hospitalName: item.hospitalName || "",
+              status: item.status
+                ? item.status.charAt(0).toUpperCase() + item.status.slice(1)
+                : "",
+              // Add all fields you want to show in the table here
+              updatedAt: item.updatedAt || "",
+            }))
+          );
+        }
+      } catch {
+        setAppointments([]);
+      }
+    }
+    fetchAppointments();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Loader */}
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e08b" }}></div>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Appointments</h1>
-            <button
+            {/* <button
               style={{ backgroundColor: "#62e18b" }}
               className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
               onClick={() => setIsAddModalOpen(true)}
             >
               <Plus className="w-5 h-5" />
               Add Appointment
-            </button>
+            </button> */}
           </div>
           <p className="text-gray-600">
             Manage all patient appointments and schedules
@@ -571,8 +541,9 @@ export function AppointmentsManagement() {
             className="w-full md:w-1/4 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#62e18b] outline-none"
           >
             <option value="All">All Status</option>
-            <option value="Confirmed">Confirmed</option>
             <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
 
           {/* Clear Filters */}
@@ -589,15 +560,18 @@ export function AppointmentsManagement() {
         </div>
 
         {/* 🧾 Appointments Table */}
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-          <table className="w-full">
+        <div className="border border-gray-200 rounded-lg overflow-x-auto">
+          <table className="w-full min-w-[1200px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Doctor</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date & Time</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Hospital</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Payment Method</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Amount</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Notes</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Time</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
               </tr>
@@ -606,30 +580,29 @@ export function AppointmentsManagement() {
               {filteredAppointments.length > 0 ? (
                 filteredAppointments.map((appointment) => (
                   <tr key={appointment.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <User style={{ color: "#62e18b" }} className="w-5 h-5" />
-                        <span className="font-semibold text-gray-900">{appointment.patientName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{appointment.doctorName}</td>
-                    <td className="px-6 py-4">
-                      <div className="text-gray-600">
-                        <div className="font-semibold">{appointment.appointmentDate}</div>
-                        <div className="text-sm">{appointment.appointmentTime}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{appointment.hospitalName}</td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">${appointment.amount}</td>
+                    <td className="px-6 py-4">{appointment.patientName || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.phoneNumber || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.email || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.paymentMethod || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.amount || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.notes || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.appointmentDate || "N/A"}</td>
+                    <td className="px-6 py-4">{appointment.appointmentTime || "N/A"}</td>
                     <td className="px-6 py-4">
                       <span
                         style={{
                           backgroundColor:
-                            appointment.status === "Confirmed" ? "#62e18b" : "#fcd34d",
+                            appointment.status === "Completed"
+                              ? "#62e18b"
+                              : appointment.status === "Pending"
+                              ? "#fcd34d"
+                              : appointment.status === "Cancelled"
+                              ? "#ef4444"
+                              : "#f3f4f6",
                         }}
                         className="px-3 py-1 rounded-full text-sm font-semibold text-black"
                       >
-                        {appointment.status}
+                        {appointment.status || "N/A"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -654,7 +627,7 @@ export function AppointmentsManagement() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-500">
+                  <td colSpan={10} className="text-center py-8 text-gray-500">
                     No appointments found matching your filters.
                   </td>
                 </tr>

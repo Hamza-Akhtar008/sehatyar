@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import axios from "axios";
+import { UserRole } from "@/src/types/enums";
 
 // --- Types ---
 type PatientType = {
@@ -265,31 +266,39 @@ export function PatientsManagement() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingPatient, setEditingPatient] = useState<PatientType | null>(null);
   const [deletingPatient, setDeletingPatient] = useState<PatientType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [maleCount, setMaleCount] = useState(0);
+  const [femaleCount, setFemaleCount] = useState(0);
 
   useEffect(() => {
     async function fetchPatients() {
+      setLoading(true);
       try {
-        const res = await fetch(`${BASE_URL}users`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}users?role=${UserRole.PATIENT}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch users");
         const data = await res.json();
         if (Array.isArray(data)) {
           setPatients(
-            data
-              .filter((u: any) => u.role === "patient")
-              .map((u: any) => ({
-                id: u.id,
-                name: u.fullName || "",
-                gender: u.gender || "",
-                email: u.email || "",
-                phone: u.phoneNumber || "",
-                address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
-                status: u.isActive ? "Active" : "Inactive",
-                profilePic: u.profilePic || "",
-              }))
+            data.map((u: any) => ({
+              id: u.id,
+              name: u.fullName || "",
+              gender: u.gender?.toLowerCase() || "",
+              email: u.email || "",
+              phone: u.phoneNumber || "",
+              address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
+              status: u.isActive ? "Active" : "Inactive",
+              profilePic: u.profilePic || "",
+            }))
           );
+          setMaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "male").length);
+          setFemaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "female").length);
         }
       } catch {
         setPatients([]);
+        setMaleCount(0);
+        setFemaleCount(0);
+      } finally {
+        setLoading(false);
       }
     }
     fetchPatients();
@@ -337,6 +346,12 @@ export function PatientsManagement() {
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Loader */}
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e18b" }}></div>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
@@ -382,9 +397,7 @@ export function PatientsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Male</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {patients.filter((p) => p.gender === "Male").length}
-                </p>
+                <p className="text-3xl font-bold text-gray-900">{maleCount}</p>
               </div>
               <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
@@ -393,9 +406,7 @@ export function PatientsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Female</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {patients.filter((p) => p.gender === "Female").length}
-                </p>
+                <p className="text-3xl font-bold text-gray-900">{femaleCount}</p>
               </div>
               <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
