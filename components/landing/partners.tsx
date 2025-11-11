@@ -1,24 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import useEmblaCarousel from "embla-carousel-react"
-import Autoplay from "embla-carousel-autoplay"
-import { useRef, useEffect } from "react"
 
 export default function Partners() {
-  const autoplay = useRef(
-    Autoplay({ delay: 0, stopOnInteraction: false, speed: 0.5 }) // very small speed
-  )
-
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, skipSnaps: true }, // skipSnaps allows smooth continuous scroll
-    [autoplay.current]
-  )
-
-  useEffect(() => {
-    if (emblaApi) emblaApi.reInit()
-  }, [emblaApi])
-
   const logos = [
     { src: "/partners/image 18.png", width: 140, height: 51 },
     { src: "/partners/image 19.png", width: 134, height: 51 },
@@ -35,40 +19,60 @@ export default function Partners() {
     { src: "/partners/image 30.png", width: 68, height: 68 },
   ]
 
+  // Duplicate logos for seamless scrolling
+  const scrollingLogos = [...logos, ...logos]
+
   return (
-     <section className="py-10 md:py-53 px-20 text-center">
+    <section className="py-10 md:py-53 px-10 text-center">
       <h1 className="text-4xl font-semibold">
         Our <span className="text-green-500">Partners</span>
       </h1>
 
+      {/* Wrapper with fade */}
       <div
-        className="overflow-hidden mt-10 cursor-grab active:cursor-grabbing"
-        ref={emblaRef}
+        className="relative overflow-hidden mt-10"
         style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
           WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+            "linear-gradient(to right, transparent 0%, black 40%, black 60%, transparent 100%)",
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 40%, black 60%, transparent 100%)",
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskSize: "100% 100%",
         }}
       >
-        <div className="flex items-center gap-6">
-          {logos.map((logo, index) => (
-            <div
-              key={index}
-              className="flex-[0_0_auto] flex items-center justify-center"
-            >
+        <div className="flex animate-marquee gap-6">
+          {scrollingLogos.map((logo, index) => (
+            <div key={index} className="flex-[0_0_auto] flex items-center justify-center">
               <Image
                 src={logo.src || "/placeholder.svg"}
                 alt={`Partner logo ${index + 1}`}
                 width={logo.width}
                 height={logo.height}
                 style={{ height: "68px", width: "auto" }}
-                className="object-contain transition-all duration-500"
+                className="object-contain"
               />
             </div>
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 10s linear infinite; /* slow scroll */
+        }
+      `}</style>
     </section>
   )
 }
