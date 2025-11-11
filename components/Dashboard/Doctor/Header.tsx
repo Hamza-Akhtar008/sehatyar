@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import { useAuth } from "@/src/contexts/AuthContext"
+import { useEffect, useState } from "react"
 
 interface DoctorDashboardHeaderProps {
   setSidebarOpen: (open: boolean) => void
@@ -12,6 +13,15 @@ export default function DoctorDashboardHeader({
   sidebarOpen,
 }: DoctorDashboardHeaderProps) {
   const { user } = useAuth()
+    const [greeting, setGreeting] = useState("")
+
+  useEffect(() => {
+    const hour = new Date().getHours()
+
+    if (hour < 12) setGreeting("Good Morning")
+    else if (hour < 18) setGreeting("Good Afternoon")
+    else setGreeting("Good Evening")
+  }, [])
 
   return (
     <header
@@ -46,7 +56,7 @@ export default function DoctorDashboardHeader({
           truncate
         "
       >
-        Good Morning, {user?.fullName || "Doctor"}
+        {greeting}, {user?.fullName || "Doctor"}
       </div>
 
       {/* Right: Actions (notification, chat, profile) */}

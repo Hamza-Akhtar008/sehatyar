@@ -73,16 +73,16 @@ export default function DashboardLayout({ children }: LayoutProps) {
       hasRedirected
     });
 
-    // If not authenticated, go to login
-    // if (!isAuthenticated) {
-    //   router.replace("/login");
-    //   return;
-    // }
+   // If not authenticated, go to login
+    if (!isAuthenticated) {
+      router.replace("/login");
+      return;
+    }
 
     // Wait until we have user data
-    // if (!user) {
-    //   return;
-    // }
+    if (!user) {
+      return;
+    }
 
     // Only redirect once per session
     if (hasRedirected) {
@@ -94,7 +94,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
       [UserRole.PATIENT]: "/patient-dashboard",
       [UserRole.ADMIN]: "/admin-dashboard",
       [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
-      [UserRole.clinic]:'/clinic-dashboard'
+      [UserRole.CLINIC]:'/clinic-dashboard',
+      [UserRole.CLINICDOCTOR]:"/doctor-dashboard",
+      [UserRole.CLINICRECEPTIONIST]: "/receptionist-dashboard",
+
+
     };
 
     const targetPath = rolePaths[user?.role as UserRole];
