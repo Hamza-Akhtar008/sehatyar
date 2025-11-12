@@ -82,7 +82,8 @@ const RegisterPage = () => {
             institute: "",
             fieldOfStudy: ""
           }
-        ]
+        ],
+        feesPerConsultation: formData.feesPerConsultation || "0", // Added
       }
     };
     
@@ -154,6 +155,7 @@ const RegisterPage = () => {
     servicesTreatment: [] as string[],
     conditionsTreatment: [] as string[],
     education: "",
+    feesPerConsultation: "", 
   })
 
   const specializations = [
@@ -930,6 +932,23 @@ const RegisterPage = () => {
                   </button>
                 </div>
               </div>
+            </div>
+
+            {/* Fees Per Consultation field */}
+            <div className="mt-4">
+              <label className="block text-[12px] font-medium text-[#343434] mb-2">
+                Fees Per Consultation
+              </label>
+              <input
+                type="text"
+                placeholder="500"
+                value={formData.feesPerConsultation}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, feesPerConsultation: e.target.value }))
+                }
+                className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
+                style={{ borderColor: BORDER }}
+              />
             </div>
 
             {/* Navigation Buttons */}
