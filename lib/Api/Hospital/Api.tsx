@@ -1,13 +1,14 @@
 
 import axiosInstance from "../axios";
 
-export async function AddHospital(name: string, address: string,phone:string,isClinic:Boolean) {
+export async function AddHospital(name: string, address: string,phone:string,isClinic:Boolean,doctorid?:string) {
     try {
         const response = await axiosInstance.post('hospital', {
             name:name,
             address:address,
             phone:phone,
-            isClinic:isClinic
+            isClinic:isClinic,
+            doctorId:doctorid
         });
         return response.data;
     } catch (error: any) {

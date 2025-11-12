@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AddHospital } from "@/lib/Api/Hospital/Api";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 
 interface HospitalModalProps {
@@ -13,11 +14,13 @@ interface HospitalModalProps {
 }
 
 export default function HospitalModal({ isOpen, onClose, onHospitalAdded }: HospitalModalProps) {
+    const {user}=useAuth();
     const [formData, setFormData] = useState({
         name: "",
         address: "",
         phone: "",
         isClinic: false,
+        
     });
     const [loading, setLoading] = useState(false);
 
@@ -29,7 +32,7 @@ export default function HospitalModal({ isOpen, onClose, onHospitalAdded }: Hosp
 
         setLoading(true);
         try {
-            const newHospital = await AddHospital(formData.name,formData.address,formData.phone,formData.isClinic);
+            const newHospital = await AddHospital(formData.name,formData.address,formData.phone,formData.isClinic,user?.doctorId);
             onHospitalAdded(newHospital);
             onClose();
         } catch (error) {

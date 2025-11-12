@@ -316,25 +316,30 @@ export default function AppointmentBooking() {
 
       const hospitalMap = new Map<string, TimeSlot[]>()
 
-      daySlots.forEach((slot) => {
-        if (slot.startTime && slot.endTime && slot?.hospital) {
-          const hospitalName = slot?.hospital.name+ ` (${slot?.hospital.address})`
-          const timeSlots = generateTimeSlots(slot.startTime, slot.endTime)
+   daySlots.forEach((slot) => {
+  if (slot.startTime && slot.endTime) {
+    const hospitalName =
+      slot.availabilityType == "clinic" && slot.hospital
+        ? `${slot.hospital.name} (${slot.hospital.address})`
+        : "Online Consultation"
 
-          if (!hospitalMap.has(hospitalName)) {
-            hospitalMap.set(hospitalName, [])
-          }
+    const timeSlots = generateTimeSlots(slot.startTime, slot.endTime)
 
-          timeSlots.forEach((time) => {
-            const slotObj: TimeSlot = {
-              time,
-              available: true,
-              slotId: slot.id,
-            }
-            hospitalMap.get(hospitalName)?.push(slotObj)
-          })
-        }
-      })
+    if (!hospitalMap.has(hospitalName)) {
+      hospitalMap.set(hospitalName, [])
+    }
+
+    timeSlots.forEach((time) => {
+      const slotObj: TimeSlot = {
+        time,
+        available: true,
+        slotId: slot.id,
+      }
+      hospitalMap.get(hospitalName)?.push(slotObj)
+    })
+  }
+})
+
 
       const hospitals: HospitalAvailability[] = Array.from(hospitalMap.entries()).map(([hospitalName, slots]) => ({
         hospitalName,

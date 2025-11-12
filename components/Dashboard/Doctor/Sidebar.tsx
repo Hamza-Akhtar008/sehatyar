@@ -138,7 +138,7 @@ const patientsidebar: SidebarItem[] = [
   {
     label: "Settings",
     icon: "/assets/sidebar/settings.svg",
-    href: "/doctor-dashboard/settings",
+    href: "/patient-dashboard/settings",
   },
 ];
 

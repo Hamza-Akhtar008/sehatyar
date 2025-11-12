@@ -56,7 +56,7 @@ const Availability: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getAvailability(parseInt(user?.doctorId||"0")), GetHospital(user?.doctorId||"0")])
+    Promise.all([getAvailability(parseInt(user?.doctorId || "0")), GetHospital(user?.doctorId || "0")])
       .then(([slotData, hospitalData]) => {
         setSlots(slotData);
         setHospitals(hospitalData);
@@ -84,6 +84,65 @@ const Availability: React.FC = () => {
     );
     setAvailability(updated as Record<string, { active: boolean; showToggle: boolean }>);
   }, [slots, pendingSlots, availabilityType]);
+
+  const timeToMinutes = (t?: string | null) => {
+    if (!t) return null;
+    const parts = t.split(":");
+    if (parts.length < 2) return null;
+    const hh = parseInt(parts[0], 10);
+    const mm = parseInt(parts[1], 10);
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return null;
+    return hh * 60 + mm;
+  };
+
+  const isOverlapMinutes = (s1: number, e1: number, s2: number, e2: number) => {
+    return s1 < e2 && s2 < e1;
+  };
+
+  // ✅ VALIDATION: Now includes checks for:
+  // - start < end
+  // - duration >= 30 mins
+  // - duplicates or overlaps across online/clinic
+  const validateSlotAgainstDay = (combinedSlots: Slot[], slotToValidate: Slot): string | null => {
+    const day = slotToValidate.dayOfWeek.toLowerCase();
+    const slotStart = timeToMinutes(slotToValidate.startTime);
+    const slotEnd = timeToMinutes(slotToValidate.endTime);
+
+    if (slotStart === null || slotEnd === null) {
+      return "Please enter both start and end times.";
+    }
+
+    if (slotStart >= slotEnd) {
+      return `Start time must be before end time (${slotToValidate.startTime} - ${slotToValidate.endTime}).`;
+    }
+
+    const duration = slotEnd - slotStart;
+    if (duration < 30) {
+      return `Each slot must be at least 30 minutes long (${slotToValidate.startTime} - ${slotToValidate.endTime}).`;
+    }
+
+    const others = combinedSlots.filter((s) => {
+      if (s.dayOfWeek.toLowerCase() !== day) return false;
+      if (s.id && slotToValidate.id) return s.id !== slotToValidate.id;
+      return s !== slotToValidate;
+    });
+
+    for (const o of others) {
+      const oStart = timeToMinutes(o.startTime);
+      const oEnd = timeToMinutes(o.endTime);
+      if (oStart === null || oEnd === null) continue;
+
+      if (oStart === slotStart && oEnd === slotEnd) {
+        return `Duplicate slot (${slotToValidate.startTime} - ${slotToValidate.endTime}) already exists for ${slotToValidate.dayOfWeek}.`;
+      }
+
+      if (isOverlapMinutes(slotStart, slotEnd, oStart, oEnd)) {
+        return `Time slot (${slotToValidate.startTime} - ${slotToValidate.endTime}) overlaps with existing (${o.startTime} - ${o.endTime}) for ${slotToValidate.dayOfWeek}.`;
+      }
+    }
+
+    return null;
+  };
 
   const handleAddSlot = (day: string) => {
     const newSlot: Slot = {
@@ -118,13 +177,44 @@ const Availability: React.FC = () => {
     value: string | number | boolean,
     isPending: boolean
   ) => {
-    const update = (list: Slot[]) => list.map((s) => (s === slot ? { ...s, [field]: value } : s));
-    if (isPending) setPendingSlots(update);
-    else setSlots(update);
+    const updatedSlot: Slot = { ...slot, [field]: value } as Slot;
+    const combinedOriginal = [...slots, ...pendingSlots];
+    const combinedWithUpdated = combinedOriginal.map((s) => (s === slot ? updatedSlot : s));
+
+    if (field === "startTime" || field === "endTime") {
+      const start = (field === "startTime" ? (value as string) : updatedSlot.startTime) as string;
+      const end = (field === "endTime" ? (value as string) : updatedSlot.endTime) as string;
+
+      if (start && end) {
+        const error = validateSlotAgainstDay(combinedWithUpdated, updatedSlot);
+        if (error) {
+          toast.error(error);
+          return;
+        }
+      }
+    }
+
+    const updater = (list: Slot[]) => list.map((s) => (s === slot ? updatedSlot : s));
+    if (isPending) setPendingSlots(updater);
+    else setSlots(updater);
   };
 
   const handleSaveChanges = async () => {
     setLoading(true);
+    const allSlots = [...slots, ...pendingSlots];
+
+    for (let i = 0; i < allSlots.length; i++) {
+      const slotToCheck = allSlots[i];
+      if (!slotToCheck.startTime || !slotToCheck.endTime) continue;
+      const combinedForCheck = allSlots.slice();
+      const error = validateSlotAgainstDay(combinedForCheck, slotToCheck);
+      if (error) {
+        toast.error(error);
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       if (pendingSlots.length > 0) {
         const newSlotsData = await createAvailability(pendingSlots);
@@ -149,7 +239,7 @@ const Availability: React.FC = () => {
       }
 
       toast.success("Availability saved successfully");
-      const updatedData = await getAvailability(parseInt(user?.doctorId||'0'));
+      const updatedData = await getAvailability(parseInt(user?.doctorId || "0"));
       setSlots(updatedData);
     } catch (error) {
       console.error("Error saving availability:", error);
@@ -172,19 +262,15 @@ const Availability: React.FC = () => {
 
   return (
     <div className="w-full mx-auto bg-[#f8f9f8] p-4 sm:p-6 md:p-8 rounded-lg">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-            Set Your Availability
-          </h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Set Your Availability</h2>
           <p className="text-xs sm:text-sm text-gray-500">
             Manage your consultation hours and available days easily.
           </p>
         </div>
       </div>
 
-      {/* Toggle Buttons */}
       <div className="flex flex-wrap gap-3 mb-6 justify-center">
         {["online", "clinic"].map((type) => (
           <button
@@ -201,10 +287,7 @@ const Availability: React.FC = () => {
         ))}
       </div>
 
-      {/* Weekly Schedule */}
-      <h3 className="text-base sm:text-lg font-semibold mb-3 text-gray-800">
-        Weekly Schedule
-      </h3>
+      <h3 className="text-base sm:text-lg font-semibold mb-3 text-gray-800">Weekly Schedule</h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
         {daysOfWeek.map((day) => {
@@ -219,11 +302,8 @@ const Availability: React.FC = () => {
               key={day}
               className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-3 sm:p-4 flex flex-col justify-between"
             >
-              {/* Day Header */}
               <div className="flex justify-between items-center border-b border-gray-100 pb-2 mb-2">
-                <h4 className="text-gray-800 text-sm sm:text-base font-semibold tracking-wide">
-                  {day}
-                </h4>
+                <h4 className="text-gray-800 text-sm sm:text-base font-semibold tracking-wide">{day}</h4>
                 {availability[day]?.showToggle && (
                   <Switch
                     checked={availability[day]?.active}
@@ -233,7 +313,6 @@ const Availability: React.FC = () => {
                 )}
               </div>
 
-              {/* Slot List */}
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {allSlots.length > 0 ? (
                   allSlots.map((slot, index) => {
@@ -273,20 +352,27 @@ const Availability: React.FC = () => {
                               handleSlotChange(slot, "endTime", e.target.value, isPending)
                             }
                           />
-                          <select
-                            className="border border-gray-200 rounded px-2 py-1 text-[11px] focus:ring-[#5fe089] flex-1 min-w-[100px]"
-                            value={slot.hospitalId || ""}
-                            onChange={(e) =>
-                              handleSlotChange(slot, "hospitalId", Number(e.target.value), isPending)
-                            }
-                          >
-                            <option value="">Select Hospital</option>
-                            {hospitals.map((hosp) => (
-                              <option key={hosp.id} value={hosp.id}>
-                                {hosp.name}
-                              </option>
-                            ))}
-                          </select>
+                          {availabilityType === AvailabilityType.CLINIC && (
+                            <select
+                              className="border border-gray-200 rounded px-2 py-1 text-[11px] focus:ring-[#5fe089] flex-1 min-w-[100px]"
+                              value={slot.hospitalId || ""}
+                              onChange={(e) =>
+                                handleSlotChange(
+                                  slot,
+                                  "hospitalId",
+                                  Number(e.target.value),
+                                  isPending
+                                )
+                              }
+                            >
+                              <option value="">Select Hospital</option>
+                              {hospitals.map((hosp) => (
+                                <option key={hosp.id} value={hosp.id}>
+                                  {hosp.name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
                         </div>
                       </div>
                     );
@@ -296,7 +382,6 @@ const Availability: React.FC = () => {
                 )}
               </div>
 
-              {/* Add Slot */}
               <button
                 className="mt-3 border border-gray-200 rounded-md px-2 py-1 text-xs text-gray-600 bg-gray-50 hover:bg-gray-100 focus:ring-1 focus:ring-[#5fe089] w-full"
                 onClick={() => handleAddSlot(day)}
@@ -308,14 +393,13 @@ const Availability: React.FC = () => {
         })}
       </div>
 
-      {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row justify-end mt-6 gap-2 sm:gap-3">
         <Button
           variant="outline"
           className="border-gray-300 text-gray-700 bg-white px-4 py-2 text-sm rounded-full w-full sm:w-auto"
           onClick={() => {
             setPendingSlots([]);
-            getAvailability(parseInt(user?.doctorId||"0")).then((data) => setSlots(data));
+            getAvailability(parseInt(user?.doctorId || "0")).then((data) => setSlots(data));
           }}
         >
           Cancel

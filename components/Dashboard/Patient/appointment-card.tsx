@@ -27,14 +27,31 @@ interface Prescription {
   bloodPressure?: BloodPressure;
 }
 
+interface Doctor {
+  id: number;
+  profilePic?: string;
+  user: { fullName: string };
+  primarySpecialization?: string[];
+  servicesTreatementOffered?: string[];
+  conditionTreatments?: string[];
+  education?: { institute: string; degreeName: string; fieldOfStudy: string }[];
+  yearsOfExperience?: string;
+  FeesPerConsultation?: string;
+}
+
 interface Appointment {
   id: string;
-  doctorName: string;
-  specialty: string;
-  date: string;
-  time: string;
+  patientName: string;
+  phoneNumber: string;
+  email?: string;
+  paymentMethod: string;
+  amount: string;
   status: "completed" | "pending" | "cancelled";
-  avatar: string;
+  notes?: string;
+  appointmentDate: string; // ISO string
+  appointmentTime: string; // formatted string like "09:00 AM"
+  appointmentFor: "myself" | "someone else";
+  doctor: Doctor;
   prescriptions?: Prescription[];
 }
 
@@ -42,6 +59,16 @@ interface Appointment {
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   const [expanded, setExpanded] = useState(false);
   const toggleExpand = () => setExpanded((prev) => !prev);
+
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   const getStatusColor = () => {
     switch (appointment.status) {
@@ -69,19 +96,21 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
       >
         <div className="flex items-center gap-4">
           <Image
-            src={appointment.avatar}
-            alt={appointment.doctorName}
+            src={appointment.doctor?.profilePic || ""}
+            alt={appointment.doctor?.user.fullName}
             width={56}
             height={56}
             className="rounded-full object-cover border border-gray-200"
           />
           <div>
             <h3 className="font-semibold text-gray-800 text-base sm:text-lg">
-              {appointment.doctorName}
+              Dr. {appointment.doctor?.user.fullName}
             </h3>
-            <p className="text-sm text-gray-500">{appointment.specialty}</p>
+            <p className="text-sm text-gray-500">
+              {appointment.doctor?.primarySpecialization?.join(", ") || "Specialist"}
+            </p>
             <p className="text-xs text-gray-400 mt-1">
-              {appointment.date} • {appointment.time}
+              {formatDate(appointment.appointmentDate)} • {appointment.appointmentTime}
             </p>
           </div>
         </div>
@@ -94,120 +123,126 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
           </span>
           {appointment.status === "completed" && (
             <div className="text-gray-500">
-              {expanded ? (
-                <ChevronUp className="w-5 h-5" />
-              ) : (
-                <ChevronDown className="w-5 h-5" />
-              )}
+              {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </div>
           )}
         </div>
       </div>
 
       {/* Expandable Section */}
-      {appointment.status === "completed" && (
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            expanded ? "max-h-[1000px] mt-5" : "max-h-0"
-          }`}
-        >
-          <div className="border-t border-gray-200 pt-5 text-sm space-y-6">
-            {appointment.prescriptions?.length ? (
-              appointment.prescriptions.map((prescription, index) => (
-                <div
-                  key={prescription.id || index}
-                  className="bg-gray-50 p-4 rounded-xl shadow-inner space-y-3"
-                >
-                  <h4 className="font-semibold text-gray-800">
-                    Prescription #{index + 1}
-                  </h4>
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          expanded ? "max-h-[2000px] mt-5" : "max-h-0"
+        }`}
+      >
+        <div className="border-t border-gray-200 pt-5 text-sm space-y-5">
+          {/* Appointment Details */}
+          <div className="space-y-2">
+            <p>
+              <span className="font-semibold">Patient Name:</span> {appointment.patientName}
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span> {appointment.phoneNumber}
+            </p>
+            {appointment.email && (
+              <p>
+                <span className="font-semibold">Email:</span> {appointment.email}
+              </p>
+            )}
+            <p>
+              <span className="font-semibold">Appointment For:</span> {appointment.appointmentFor === "myself" ? "Myself" : "Someone Else"}
+            </p>
+            <p>
+              <span className="font-semibold">Notes / Issue:</span> {appointment.notes || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Payment Method:</span> {appointment.paymentMethod}
+            </p>
+            <p>
+              <span className="font-semibold">Amount:</span> Rs. {appointment.amount}
+            </p>
+          </div>
 
-                  {/* Diagnosis */}
-                  {prescription.diagnosis && (
-                    <div>
-                      <p className="font-medium text-gray-700 mb-1">
-                        Diagnosis:
-                      </p>
-                      <div
-                        className="text-gray-600 leading-relaxed"
-                        dangerouslySetInnerHTML={{
-                          __html: prescription.diagnosis,
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Medications */}
-                  {prescription.medications&&prescription.medications?.length > 0 && (
-                    <div>
-                      <p className="font-medium text-gray-700 mb-1">
-                        Medications:
-                      </p>
-                      <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        {prescription.medications.map(
-                          (med: Medication, i: number) => (
-                            <li key={i}>
-                              <span className="font-medium">{med.name}</span> —{" "}
-                              {med.dosage}, {med.frequency}, {med.duration}
-                              {med.notes && (
-                                <span className="text-gray-500">
-                                  {" "}
-                                  ({med.notes})
-                                </span>
-                              )}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Tests */}
-                  {prescription.tests&&prescription.tests?.length > 0 && (
-                    <div>
-                      <p className="font-medium text-gray-700 mb-1">Tests:</p>
-                      <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        {prescription.tests.map((test, i) => (
-                          <li key={i}>{test}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Instructions */}
-                  {prescription.instructions && (
-                    <div>
-                      <p className="font-medium text-gray-700 mb-1">
-                        Instructions:
-                      </p>
-                      <p className="text-gray-600 leading-relaxed">
-                        {prescription.instructions}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Blood Pressure */}
-                  {prescription.bloodPressure && (
-                    <div>
-                      <p className="font-medium text-gray-700 mb-1">
-                        Blood Pressure:
-                      </p>
-                      <p className="text-gray-600">
-                        {prescription.bloodPressure.high}/
-                        {prescription.bloodPressure.low} mmHg
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">
-                No prescriptions available
+          {/* Doctor Info */}
+          <div className="space-y-2 border-t border-gray-200 pt-4">
+            <p className="font-semibold">Doctor Information:</p>
+            <p>
+              <span className="font-semibold">Name:</span> Dr. {appointment.doctor?.user.fullName}
+            </p>
+            <p>
+              <span className="font-semibold">Specialization:</span>{" "}
+              {appointment.doctor?.primarySpecialization?.join(", ") || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Experience:</span>{" "}
+              {appointment.doctor?.yearsOfExperience || "-"} years
+            </p>
+            {appointment.doctor?.FeesPerConsultation && (
+              <p>
+                <span className="font-semibold">Consultation Fee:</span> Rs. {appointment.doctor?.FeesPerConsultation}
               </p>
             )}
           </div>
+
+          {/* Prescriptions */}
+          {appointment.prescriptions?.length ? (
+            appointment.prescriptions.map((prescription, index) => (
+              <div
+                key={prescription.id || index}
+                className="bg-gray-50 p-4 rounded-xl shadow-inner space-y-3"
+              >
+                <h4 className="font-semibold text-gray-800">Prescription #{index + 1}</h4>
+
+                {prescription.diagnosis && (
+                  <p>
+                    <span className="font-medium">Diagnosis:</span> {prescription.diagnosis}
+                  </p>
+                )}
+
+                {prescription.medications&& prescription?.medications?.length > 0 && (
+                  <div>
+                    <p className="font-medium">Medications:</p>
+                    <ul className="list-disc pl-5">
+                      {prescription.medications.map((med, i) => (
+                        <li key={i}>
+                          <span className="font-medium">{med.name}</span> — {med.dosage}, {med.frequency}, {med.duration}{" "}
+                          {med.notes && <span className="text-gray-500">({med.notes})</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {prescription.tests&&prescription.tests?.length > 0 && (
+                  <div>
+                    <p className="font-medium">Tests:</p>
+                    <ul className="list-disc pl-5">
+                      {prescription.tests.map((test, i) => (
+                        <li key={i}>{test}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {prescription.instructions && (
+                  <p>
+                    <span className="font-medium">Instructions:</span> {prescription.instructions}
+                  </p>
+                )}
+
+                {prescription.bloodPressure && (
+                  <p>
+                    <span className="font-medium">Blood Pressure:</span>{" "}
+                    {prescription.bloodPressure.high}/{prescription.bloodPressure.low} mmHg
+                  </p>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No prescriptions available</p>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -15,6 +15,7 @@ const GREEN = "#5FE089";
 
 export default function ConfirmBooking() {
 
+  
   const searchParams = useSearchParams();
   const router = useRouter();
   const [doctor, setDoctor] = useState<any>(null);
@@ -25,9 +26,9 @@ export default function ConfirmBooking() {
   const { user } = useAuth();
   const [self, setSelf] = useState(true);
   const [payment, setPayment] = useState<string>("online");
-  const [patientName, setPatientName] = useState("");
+  const [patientName, setPatientName] = useState(user?.fullName);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(user?.email);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -111,7 +112,7 @@ export default function ConfirmBooking() {
                     onChange={e => setPhoneNumber(e.target.value)}
                   />
                 <div className="space-y-2">
-                  <Label className="text-[14px] font-semibold text-[#414141]">Email</Label>
+                  <Label className="text-[14px] font-semibold text-[#414141]">Email (Optional)</Label>
                   <Input
                     placeholder="Enter Email"
                     className="h-11 rounded-[12px] border-[#E5E7EB] text-[14px] placeholder:text-[#9CA3AF]"
@@ -120,9 +121,9 @@ export default function ConfirmBooking() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[14px] font-semibold text-[#414141]">Notes (optional)</Label>
+                  <Label className="text-[14px] font-semibold text-[#414141]">Notes </Label>
                   <Input
-                    placeholder="Any notes for doctor"
+                    placeholder="Write Your Issue here in few words"
                     className="h-11 rounded-[12px] border-[#E5E7EB] text-[14px] placeholder:text-[#9CA3AF]"
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
@@ -155,7 +156,7 @@ export default function ConfirmBooking() {
                       </span>
                       <span className="text-[#414141]">Online Payment</span>
                     </div>
-                    <span className="text-[#414141]">Rs. 5,000</span>
+                    <span className="text-[#414141]">{doctor?.FeesPerConsultation}</span>
                   </button>
                 </div>
               </div>
@@ -211,38 +212,50 @@ export default function ConfirmBooking() {
                 <Button
                   className="w-full h-10 rounded-full text-[14px] font-medium"
                   style={{ backgroundColor: GREEN, color: "#0A0A0A" }}
-                  disabled={loading || !patientName || !phoneNumber || !email}
-                  onClick={async () => {
-                    setLoading(true);
-                    setError(null);
-                    setSuccess(false);
-                    try {
-                      console.log("User role:", user?.role);
-                      console.log("User ID:", userId);
-                      await postAppointment({
-                        patientName,
-                        phoneNumber,
-                        email,
-                        paymentMethod: payment,
-                        amount: doctor.FeesPerConsultation, // You may want to get this dynamically
-                        notes,
-                        appointmentDate,
-                        appointmentTime,
-                        appointmentFor: self ? "myself" : "someone else",
-                        doctorId,
-                        userId,
-                      });
-                      setSuccess(true);
-                      // Redirect based on user role
-                      const redirectPath = user?.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard';
-                      console.log("Redirecting to:", redirectPath);
-                      setTimeout(() => router.push(redirectPath), 1500);
-                    } catch (err: any) {
-                      setError(err?.message || "Failed to book appointment");
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
+                  disabled={loading || !patientName || !phoneNumber ||!notes}
+                 onClick={async () => {
+  // Basic validation
+  if (!patientName?.trim()) {
+    setError("Patient name is required");
+    return;
+  }
+  if (!phoneNumber.trim()) {
+    setError("Phone number is required");
+    return;
+  }
+  if (!notes.trim()) {
+    setError("Notes are required");
+    return;
+  }
+
+  setLoading(true);
+  setError(null);
+  setSuccess(false);
+
+  try {
+    await postAppointment({
+      patientName,
+      phoneNumber,
+      email: email || "", // optional
+      paymentMethod: payment,
+      amount: doctor.FeesPerConsultation,
+      notes,
+      appointmentDate,
+      appointmentTime,
+      appointmentFor: self ? "myself" : "someone else",
+      doctorId,
+      userId,
+    });
+    setSuccess(true);
+
+    const redirectPath = user?.role === "doctor" ? "/doctor-dashboard" : "/patient-dashboard";
+    setTimeout(() => router.push(redirectPath), 1500);
+  } catch (err: any) {
+    setError(err?.message || "Failed to book appointment");
+  } finally {
+    setLoading(false);
+  }
+}}
                 >
                   {loading ? "Booking..." : "Confirm Booking"}
                 </Button>

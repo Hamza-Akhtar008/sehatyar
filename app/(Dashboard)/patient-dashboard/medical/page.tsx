@@ -3,7 +3,10 @@
 import { AllReport } from "@/components/Dashboard/Patient/allreport";
 import { AppointmentList } from "@/components/Dashboard/Patient/appointment-list";
 import { RecentReports } from "@/components/Dashboard/Patient/recent-reports";
-import { UploadReport } from "@/components/Dashboard/Patient/upload-report";
+import UploadReport from "@/components/Dashboard/Patient/upload-report";
+
+
+
 import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function PatientDashboard() {
@@ -41,8 +44,8 @@ View and manage your medical reports and documents        </p>
     </div>
        
       <UploadReport/>
-      <RecentReports/>
-      <AllReport/>
+      {/* <RecentReports/>
+      <AllReport/> */}
     
 
 </div>
