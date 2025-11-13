@@ -49,9 +49,10 @@ export default function Messages() {
 
 
   const fetchPatients = async () => {
-    const response = await Fetchpatients("patient");
-    setPatients(response.map(p => ({ ...p, messages: [], unread: 0 })));
-  };
+  const response = (await Fetchpatients("patient")) as Patient[];
+  setPatients(response.map((p: Patient) => ({ ...p, messages: [], unread: 0 })));
+};
+
 
   useEffect(() => {
     fetchPatients();
