@@ -34,3 +34,16 @@ export const uploadMedicalHistoryFiles = async (  payload:FormData, appointmentI
     throw error;
   }
 };
+
+
+
+export async function Fetchpatients(role?: string) {
+  try {
+    const response = await axiosInstance.get(`/users`, {
+   
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
+}

@@ -184,9 +184,9 @@ export default function DoctorSidebar() {
   let sidebarItems: SidebarItem[] = [];
 
   if (user?.role === UserRole.PATIENT) sidebarItems = patientsidebar;
-  else if (user?.role === UserRole.DOCTOR) sidebarItems = doctorsidebar;
+  else if (user?.role === UserRole.DOCTOR||user?.role===UserRole.CLINICDOCTOR) sidebarItems = doctorsidebar;
   else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar;
-  else if (user?.role === UserRole.RECEPTIONIST) sidebarItems = receptionistSidebar;
+  else if (user?.role === UserRole.RECEPTIONIST||user?.role===UserRole.CLINICRECEPTIONIST) sidebarItems = receptionistSidebar;
   else 
     sidebarItems = ClinicSideBar;
 

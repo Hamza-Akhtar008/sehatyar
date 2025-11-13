@@ -13,19 +13,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react"
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, defs, linearGradient, Stop } from "recharts";
 
 const PRIMARY_COLOR = "#62e18b"
 
@@ -38,14 +26,15 @@ export function AdminDashboard() {
     { icon: DollarSign, label: "Revenue", value: "$48.5K", change: "+23%", positive: true },
   ]
 
-  const appointmentData = [
-    { month: "Jan", appointments: 400, revenue: 24 },
-    { month: "Feb", appointments: 520, revenue: 32 },
-    { month: "Mar", appointments: 450, revenue: 28 },
-    { month: "Apr", appointments: 680, revenue: 41 },
-    { month: "May", appointments: 750, revenue: 45 },
-    { month: "Jun", appointments: 890, revenue: 52 },
-  ]
+const appointmentData = [
+  { month: "Jan", appointments: 100, revenue: 500*100  },
+  { month: "Feb", appointments: 520, revenue: 500*520  },
+  { month: "Mar", appointments: 450, revenue: 500*450  },
+  { month: "Apr", appointments: 680, revenue: 500*680  },
+  { month: "May", appointments: 750, revenue: 500*750  },
+  { month: "Jun", appointments: 890, revenue: 500*890 },
+]
+
 
   const departmentData = [
     { name: "Cardiology", value: 35, color: PRIMARY_COLOR },
@@ -111,6 +100,7 @@ export function AdminDashboard() {
                   {stat.change}
                 </div>
               </div>
+              
               <h3 className="text-gray-600 text-sm font-medium">{stat.label}</h3>
               <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
             </div>
@@ -119,28 +109,41 @@ export function AdminDashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
         {/* Bar Chart */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <TrendingUp size={24} style={{ color: PRIMARY_COLOR }} />
-            Appointments & Revenue
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={appointmentData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="month" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip contentStyle={{ backgroundColor: "#f9fafb", border: `2px solid ${PRIMARY_COLOR}` }} />
-              <Legend />
-              <Bar dataKey="appointments" fill={PRIMARY_COLOR} radius={[8, 8, 0, 0]} />
-              <Bar dataKey="revenue" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <TrendingUp size={24} style={{ color: "#16a34a" }} />
+        Appointments & Revenue
+      </h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={appointmentData}>
+          <defs>
+            <linearGradient id="appointmentsGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#16a34a" stopOpacity={0.8} />
+              <stop offset="100%" stopColor="#4ade80" stopOpacity={0.3} />
+            </linearGradient>
+            <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8} />
+              <stop offset="100%" stopColor="#60a5fa" stopOpacity={0.3} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <XAxis dataKey="month" stroke="#6b7280" />
+          <YAxis yAxisId="left" stroke="#16a34a" />
+          <YAxis yAxisId="right" orientation="right" stroke="#3b82f6" />
+          <Tooltip contentStyle={{ backgroundColor: "#f9fafb", border: `2px solid #16a34a` }} />
+          <Legend />
+          <Bar yAxisId="left" dataKey="appointments" fill="url(#appointmentsGradient)" radius={[8, 8, 0, 0]} />
+          <Bar yAxisId="right" dataKey="revenue" fill="url(#revenueGradient)" radius={[8, 8, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+
 
         {/* Pie Chart */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+        {/* <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <Activity size={24} style={{ color: PRIMARY_COLOR }} />
             Department Distribution
@@ -164,7 +167,7 @@ export function AdminDashboard() {
               <Tooltip contentStyle={{ backgroundColor: "#f9fafb", border: `2px solid ${PRIMARY_COLOR}` }} />
             </PieChart>
           </ResponsiveContainer>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Section */}

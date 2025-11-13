@@ -1,7 +1,13 @@
 "use client";
 import Messages from "@/components/Dashboard/Doctor/components/Messages";
+import { initSocket } from "@/lib/Sockets/socket";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useEffect } from "react";
 
 export default function MessagesPage() {
+  
+
+
 	return (
 	<div
       className="w-full h-full overflow-y-auto overflow-x-hidden"
