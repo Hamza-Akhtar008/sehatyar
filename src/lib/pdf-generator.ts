@@ -24,9 +24,9 @@ export async function generatePrescriptionPDF(data: PrescriptionData) {
   const contentWidth = pageWidth - 2 * margin
   let yPosition = margin
 
-  const primaryColor = [44, 138, 148] // Teal primary
-  const accentColor = [52, 211, 153] // Light teal accent
-  const textColor = [33, 33, 33] // Dark gray text
+const primaryColor: [number, number, number] = [44, 138, 148]
+const accentColor: [number, number, number] = [52, 211, 153]
+const textColor: [number, number, number] = [33, 33, 33]
 
   // ---------------- Header ----------------
   doc.setFillColor(255, 255, 255)
@@ -217,18 +217,19 @@ export async function generatePrescriptionPDF(data: PrescriptionData) {
   doc.setFillColor(...primaryColor)
   doc.rect(0, pageHeight - 18, pageWidth, 18, "F")
 
-  const footerDiagonal = [
-    [margin + 20, pageHeight - 18],
-    [margin + 40, pageHeight],
-    [margin + 25, pageHeight],
-    [margin, pageHeight - 18],
-  ]
-  const footerDiagonal2 = [
-    [pageWidth - margin - 40, pageHeight - 18],
-    [pageWidth - margin - 20, pageHeight],
-    [pageWidth - margin, pageHeight],
-    [pageWidth - margin - 25, pageHeight - 18],
-  ]
+ const footerDiagonal: [number, number][] = [
+  [margin + 20, pageHeight - 18],
+  [margin + 40, pageHeight],
+  [margin + 25, pageHeight],
+  [margin, pageHeight - 18],
+]
+
+const footerDiagonal2: [number, number][] = [
+  [pageWidth - margin - 40, pageHeight - 18],
+  [pageWidth - margin - 20, pageHeight],
+  [pageWidth - margin, pageHeight],
+  [pageWidth - margin - 25, pageHeight - 18],
+]
   drawPolygon(footerDiagonal, [255, 255, 255])
   drawPolygon(footerDiagonal2, [255, 255, 255])
 
