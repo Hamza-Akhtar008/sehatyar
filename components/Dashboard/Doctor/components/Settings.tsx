@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import UpdatePassword from "./updatePassword"
+import { toast } from "react-toastify"
 
 interface Education {
   institute?: string
@@ -219,7 +220,7 @@ export default function SettingsForm() {
       if (!doctorRes.ok) throw new Error("Failed to update doctor profile")
       
       setEditMode(false)
-      alert("Profile updated successfully!")
+      toast.success(" Profile updated successfully!")
     } catch (err: any) {
       setError(err.message || "Failed to save changes")
     } finally {

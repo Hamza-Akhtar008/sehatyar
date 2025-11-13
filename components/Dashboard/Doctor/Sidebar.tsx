@@ -43,7 +43,7 @@ const adminSidebar: SidebarItem[] = [
   },
   { label: "Invoices", icon: FileText, href: "/admin-dashboard/invoices" },
   // { label: "Analytics", icon: BarChart3, href: "/admin-dashboard/analytics" },
-  { label: "Message", icon: MessageSquare, href: "/admin-dashboard/messages" },
+  // { label: "Message", icon: MessageSquare, href: "/admin-dashboard/messages" },
   { label: "Settings", icon: Settings, href: "/admin-dashboard/settings" },
 ];
 

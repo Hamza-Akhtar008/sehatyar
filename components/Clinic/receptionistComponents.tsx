@@ -5,6 +5,7 @@ import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import axios from "axios";
 import { UserRole } from "@/src/types/enums";
+import { toast } from "react-hot-toast";
 
 // --- Types ---
 type ReceptionistType = {
@@ -63,22 +64,43 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const token = localStorage.getItem('authToken')
     try {
       const postData = {
         fullName: formData.name,
-        gender: formData.gender.toLowerCase(), // Convert to lowercase to match API
+        gender: formData.gender.toLowerCase(),
         country: formData.country,
         city: formData.city,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
         password: formData.password,
-        role: "receptionist" // Keep this static
+        role: "receptionist" 
       };
 
-      const response = await axios.post(`${BASE_URL}users`, postData);
+      const response = await axios.post(
+        `${BASE_URL}users/by/clinic`,
+        postData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        }
+      );
       
       if (response.data) {
-        // Clear form only after successful API call
+        // Normalize API response to ReceptionistType so the list holds real DB id
+        toast.success('Receptionist created successfully');
+        const newReceptionist: ReceptionistType = {
+          id: response.data.id,
+          name: response.data.fullName || formData.name,
+          gender: (response.data.gender || formData.gender || "").toLowerCase(),
+          email: response.data.email || formData.email,
+          phone: response.data.phoneNumber || formData.phone,
+          address: `${response.data.city || ""}${response.data.country ? ", " + response.data.country : ""}`,
+          status: response.data.isActive ? "Active" : "Inactive",
+        };
+
+        onSave(newReceptionist);
         setFormData({
           id: 0,
           name: "",
@@ -92,12 +114,17 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
           city: "",
           phoneNumber: "",
           password: "",
-          role: "patient",
+          role: "receptionist",
         });
-        onSave(formData);
         onClose();
       }
-    } catch (error) {
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response?.status === 400 && (error.response.data?.message || "").toLowerCase().includes("user already exists")) {
+        toast.error("receptionist already exists");
+      } else {
+        toast.error("Failed to create receptionist");
+      }
       console.error("Error creating user:", error);
     }
   }
@@ -272,9 +299,14 @@ export function ReceptionistsManagement() {
 
   useEffect(() => {
     async function fetchReceptionists() {
+      const token = localStorage.getItem('authToken')
       setLoading(true);
       try {
-        const res = await fetch(`${BASE_URL}users?role=${UserRole.RECEPTIONIST}`, { cache: "no-store" });
+         const res = await fetch(`${BASE_URL}users/by/clinic?role=receptionist`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });        
         if (!res.ok) throw new Error("Failed to fetch users");
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -306,23 +338,32 @@ export function ReceptionistsManagement() {
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
-      setReceptionists(receptionists.map((r) => (r.id === editingReceptionist.id ? { ...formData, id: r.id } : r  )));
+      // Update existing (do not append)
+      setReceptionists(receptionists.map((r) =>
+        r.id === editingReceptionist.id ? { ...r, ...formData, id: editingReceptionist.id } : r
+      ));
       setEditingReceptionist(null);
     } else {
-      setReceptionists([...receptionists, { ...formData, id: Date.now(), status: "Active" }]);
+      // Add with real DB id coming from modal onSave
+      setReceptionists([...receptionists, { ...formData, id: formData.id }]);
     }
     setIsAddModalOpen(false);
   };
 
   const handleDeleteReceptionist = async () => {
     if (!deletingReceptionist) return;
+    const token = localStorage.getItem("authToken");
     try {
       await fetch(`${BASE_URL}users/${deletingReceptionist.id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
       });
     } catch (err) {
-      // Optionally handle error
+      console.error("Error deleting receptionist:", err);
     }
+    toast.success('Receptionist deleted successfully');
     setReceptionists(receptionists.filter((r) => r.id !== deletingReceptionist.id));
     setIsDeleteModalOpen(false);
     setDeletingReceptionist(null);

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import axios from "axios";
+import { headers } from "next/dist/server/request/headers";
+import { toast } from "react-hot-toast";
 
 // --- Types ---
 type PatientType = {
@@ -31,10 +33,8 @@ interface DeleteConfirmModalProps {
   patientName?: string;
 }
 
-const BASE_URL =
-  process.env.NEXT_BASE_URL ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://sehatyarr-c23468ec8014.herokuapp.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL 
+
 
 function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
   const [formData, setFormData] = useState<PatientType & {
@@ -64,23 +64,46 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    const token = localStorage.getItem("authToken");
+    e.preventDefault();
     try {
       const postData = {
         fullName: formData.name,
-        gender: formData.gender.toLowerCase(), // Convert to lowercase to match API
+        gender: formData.gender.toLowerCase(),
         country: formData.country,
         city: formData.city,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
         password: formData.password,
-        role: "patient" // Keep this static
+        role: "patient"
       };
 
-      const response = await axios.post(`${BASE_URL}/users`, postData);
-      
+      const response = await axios.post(
+        `${BASE_URL}users/by/clinic`,
+        postData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        }
+      );
+
       if (response.data) {
-        // Clear form only after successful API call
+        // Normalize API response to PatientType so the list holds real DB id
+        toast.success("Patient created successfully");
+        const newPatient: PatientType = {
+          id: response.data.id,
+          name: response.data.fullName || formData.name,
+          gender: response.data.gender || formData.gender,
+          email: response.data.email || formData.email,
+          phone: response.data.phoneNumber || formData.phone,
+          address: `${response.data.city || ""}${response.data.country ? ", " + response.data.country : ""}`,
+          dateOfBirth: formData.dateOfBirth, // keep existing shape
+          status: response.data.isActive ? "Active" : "Inactive",
+        };
+
+        onSave(newPatient);
+
         setFormData({
           id: 0,
           name: "",
@@ -88,7 +111,7 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
           email: "",
           phone: "",
           address: "",
-          dateOfBirth:new Date(),
+          dateOfBirth: new Date(),
           status: "Active",
           fullName: "",
           country: "",
@@ -97,10 +120,14 @@ function PatientModal({ isOpen, onClose, patient, onSave }: PatientModalProps) {
           password: "",
           role: "patient",
         });
-        onSave(formData);
         onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response?.status === 400 && (error.response.data?.message || "").toLowerCase().includes("user already exists")) {
+        toast.error("patient already exists");
+      } else {
+        toast.error("Failed to create patient");
+      }
       console.error("Error creating user:", error);
     }
   }
@@ -269,11 +296,18 @@ export function PatientsManagement() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingPatient, setEditingPatient] = useState<PatientType | null>(null);
   const [deletingPatient, setDeletingPatient] = useState<PatientType | null>(null);
+  const [loading, setLoading] = useState(false); // add loading state
 
   useEffect(() => {
     async function fetchPatients() {
+      const token = localStorage.getItem("authToken");
+      setLoading(true); // start loading
       try {
-        const res = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+        const res = await fetch(`${BASE_URL}users/by/clinic?role=patient`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
         if (!res.ok) throw new Error("Failed to fetch users");
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -285,8 +319,8 @@ export function PatientsManagement() {
                 name: u.fullName || "",
                 gender: u.gender || "",
                 email: u.email || "",
-                phone: u.phoneNumber || "",
-                dateOfBirth:u.dateOfBirth||"",
+                phone: u.phoneNumber || u.phone || "", 
+                dateOfBirth: u.dateOfBirth || "",
                 address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
                 status: u.isActive ? "Active" : "Inactive",
                 profilePic: u.profilePic || "",
@@ -295,6 +329,8 @@ export function PatientsManagement() {
         }
       } catch {
         setPatients([]);
+      } finally {
+        setLoading(false); // end loading
       }
     }
     fetchPatients();
@@ -302,10 +338,14 @@ export function PatientsManagement() {
 
   const handleSavePatient = (formData: PatientType) => {
     if (editingPatient) {
-      setPatients(patients.map((p) => (p.id === editingPatient.id ? { ...formData, id: p.id } : p)));
+      // Update existing (do not append)
+      setPatients(patients.map((p) =>
+        p.id === editingPatient.id ? { ...p, ...formData, id: editingPatient.id } : p
+      ));
       setEditingPatient(null);
     } else {
-      setPatients([...patients, { ...formData, id: Date.now(), status: "Active" }]);
+      // Add with real DB id coming from modal onSave
+      setPatients([...patients, { ...formData, id: formData.id }]);
     }
     setIsAddModalOpen(false);
   };
@@ -313,12 +353,13 @@ export function PatientsManagement() {
   const handleDeletePatient = async () => {
     if (!deletingPatient) return;
     try {
-      await fetch(`${BASE_URL}/users/${deletingPatient.id}`, {
+      await fetch(`${BASE_URL}users/${deletingPatient.id}`, {
         method: "DELETE",
       });
     } catch (err) {
       // Optionally handle error
     }
+    toast.success('Patient deleted successfully');
     setPatients(patients.filter((p) => p.id !== deletingPatient.id));
     setIsDeleteModalOpen(false);
     setDeletingPatient(null);
@@ -339,20 +380,26 @@ export function PatientsManagement() {
     setEditingPatient(null)
   }
 
-  function getAgeFromDOB(dob: string) {
-  const birthDate = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
+  function getAgeFromDOB(dob: string | Date) {
+    const birthDate = typeof dob === "string" ? new Date(dob) : dob;
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
-  return age;
-}
 
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Loader overlay */}
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e18b" }}></div>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
@@ -401,37 +448,6 @@ export function PatientsManagement() {
     </div>
   </div>
 
-  {/* Age < 30 */}
-  <div className="bg-white border border-gray-200 rounded-lg p-6">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-gray-600 text-sm">Age &lt; 30</p>
-        <p className="text-3xl font-bold text-gray-900">
-          {patients.filter((p) => {
-            const age =  getAgeFromDOB(p.dateOfBirth.toDateString());
-            return age < 30;
-          }).length}
-        </p>
-      </div>
-      <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
-    </div>
-  </div>
-
-  {/* Age ≥ 30 */}
-  <div className="bg-white border border-gray-200 rounded-lg p-6">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-gray-600 text-sm">Age ≥ 30</p>
-        <p className="text-3xl font-bold text-gray-900">
-          {patients.filter((p) => {
-            const age =  getAgeFromDOB(p.dateOfBirth.toDateString());
-            return age >= 30;
-          }).length}
-        </p>
-      </div>
-      <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
-    </div>
-  </div>
 </div>
 
 
