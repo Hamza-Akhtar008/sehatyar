@@ -1,4 +1,4 @@
-import { HospitalsManagement } from '@/components/admin/hospital-management'
+import { ClinicsManagement } from '@/components/admin/clinics-management'
 import React from 'react'
 
 const page = () => {
@@ -6,7 +6,7 @@ const page = () => {
     <div className="h-screen"
         
         >
-          <HospitalsManagement />
+          <ClinicsManagement />
         </div>
   )
 }
