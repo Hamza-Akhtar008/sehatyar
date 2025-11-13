@@ -15,7 +15,8 @@ export interface Slot {
   endTime: string | null;
   isActive: boolean;
   availabilityType: AvailabilityType;
-hospital:Hospital;
+
+address:string
   slotType: SlotType;
   createdAt?: string;
   updatedAt?: string;

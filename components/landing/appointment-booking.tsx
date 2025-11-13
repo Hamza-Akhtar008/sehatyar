@@ -319,8 +319,8 @@ export default function AppointmentBooking() {
    daySlots.forEach((slot) => {
   if (slot.startTime && slot.endTime) {
     const hospitalName =
-      slot.availabilityType == "clinic" && slot.hospital
-        ? `${slot.hospital.name} (${slot.hospital.address})`
+      slot.availabilityType == "clinic"
+        ? `In-Clinic Consultation`
         : "Online Consultation"
 
     const timeSlots = generateTimeSlots(slot.startTime, slot.endTime)

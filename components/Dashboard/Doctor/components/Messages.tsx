@@ -79,7 +79,7 @@ export default function Messages() {
       { params: { senderId: user.id, receiverId } }
     );
 
-    // Messages received by current user
+  
   
 
     // Map API messages to ChatMessage
@@ -109,32 +109,49 @@ export default function Messages() {
 };
 
 
-useEffect(()=>
-{
+
+useEffect(() => {
   if (!user?.id) return;
 
-    
-    socketRef.current = initSocket(user.id.toString());
-},[])
-  useEffect(() => {
-  
+  // 1️⃣ Initialize socket
+  const socket = initSocket(user.id.toString());
+  socketRef.current = socket;
 
-   
-    socketRef.current.on("message", (msg: any) => {
-      console.log(msg)
-      const currentPatient = patients[selectedPatient];
+  // 2️⃣ Attach listeners
  
 
-      
-    
-       fetchChatHistory(currentPatient?.id);
-      
+  const handleMessage = (msg: any) => {
+    console.log("📩 Incoming message:", msg);
 
-     
-    });
+    setPatients((prev) =>
+      prev.map((p, idx) => {
+        if (p.id === msg.senderId || p.id === msg.receiverId) {
+          const isActive = idx === selectedPatient;
+          const newMessage = {
+            senderId: msg.senderId,
+            senderName:
+              msg.senderId === parseInt(user?.id || "0") ? "You" : p.fullName,
+            text: msg.message,
+            time: new Date().toISOString(),
+          };
+          return {
+            ...p,
+            messages: [...(p.messages || []), newMessage],
+            lastMessage: newMessage.text,
+            unread: isActive ? 0 : (p.unread || 0) + 1,
+          };
+        }
+        return p;
+      })
+    );
+  };
 
-   
-  }, [user?.id]);
+
+  socketRef.current.on("message", handleMessage);
+
+
+}, []);
+
 
 
 const sendMessage = () => {
@@ -151,7 +168,7 @@ const sendMessage = () => {
     senderId,
     receiverId: receiver.id,
   };
-console.log(payload)
+
   socketRef.current.emit("message", payload);
 
 
