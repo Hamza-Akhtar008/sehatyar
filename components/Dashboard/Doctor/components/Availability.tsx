@@ -59,7 +59,7 @@ const Availability: React.FC = () => {
     Promise.all([getAvailability(parseInt(user?.doctorId || "0"))])
       .then(([slotData]) => {
         setSlots(slotData);
-        setHospitals([[]]);
+        setHospitals([]);
       })
       .finally(() => setLoading(false));
   }, []);
