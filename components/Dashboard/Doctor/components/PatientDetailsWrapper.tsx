@@ -1,9 +1,10 @@
 "use client";
 
 import PatientDetails from "./PatientDetails";
-import AddPrescriptionModal from "./modals/AddPrescriptionModal";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PrescriptionModal } from "./modals/AddPrescriptionModal";
 
 interface PatientDetailsWrapperProps {
   patient: any;
@@ -63,14 +64,16 @@ export default function PatientDetailsWrapper({ patient, prescriptions }: Patien
         onAddPrescription={handleAddPrescription}
         onEditPrescription={handleEditPrescription}
       />
-      <AddPrescriptionModal
+      <PrescriptionModal
+      patient={patient}
         open={showPrescriptionModal}
-        onClose={() => {
+        onOpenChange={() => {
+          patient={patient}
           setShowPrescriptionModal(false);
           setSelectedPrescription(null);
         }}
-        onSubmit={handlePrescriptionSubmit}
-        prescriptionToEdit={selectedPrescription}
+        
+      
       />
     </>
   );

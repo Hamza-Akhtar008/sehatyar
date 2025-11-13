@@ -56,10 +56,10 @@ const Availability: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getAvailability(parseInt(user?.doctorId || "0")), GetHospital(user?.doctorId || "0")])
-      .then(([slotData, hospitalData]) => {
+    Promise.all([getAvailability(parseInt(user?.doctorId || "0"))])
+      .then(([slotData]) => {
         setSlots(slotData);
-        setHospitals(hospitalData);
+        setHospitals([[]]);
       })
       .finally(() => setLoading(false));
   }, []);
