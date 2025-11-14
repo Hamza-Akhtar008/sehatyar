@@ -1,7 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Calendar, Users, DollarSign, Plus, X, Eye, Trash2, User } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Calendar, Users, DollarSign, Plus, X, Eye, Trash2, User, ChevronRight, Phone, MapPin, Stethoscope, ChevronLeft } from "lucide-react"
+import { FetchDoctorbyClinic, FetchUserbyClinic } from "@/lib/Api/Clinic/clinic_api";
+import { UserRole } from "@/src/types/enums";
+import { getAvailability } from "@/lib/Api/availability";
+
 
 // Types for modals
 interface ModalProps {
@@ -9,6 +13,30 @@ interface ModalProps {
   onClose: () => void;
 }
 
+interface Patient {
+  id: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+}
+
+type DoctorType = {
+  id: number;
+  name: string;
+  specialty: string;
+  email: string;
+  phone: string;
+  hospital: string;
+  experience: string;
+  status: string;
+  profilePic?: string; // added profilePic for rendering
+};
+interface AppointmentProps {
+  isOpen: boolean;
+  onClose: () => void;
+  ExistingPateint:Patient[]
+  Doctors :DoctorType[]
+}
 interface DetailModalProps extends ModalProps {
   title: string;
   data: Record<string, any> | null;  // Make data nullable
@@ -18,6 +46,92 @@ interface DeleteConfirmModalProps extends ModalProps {
   onConfirm: () => void;
   title: string;
 }
+
+
+interface DoctorsCarouselProps {
+  doctorsData: DoctorType[];
+ 
+}
+
+export default function DoctorsCarousel({ doctorsData }: DoctorsCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const visibleCount = 3;
+
+  const prevDoctor = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? Math.max(0, doctorsData.length - visibleCount) : prev - 1
+    );
+  };
+
+  const nextDoctor = () => {
+    setCurrentIndex((prev) =>
+      prev + visibleCount >= doctorsData.length ? 0 : prev + 1
+    );
+  };
+
+  if (doctorsData.length === 0) return <p className="text-center text-gray-500">No doctors available</p>;
+
+ const visibleCountAdjusted = Math.min(visibleCount, doctorsData.length);
+const visibleDoctors = doctorsData.slice(currentIndex, currentIndex + visibleCountAdjusted);
+
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="relative w-full max-w-6xl flex items-center">
+        <button
+          onClick={prevDoctor}
+          className="absolute left-0 z-10 bg-white shadow-md hover:shadow-lg transition rounded-full p-3 -translate-x-2/4 -translate-y-1/2 top-1/2 flex items-center justify-center text-gray-700 hover:text-green-600"
+        >
+          {"<"}
+        </button>
+
+        <div className="flex gap-6 overflow-hidden w-full">
+          {visibleDoctors.map((doctor) => (
+            <div
+              key={doctor.id}
+              className="flex-1 bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-transform transform hover:-translate-y-1 duration-300 flex flex-col"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-full overflow-hidden bg-green-100 flex items-center justify-center">
+                  {doctor.profilePic ? (
+                    <img
+                      src={doctor.profilePic}
+                      alt={doctor.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-6 h-6 text-green-600" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-lg">{doctor.name}</h3>
+                  <p className="text-sm text-gray-500">{doctor.specialty}</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mb-2"><span className="font-medium">Experience:</span> {doctor.experience}</p>
+              <p className="text-sm text-gray-600 mb-4"><span className="font-medium">Phone:</span> {doctor.phone}</p>
+              <button className="mt-auto w-full py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">
+                View Profile
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={nextDoctor}
+          className="absolute right-0 z-10 bg-white shadow-md hover:shadow-lg transition rounded-full p-3 translate-x-2/4 -translate-y-1/2 top-1/2 flex items-center justify-center text-gray-700 hover:text-green-600"
+        >
+          {">"}
+        </button>
+      </div>
+
+      <p className="text-sm text-gray-500 mt-2">
+        Showing {currentIndex + 1} to {Math.min(currentIndex + visibleCount, doctorsData.length)} of {doctorsData.length}
+      </p>
+    </div>
+  );
+}
+
 
 // Add type for your data objects
 interface AppointmentData {
@@ -140,11 +254,50 @@ const invoicesData = [
 ]
 
 // Add Appointment Modal
-function AddAppointmentModal({ isOpen, onClose }: ModalProps) {
-  if (!isOpen) return null
+export function AddAppointmentModal({
+  isOpen,
+  onClose,
+  ExistingPateint,
+  Doctors,
+}: AppointmentProps) {
+  const [searchTermPatient, setSearchTermPatient] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
+  const [searchTermDoctor, setSearchTermDoctor] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorType | null>(null);
+
+  useEffect(()=>
+  {
+   const fetchavailbility = async ()=>
+   {
+const response = getAvailability(selectedDoctor?.id);
+console.log(response);
+   }
+fetchavailbility();
+  },[])
+
+  if (!isOpen) return null;
+
+  const filteredPatients = ExistingPateint.filter((p) =>
+    p.fullName.toLowerCase().includes(searchTermPatient.toLowerCase())
+  );
+
+  const filteredDoctors = Doctors.filter((d) =>
+    d.name.toLowerCase().includes(searchTermDoctor.toLowerCase())
+  );
+
+  const handleSelectPatient = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setSearchTermPatient(patient.fullName);
+  };
+
+  const handleSelectDoctor = (doctor: DoctorType) => {
+    setSelectedDoctor(doctor);
+    setSearchTermDoctor(doctor.name);
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Add New Appointment</h2>
@@ -154,25 +307,106 @@ function AddAppointmentModal({ isOpen, onClose }: ModalProps) {
         </div>
 
         <form className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <input type="text" placeholder="Patient Name" className="border border-gray-300 rounded-lg p-3" />
-            <input type="text" placeholder="Phone Number" className="border border-gray-300 rounded-lg p-3" />
+          {/* Patient Search */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Patient Name"
+              className="border border-gray-300 rounded-lg p-3 w-full"
+              value={searchTermPatient}
+              onChange={(e) => {
+                setSearchTermPatient(e.target.value);
+                setSelectedPatient(null);
+              }}
+            />
+            {searchTermPatient && !selectedPatient && filteredPatients.length > 0 && (
+              <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-lg max-h-40 overflow-y-auto z-10">
+                {filteredPatients.map((patient) => (
+                  <li
+                    key={patient.id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectPatient(patient)}
+                  >
+                    {patient.fullName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
+
+          {/* Auto-filled Email & Phone */}
           <div className="grid grid-cols-2 gap-4">
-            <input type="email" placeholder="Email" className="border border-gray-300 rounded-lg p-3" />
-            <select className="border border-gray-300 rounded-lg p-3">
-              <option>Select Doctor</option>
-            </select>
+            <input
+              type="text"
+              placeholder="Phone Number"
+              className="border border-gray-300 rounded-lg p-3"
+              value={selectedPatient?.phoneNumber || ""}
+              readOnly
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              className="border border-gray-300 rounded-lg p-3"
+              value={selectedPatient?.email || ""}
+              readOnly
+            />
           </div>
+
+          {/* Doctor Search */}
+         <div className="relative">
+  <input
+    type="text"
+    placeholder="Select Doctor"
+    className="border border-gray-300 rounded-lg p-3 w-full"
+    value={searchTermDoctor}
+    onChange={(e) => {
+      setSearchTermDoctor(e.target.value);
+      setSelectedDoctor(null);
+    }}
+  />
+  {searchTermDoctor && !selectedDoctor && filteredDoctors.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-lg max-h-40 overflow-y-auto z-10">
+      {filteredDoctors.map((doctor) => (
+        <li
+          key={doctor.id}
+          className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
+          onClick={() => handleSelectDoctor(doctor)}
+        >
+          {/* Avatar */}
+          {doctor.profilePic ? (
+            <img
+              src={doctor.profilePic}
+              alt={doctor.name}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-white">
+              {doctor.name[0].toUpperCase()}
+            </div>
+          )}
+          <div>
+            <div className="font-medium">{doctor.name}</div>
+            <div className="text-sm text-gray-500">{doctor.specialty}</div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+
+          {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <input type="date" className="border border-gray-300 rounded-lg p-3" />
             <input type="time" className="border border-gray-300 rounded-lg p-3" />
           </div>
-          <textarea 
-            placeholder="Notes" 
-            className="w-full border border-gray-300 rounded-lg p-3" 
-            rows={3}  // Fix the rows type error by removing quotes
+
+          <textarea
+            placeholder="Notes"
+            className="w-full border border-gray-300 rounded-lg p-3"
+            rows={3}
           ></textarea>
+
           <div className="flex gap-3">
             <button
               type="button"
@@ -192,9 +426,8 @@ function AddAppointmentModal({ isOpen, onClose }: ModalProps) {
         </form>
       </div>
     </div>
-  )
+  );
 }
-
 // Detail Modal Component
 function DetailModal({ isOpen, onClose, title, data }: DetailModalProps) {
   if (!isOpen || !data) return null
@@ -264,6 +497,53 @@ export function ReceptionistDashboard() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedData, setSelectedData] = useState<Record<string, any> | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string>("")
+   const [doctors, setDoctors] = useState<DoctorType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false); // loader state
+
+  const [ExistingPatient,setExistingPatient]=useState<Patient[]>([]);
+const fetchExistingPatient=async()=>
+{
+  const response = await FetchUserbyClinic(UserRole.PATIENT);
+  setExistingPatient(response);
+}
+
+
+ useEffect(() => {
+    async function fetchDoctors() {
+      setLoading(true);
+      try {
+        const res = await FetchDoctorbyClinic();
+     
+          setDoctors(
+            res.map((doc: any) => ({
+              id: doc.id,
+              name: doc.user?.fullName || "",
+              specialty: Array.isArray(doc.primarySpecialization)
+                ? doc.primarySpecialization.join(", ")
+                : "",
+              email: doc.user?.email || "",
+              phone: doc.user?.phoneNumber || "",
+              hospital: doc.hospitals?.[0]?.name || "",
+              experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
+              status: doc.isActive ? "Active" : "Inactive",
+              profilePic: doc.profilePic || "",
+            }))
+          );
+        
+      } catch {
+        setDoctors([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDoctors();
+  }, []);
+
+ useEffect(()=>
+{
+  fetchExistingPatient();
+
+},[])
 
   const handleViewDetails = (data: Record<string, any>, type: string) => {
     setSelectedData(data);
@@ -315,7 +595,7 @@ export function ReceptionistDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Active Doctors</p>
-                <p className="text-3xl font-bold text-gray-900">{doctorsData.length}</p>
+                <p className="text-3xl font-bold text-gray-900">{doctors.length}</p>
               </div>
               <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
@@ -409,45 +689,16 @@ export function ReceptionistDashboard() {
 
         {/* Doctors Tab */}
         {activeTab === "doctors" && (
-          <div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {doctorsData.map((doctor) => (
-                <div key={doctor.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div
-                      style={{ backgroundColor: "#62e18b" }}
-                      className="w-12 h-12 rounded-full flex items-center justify-center"
-                    >
-                      <User className="w-6 h-6 text-black" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">{doctor.name}</h3>
-                      <p className="text-sm text-gray-600">{doctor.specialty}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">Experience: {doctor.experience}</p>
-                  <p className="text-sm text-gray-600 mb-4">Phone: {doctor.phone}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleViewDetails(doctor, "Doctor")}
-                      className="flex-1 p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition text-sm font-semibold"
-                    >
-                      View
-                    </button>
-                  
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        
+<DoctorsCarousel doctorsData={doctors} />
+        
         )}
 
 
       </div>
 
       {/* Modals */}
-      <AddAppointmentModal isOpen={isAddAppointmentModalOpen} onClose={() => setIsAddAppointmentModalOpen(false)} />
+      <AddAppointmentModal isOpen={isAddAppointmentModalOpen} onClose={() => setIsAddAppointmentModalOpen(false)} ExistingPateint={ExistingPatient}Doctors ={doctors}/>
 
       <DetailModal
         isOpen={isDetailModalOpen}

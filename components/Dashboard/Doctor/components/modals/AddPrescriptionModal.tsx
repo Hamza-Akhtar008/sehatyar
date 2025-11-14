@@ -123,39 +123,51 @@ NOTES:
 
 
 const onSubmit = async (data: PrescriptionFormValues) => {
-  setIsGenerating(true)
-  try {
-    const cleanedContent = sanitizeQuillHTML(data.prescriptionContent)
-    const appointmentId = localStorage.getItem("appointmentId") || ""
+  setIsGenerating(true);
 
-    // Generate PDF in memory (Blob)
+  try {
+    const cleanedContent = sanitizeQuillHTML(data.prescriptionContent);
+    const appointmentId = localStorage.getItem("appointmentId") || "";
+
+    // 1️⃣ Get Blob from PDF generator
     const pdfBlob = await generatePrescriptionPDF({
-      doctorName:  user?.fullName,
+      doctorName: user?.fullName,
       email: user?.email,
       patientName: patient.fullName,
       prescriptionContent: cleanedContent,
       date: format(currentDate, "MMMM dd, yyyy"),
-    })
+    });
 
-    // Create FormData to send to API
-    const formData = new FormData()
-    
-    formData.append("prescriptionFile", pdfBlob, `prescription-${Date.now()}.pdf`)
+    // 2️⃣ Convert Blob → File (IMPORTANT)
+   const pdfFile = new File([pdfBlob], `prescription-${Date.now()}.pdf`, { type: "application/pdf" })
 
-    // Post to API
-     const res = await patchAppointment(formData,appointmentId);
+const formData = new FormData()
+formData.append("prescriptionFile", pdfFile)
+const file = new File([pdfBlob], "file.pdf", { type: "application/pdf" });
+formData.append("medicalHistoryFiles", file);
 
-    // Reset form with default template
+
+for (let pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
+ 
+
+
+    // 4️⃣ Send to API
+    await patchAppointment(formData, appointmentId);
+
     form.reset({
       prescriptionContent: defaultPrescriptionTemplate.trim().replace(/\n/g, "<br>"),
-    })
-    onOpenChange(false)
+    });
+
+    onOpenChange(false);
   } catch (error) {
-    console.error("Error generating PDF:", error)
+    console.error("Error generating PDF:", error);
   } finally {
-    setIsGenerating(false)
+    setIsGenerating(false);
   }
-}
+};
+
 
 
 

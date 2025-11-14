@@ -4,6 +4,7 @@ const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 
   
+  // timeout: 350000,
 });
 
 axiosInstance.interceptors.request.use(

@@ -24,15 +24,12 @@ export const postAppointment = async (data: AppointmentRequest) => {
   }
 };
 
-export const patchAppointment = async (data: any,id:string) => {
+export const patchAppointment = async (data: FormData,id:string) => {
   try {
     const response = await axiosInstance.patch(`/appointments/${id}`, data,
- {
-
-   headers: {
-         "Content-Type": "multipart/form-data",
-       },
- }
+ { headers: {
+        "Content-Type": "multipart/form-data",
+      },}
 
     );
     return response.data;

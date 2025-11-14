@@ -320,7 +320,7 @@ export default function AppointmentBooking() {
   if (slot.startTime && slot.endTime) {
     const hospitalName =
       slot.availabilityType == "clinic"
-        ? `In-Clinic Consultation`
+        ? `${slot.address}`
         : "Online Consultation"
 
     const timeSlots = generateTimeSlots(slot.startTime, slot.endTime)
