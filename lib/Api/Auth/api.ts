@@ -16,7 +16,13 @@ export async function login(email: string, password: string) {
 
 export async function registerDoctor(payload: any) {
     try {
-        const response = await axiosInstance.post('/doctor-profile', payload);
+        const response = await axiosInstance.post('/doctor-profile', payload,
+            {
+                headers: {
+                   "Content-Type": "multipart/form-data"
+                },
+            }
+        );
         return response.data;
 
     } catch (error: any) {
