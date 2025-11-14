@@ -23,3 +23,23 @@ export async function registerDoctor(payload: any) {
         throw error;
     }   
 }
+
+
+export async function registerDoctor0(payload: any) {
+    const token = localStorage.getItem("authToken");
+    try {
+
+        const response = await axiosInstance.post('/doctor-profile/by/clinic', payload,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                   "Content-Type": "multipart/form-data"
+                },
+            }
+        );
+        return response.data;
+
+    } catch (error: any) {
+        throw error;
+    }   
+}

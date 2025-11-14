@@ -1,28 +1,28 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Users, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
+import { Stethoscope, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
-import axios from "axios";
-import { headers } from "next/dist/server/request/headers";
-import { toast } from "react-hot-toast";
+import { UserRole } from "@/src/types/enums";
+import Link from "next/link";
 
 // --- Types ---
 type DoctorType = {
   id: number;
   name: string;
-  gender: string;
+  specialty: string;
   email: string;
   phone: string;
-  address: string;
-  dateOfBirth?: string | Date; 
-  status?: string; 
+  hospital: string;
+  experience: string;
+  status: string;
+  profilePic?: string; // added profilePic for rendering
 };
 
 interface DoctorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  patient: DoctorType | null;
+  doctor: DoctorType | null;
   onSave: (formData: DoctorType) => void;
 }
 
@@ -33,117 +33,86 @@ interface DeleteConfirmModalProps {
   doctorName?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL 
+const doctorsData = [
+  {
+    id: 1,
+    name: "Dr. Sarah Johnson",
+    specialty: "Cardiology",
+    email: "sarah.johnson@hospital.com",
+    phone: "+1-800-123-4567",
+    hospital: "City Medical Center",
+    experience: "12 years",
+    status: "Active",
+  },
+  {
+    id: 2,
+    name: "Dr. Michael Chen",
+    specialty: "Neurology",
+    email: "michael.chen@hospital.com",
+    phone: "+1-800-234-5678",
+    hospital: "Green Valley Hospital",
+    experience: "8 years",
+    status: "Active",
+  },
+  {
+    id: 3,
+    name: "Dr. Emily Rodriguez",
+    specialty: "Pediatrics",
+    email: "emily.rodriguez@hospital.com",
+    phone: "+1-800-345-6789",
+    hospital: "Sunset Health Clinic",
+    experience: "10 years",
+    status: "Active",
+  },
+  {
+    id: 4,
+    name: "Dr. James Wilson",
+    specialty: "Orthopedics",
+    email: "james.wilson@hospital.com",
+    phone: "+1-800-456-7890",
+    hospital: "Downtown Care Hospital",
+    experience: "15 years",
+    status: "Active",
+  },
+  {
+    id: 5,
+    name: "Dr. Lisa Anderson",
+    specialty: "Dermatology",
+    email: "lisa.anderson@hospital.com",
+    phone: "+1-800-567-8901",
+    hospital: "North Star Medical",
+    experience: "9 years",
+    status: "Active",
+  },
+]
 
-function DoctorModal({ isOpen, onClose, patient, onSave }: DoctorModalProps) {
-  const [formData, setFormData] = useState<DoctorType & {
-    fullName?: string;
-    country?: string;
-    city?: string;
-    phoneNumber?: string;
-    password?: string;
-    role?: string;
-  }>(
-    patient || {
+function DoctorModal({ isOpen, onClose, doctor, onSave }: DoctorModalProps) {
+  const [formData, setFormData] = useState<DoctorType>(
+    doctor || {
       id: 0,
       name: "",
-      gender: "",
+      specialty: "",
       email: "",
       phone: "",
-      dateOfBirth: new Date(),
-      address: "",
+      hospital: "",
+      experience: "",
       status: "Active",
-      fullName: "",
-      country: "",
-      city: "",
-      phoneNumber: "",
-      password: "",
-      role: "doctor",
     }
   );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const token = localStorage.getItem("authToken");
-    e.preventDefault();
-    try {
-      const postData = {
-        fullName: formData.name,
-        gender: formData.gender.toLowerCase(),
-        country: formData.country,
-        city: formData.city,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        password: formData.password,
-        role: "doctor"
-      };
-
-      const response = await axios.post(
-        `${BASE_URL}users/by/clinic`,
-        postData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        }
-      );
-
-      if (response.data) {
-        toast.success("Doctor created successfully");
-        const newDoctor: DoctorType = {
-          id: response.data.id,
-          name: response.data.fullName || formData.name,
-          gender: response.data.gender || formData.gender,
-          email: response.data.email || formData.email,
-          phone: response.data.phoneNumber || formData.phone,
-          address: `${response.data.city || ""}${response.data.country ? ", " + response.data.country : ""}`,
-          dateOfBirth: formData.dateOfBirth,
-          status: response.data.isActive ? "Active" : "Inactive",
-        };
-
-        onSave(newDoctor);
-
-        setFormData({
-          id: 0,
-          name: "",
-          gender: "",
-          email: "",
-          phone: "",
-          address: "",
-          dateOfBirth: new Date(),
-          status: "Active",
-          fullName: "",
-          country: "",
-          city: "",
-          phoneNumber: "",
-          password: "",
-          role: "doctor",
-        });
-        onClose();
-      }
-    } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response?.status === 400 && (error.response.data?.message || "").toLowerCase().includes("user already exists")) {
-        toast.error("Doctor already exists");
-      } else {
-        toast.error("Failed to create doctor");
-      }
-      console.error("Error creating doctor:", error);
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    onSave(formData)
+    onClose()
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
-      <div
-        className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4"
-        style={{
-          width: "600px",
-          maxHeight: "90vh",
-          overflowY: "auto"
-        }}
-      >
+      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">{patient ? "Edit Doctor" : "Add New Doctor"}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{doctor ? "Edit Doctor" : "Add New Doctor"}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
             <X className="w-6 h-6" />
           </button>
@@ -151,7 +120,7 @@ function DoctorModal({ isOpen, onClose, patient, onSave }: DoctorModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
             <input
               type="text"
               value={formData.name}
@@ -160,21 +129,18 @@ function DoctorModal({ isOpen, onClose, patient, onSave }: DoctorModalProps) {
               required
             />
           </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Gender</label>
-              <select
-                value={formData.gender}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, gender: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                required
-              >
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Specialty</label>
+            <input
+              type="text"
+              value={formData.specialty}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, specialty: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              required
+            />
           </div>
+
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
             <input
@@ -185,58 +151,40 @@ function DoctorModal({ isOpen, onClose, patient, onSave }: DoctorModalProps) {
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Address</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
             <input
-              type="text"
-              value={formData.address}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, address: e.target.value })}
+              type="tel"
+              value={formData.phone}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Country</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Hospital</label>
             <input
               type="text"
-              value={formData.country || ""}
-              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              value={formData.hospital}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, hospital: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
+
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">City</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Experience</label>
             <input
               type="text"
-              value={formData.city || ""}
-              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              value={formData.experience}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, experience: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone Number</label>
-            <input
-              type="text"
-              value={formData.phoneNumber || ""}
-              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
-            <input
-              type="password"
-              value={formData.password || ""}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
+
           <div className="flex gap-3 mt-6">
             <button
               type="button"
@@ -265,9 +213,9 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteCo
   return (
     <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Patient</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Doctor</h2>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{doctorName?? ""}</strong>? This action cannot be undone.
+          Are you sure you want to delete <strong>{doctorName ?? ""}</strong>? This action cannot be undone.
         </p>
         <div className="flex gap-3">
           <button
@@ -288,108 +236,101 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteCo
   )
 }
 
+const BASE_URL =
+
+  process.env.NEXT_PUBLIC_BASE_URL 
+  
+
 export function DoctorsManagement() {
-  const [patients, setPatients] = useState<DoctorType[]>([]);
+  const [doctors, setDoctors] = useState<DoctorType[]>(doctorsData);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [editingPatient, setEditingPatient] = useState<DoctorType | null>(null);
-  const [deletingPatient, setDeletingPatient] = useState<DoctorType | null>(null);
-  const [loading, setLoading] = useState(false); // add loading state
+  const [editingDoctor, setEditingDoctor] = useState<DoctorType | null>(null);
+  const [deletingDoctor, setDeletingDoctor] = useState<DoctorType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // loader state
 
   useEffect(() => {
-    async function fetchPatients() {
-      const token = localStorage.getItem("authToken");
+    async function fetchDoctors() {
       setLoading(true);
+      const token =  localStorage.getItem("authToken");
       try {
-        const res = await fetch(`${BASE_URL}users/by/clinic?role=doctor`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        });
-        if (!res.ok) throw new Error("Failed to fetch users");
+        const res = await fetch(`${BASE_URL}doctor-profile/by/clinic`
+          ,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },  
+          })
+        if (!res.ok) throw new Error("Failed to fetch doctors");
         const data = await res.json();
         if (Array.isArray(data)) {
-          setPatients(
-            data
-              .filter((u: any) => u.role === "doctor") // <-- fix: filter for doctor role
-              .map((u: any) => ({
-                id: u.id,
-                name: u.fullName || "",
-                gender: u.gender || "",
-                email: u.email || "",
-                phone: u.phoneNumber || u.phone || "",
-                address: `${u.address || u.city || ""}${u.country ? ", " + u.country : ""}`, // <-- fix: use u.address if available
-                dateOfBirth: u.dateOfBirth || "",
-                status: u.isActive ? "Active" : "Inactive",
-              }))
+          setDoctors(
+            data.map((doc: any) => ({
+              id: doc.id,
+              name: doc.user?.fullName || "",
+              specialty: Array.isArray(doc.primarySpecialization)
+                ? doc.primarySpecialization.join(", ")
+                : "",
+              email: doc.user?.email || "",
+              phone: doc.user?.phoneNumber || "",
+              hospital: doc.hospitals?.[0]?.name || "",
+              experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
+              status: doc.isActive ? "Active" : "Inactive",
+              profilePic: doc.profilePic || "",
+            }))
           );
         }
       } catch {
-        setPatients([]);
+        setDoctors([]);
       } finally {
         setLoading(false);
       }
     }
-    fetchPatients();
+    fetchDoctors();
   }, []);
 
   const handleSaveDoctor = (formData: DoctorType) => {
-    if (editingPatient) {
-      setPatients(patients.map((p) =>
-        p.id === editingPatient.id ? { ...p, ...formData, id: editingPatient.id } : p
-      ));
-      setEditingPatient(null);
+    if (editingDoctor) {
+      setDoctors(doctors.map((d) => (d.id === editingDoctor.id ? { ...formData, id: d.id } : d)));
+      setEditingDoctor(null);
     } else {
-      setPatients([...patients, { ...formData, id: formData.id }]);
+      setDoctors([...doctors, { ...formData, id: Date.now(), status: "Active" }]);
     }
     setIsAddModalOpen(false);
   };
 
   const handleDeleteDoctor = async () => {
-    if (!deletingPatient) return;
+    if (!deletingDoctor) return;
     try {
-      await fetch(`${BASE_URL}users/${deletingPatient.id}`, {
+      await fetch(`${BASE_URL}doctor-profile/${deletingDoctor.id}`, {
         method: "DELETE",
       });
     } catch (err) {
       // Optionally handle error
     }
-    toast.success('Doctor deleted successfully');
-    setPatients(patients.filter((p) => p.id !== deletingPatient.id));
+    setDoctors(doctors.filter((d) => d.id !== deletingDoctor.id));
     setIsDeleteModalOpen(false);
-    setDeletingPatient(null);
+    setDeletingDoctor(null);
   };
 
   const handleEditClick = (doctor: DoctorType) => {
-    setEditingPatient(doctor);
+    setEditingDoctor(doctor);
     setIsAddModalOpen(true);
   };
 
   const handleDeleteClick = (doctor: DoctorType) => {
-    setDeletingPatient(doctor);
+    setDeletingDoctor(doctor);
     setIsDeleteModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false)
-    setEditingPatient(null)
-  }
-
-  function getAgeFromDOB(dob: string | Date) {
-    const birthDate = typeof dob === "string" ? new Date(dob) : dob;
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
+    setEditingDoctor(null)
   }
 
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Loader overlay */}
+        {/* Loader */}
         {loading && (
           <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: "#62e18b" }}></div>
@@ -399,122 +340,164 @@ export function DoctorsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
-            <button
-              onClick={() => {
-                setEditingPatient(null)
-                setIsAddModalOpen(true)
-              }}
-              style={{ backgroundColor: "#62e18b" }}
-              className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
-            >
-              <Plus className="w-5 h-5" />
-              Add Doctor
-            </button>
+            <Link href="/clinic-dashboard/add-doctor">
+              <button
+                style={{ backgroundColor: "#62e18b" }}
+                className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Add Doctor
+              </button>
+            </Link>
           </div>
-          <p className="text-gray-600">Manage Doctor accounts and information</p>
+          <p className="text-gray-600">Manage doctor accounts and information</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {/* Total Doctors */}
+        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Total Doctors</p>
-                <p className="text-3xl font-bold text-gray-900">{patients.length}</p>
+                <p className="text-3xl font-bold text-gray-900">{doctors.length}</p>
               </div>
-              <Users style={{ color: "#62e18b" }} className="w-10 h-10" />
+              <Stethoscope style={{ color: "#62e18b" }} className="w-10 h-10" />
             </div>
           </div>
-          {/* Active Doctors */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Active</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {patients.filter((p) => p.status === "Active").length}
+                  {doctors.filter((d) => d.status === "Active").length}
                 </p>
               </div>
-              <div
-                style={{ backgroundColor: "#62e18b" }}
-                className="w-10 h-10 rounded-full"
-              ></div>
+              <div style={{ backgroundColor: "#62e18b" }} className="w-10 h-10 rounded-full"></div>
             </div>
           </div>
-        </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Specialties</p>
+                <p className="text-3xl font-bold text-gray-900">{new Set(doctors.map((d) => d.specialty)).size}</p>
+              </div>
+              <Stethoscope style={{ color: "#62e18b" }} className="w-10 h-10" />
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Avg Experience</p>
+                <p className="text-3xl font-bold text-gray-900">10.8 yrs</p>
+              </div>
+              <Stethoscope style={{ color: "#62e18b" }} className="w-10 h-10" />
+            </div>
+          </div>
+        </div> */}
 
-        {/* Patients Table */}
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                {/* Removed Profile and Age columns */}
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Gender</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Address</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patients.map((patient) => (
-                <tr key={patient.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                  {/* Removed Profile and Age columns */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <Users style={{ color: "#62e18b" }} className="w-5 h-5" />
-                      <span className="font-semibold text-gray-900">{patient.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{patient.gender}</td>
-                  <td className="px-6 py-4 text-gray-600">{patient.email}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Phone className="w-4 h-4" style={{ color: "#62e18b" }} />
-                      {patient.phone}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{patient.address}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      style={{ backgroundColor: "#62e18b" }}
-                      className="px-3 py-1 rounded-full text-sm font-semibold text-black"
-                    >
-                      {patient.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2">
-                      {/* <button
-                        onClick={() => handleEditClick(patient)}
-                        className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button> */}
-                      <button
-                        onClick={() => handleDeleteClick(patient)}
-                        className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        {/* Doctors Table */}
+        {!loading && (
+          <div className="border border-gray-200 rounded-lg overflow-x-auto">
+            <table className="w-full min-w-[900px]">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Profile</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Experience</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {doctors.map((doctor) => (
+                  <tr key={doctor.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                    {/* Profile Pic column */}
+                    <td className="px-6 py-4">
+                      {doctor.profilePic ? (
+                        <Image
+                          src={doctor.profilePic}
+                          alt={doctor.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover border border-gray-200"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                          {doctor.name ? doctor.name.charAt(0) : "?"}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Stethoscope style={{ color: "#62e18b" }} className="w-5 h-5" />
+                        <span className="font-semibold text-gray-900">{doctor.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{doctor.specialty}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Mail className="w-4 h-4" style={{ color: "#62e18b" }} />
+                        {doctor.email}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Phone className="w-4 h-4" style={{ color: "#62e18b" }} />
+                        {doctor.phone}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-gray-900">{doctor.experience}</td>
+                    <td className="px-6 py-4">
+                      <span
+                        style={{ backgroundColor: "#62e18b" }}
+                        className="px-3 py-1 rounded-full text-sm font-semibold text-black"
+                      >
+                        {doctor.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
+                        {/* <button
+                          onClick={() => handleEditClick(doctor)}
+                          className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button> */}
+                        <button
+                          onClick={async () => {
+                            setDeletingDoctor(doctor);
+                            setIsDeleteModalOpen(true);
+                          }}
+                          className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>{/* <button
+                          onClick={() => handleEditClick(doctor)}
+                          className="p-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button> */}
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
       <DoctorModal
         isOpen={isAddModalOpen}
         onClose={handleCloseModal}
-        patient={editingPatient}
+        doctor={editingDoctor}
         onSave={handleSaveDoctor}
       />
 
@@ -522,7 +505,7 @@ export function DoctorsManagement() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteDoctor}
-        doctorName={deletingPatient?.name}
+        doctorName={deletingDoctor?.name}
       />
     </div>
   )

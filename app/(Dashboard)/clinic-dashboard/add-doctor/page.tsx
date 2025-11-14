@@ -1,9 +1,10 @@
 "use client"
-import { registerDoctor } from "@/lib/Api/Auth/api";
+import { registerDoctor, registerDoctor0 } from "@/lib/Api/Auth/api";
 import { toast, Toaster } from "react-hot-toast";
 import { useState, useRef, useEffect, useMemo } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation";
+import { profile } from "console";
 
 const PRIMARY = "#5fe089"
 const GENDER_BG = "#01503f"
@@ -23,9 +24,8 @@ const RegisterPage = () => {
     confirmPassword: ""
   });
   // Add state for profilePic
-  const [profilePic, setProfilePic] = useState("");
-  // Add state for file upload
-  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
+const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null); // For UI preview
+const [profilePicFile, setProfilePicFile] = useState<File | null>(null); // For actual file
 
   // Password error state
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -40,8 +40,7 @@ const RegisterPage = () => {
     userFields.password.trim() &&
     userFields.confirmPassword.trim();
 
-  // Handler for registration submit
-  const handleRegister = async () => {
+const handleRegister = async () => {
     // Prevent submit if passwords don't match
     if (userFields.password !== userFields.confirmPassword) {
       setPasswordError("Password and Confirm Password do not match.");
@@ -64,31 +63,39 @@ const RegisterPage = () => {
       }]);
     }
     
-    // Build payload
-    const payload = {
-      user: {
-        ...userFields,
-        gender: gender // Ensure gender is updated
-      },
-      doctorProfile: {
-        file: profilePic, 
-        yearsOfExperience: Number(formData.yearsOfExperience),
-        primarySpecialization: formData.primarySpecializations,
-        servicesTreatementOffered: formData.servicesTreatment,
-        conditionTreatments: formData.conditionsTreatment,
-        education: educationList.length > 0 ? educationList : [
-          {
-            degreeName: formData.education,
-            institute: "",
-            fieldOfStudy: ""
-          }
-        ],
-        FeesPerConsultation: formData.FeesPerConsultation || "0", // Added
+    const formDataToSend = new FormData();
+  
+  // Append user data
+  const userData = {
+    ...userFields,
+    gender: gender
+  };
+  formDataToSend.append('user', JSON.stringify(userData));
+  
+  // Append doctor profile data
+  const doctorProfileData = {
+    yearsOfExperience: Number(formData.yearsOfExperience),
+    primarySpecialization: formData.primarySpecializations,
+    servicesTreatementOffered: formData.servicesTreatment,
+    conditionTreatments: formData.conditionsTreatment,
+    education: educationList.length > 0 ? educationList : [
+      {
+        degreeName: formData.education,
+        institute: "",
+        fieldOfStudy: ""
       }
-    };
+    ],
+    FeesPerConsultation: formData.FeesPerConsultation || "0",
+  };
+  formDataToSend.append('doctorProfile', JSON.stringify(doctorProfileData));
+  
+  // Append the actual file (not Base64 string)
+  if (profilePicFile) {
+    formDataToSend.append('profilePic', profilePicFile);
+  }
     
     try {
-      await registerDoctor(payload);
+      await registerDoctor0(formDataToSend);
       toast.success("Registration successful!");
       // Optionally redirect or reset form
       router.push("/login");  
@@ -97,7 +104,6 @@ const RegisterPage = () => {
       console.error("Registration error:", error);
     }
   };
-  
   // Handle adding an education entry
   const addEducationEntry = () => {
     if (educationFields.degreeName.trim()) {
@@ -156,6 +162,7 @@ const RegisterPage = () => {
     conditionsTreatment: [] as string[],
     education: "",
     FeesPerConsultation: "", 
+    profilePic :"",
   })
 
   const specializations = [
@@ -506,7 +513,7 @@ const RegisterPage = () => {
               style={{ borderColor: BORDER }}
             >
               {filteredOptions.map((option, idx) => (
-                <button
+                <button 
                   key={option}
                   type="button"
                   onMouseDown={() => {
@@ -546,18 +553,22 @@ const RegisterPage = () => {
   }
 
   // Add this function to handle file upload
-  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setProfilePicFile(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
+  // Remove the old handleProfilePicChange and replace with:
+const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0] || null;
+  setProfilePicFile(file); // Store the actual File object
+  
+  // Create preview for UI only
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfilePicPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    setProfilePicPreview(null);
+  }
+};
   // Password match check on change
   useEffect(() => {
     if (
@@ -577,9 +588,8 @@ const RegisterPage = () => {
       <div className="w-full max-w-[672px] px-4 md:px-0 pt-14 pb-10">
         {/* Header */}
         <div className="mx-auto flex flex-col items-center gap-[30px] w-full max-w-[560px]">
-          <Image src="/images/logo2.webp" alt="Sehatyar" width={159} height={42} className="object-contain" priority />
           <h1 className="text-[28px] font-semibold leading-none tracking-tight text-[#343434]">
-            Registration <span style={{ color: PRIMARY }}>Form</span>
+            Add Doctor For <span style={{ color: PRIMARY }}>Clinic</span>
           </h1>
         </div>
 
@@ -775,9 +785,9 @@ const RegisterPage = () => {
                 className="w-[100px] h-[100px] rounded-full border-2 border-dashed flex items-center justify-center relative"
                 style={{ borderColor: BORDER }}
               >
-                {profilePic ? (
+                {profilePicPreview ? ( // <-- fix: use profilePicPreview for preview
                   <img
-                    src={profilePic}
+                    src={profilePicPreview}
                     alt="Profile"
                     className="w-full h-full object-cover rounded-full"
                   />
@@ -940,7 +950,7 @@ const RegisterPage = () => {
                 Fees Per Consultation
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="500"
                 value={formData.FeesPerConsultation}
                 onChange={(e) =>

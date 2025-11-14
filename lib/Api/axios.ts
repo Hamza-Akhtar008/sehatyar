@@ -3,11 +3,7 @@ import axios, { AxiosInstance, AxiosError } from "axios"
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  // timeout: 350000,
+  
 });
 
 axiosInstance.interceptors.request.use(
