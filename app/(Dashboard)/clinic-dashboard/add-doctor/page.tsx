@@ -41,69 +41,86 @@ const [profilePicFile, setProfilePicFile] = useState<File | null>(null); // For 
     userFields.confirmPassword.trim();
 
 const handleRegister = async () => {
-    // Prevent submit if passwords don't match
-    if (userFields.password !== userFields.confirmPassword) {
-      setPasswordError("Password and Confirm Password do not match.");
-      return;
-    }
-    setPasswordError(null);
+  // 1️⃣ Password validation
+  if (userFields.password !== userFields.confirmPassword) {
+    setPasswordError("Password and Confirm Password do not match.");
+    return;
+  }
+  setPasswordError(null);
 
-    if (step !== 2) {
-      setStep(2);
-      return;
-    }
+  // 2️⃣ Step control
+  if (step !== 2) {
+    setStep(2);
+    return;
+  }
 
-    // Check if we have at least one education entry
-    if (educationList.length === 0 && formData.education) {
-      // Create default education entry from the simple field
-      setEducationList([{
-        degreeName: formData.education,
-        institute: "",
-        fieldOfStudy: ""
-      }]);
-    }
-    
-    const formDataToSend = new FormData();
-  
-  // Append user data
+  // 3️⃣ Ensure education list exists
+  const finalEducation =
+    educationList.length > 0
+      ? educationList
+      : [
+          {
+            degreeName: formData.education || "",
+            institute: "",
+            fieldOfStudy: "",
+          },
+        ];
+
+  // 4️⃣ Build FormData
+  const formDataToSend = new FormData();
+
+  // 🟦 USER OBJECT
   const userData = {
-    ...userFields,
-    gender: gender
+    fullName: userFields.fullName,
+    gender: gender,
+    country: userFields.country,
+    city: userFields.city,
+    email: userFields.email,
+    phoneNumber: userFields.phoneNumber,
+    password: userFields.password,
+    
   };
-  formDataToSend.append('user', JSON.stringify(userData));
-  
-  // Append doctor profile data
+
+  formDataToSend.append("user", JSON.stringify(userData));
+
+  // 🟧 DOCTOR PROFILE
   const doctorProfileData = {
     yearsOfExperience: Number(formData.yearsOfExperience),
-    primarySpecialization: formData.primarySpecializations,
-    servicesTreatementOffered: formData.servicesTreatment,
-    conditionTreatments: formData.conditionsTreatment,
-    education: educationList.length > 0 ? educationList : [
-      {
-        degreeName: formData.education,
-        institute: "",
-        fieldOfStudy: ""
-      }
-    ],
     FeesPerConsultation: formData.FeesPerConsultation || "0",
+    Description:   "",
+
+    primarySpecialization: formData.primarySpecializations || [],
+    servicesTreatementOffered: formData.servicesTreatment || [],
+    conditionTreatments: formData.conditionsTreatment || [],
+
+    education: finalEducation,
   };
-  formDataToSend.append('doctorProfile', JSON.stringify(doctorProfileData));
+
+
   
-  // Append the actual file (not Base64 string)
-  if (profilePicFile) {
-    formDataToSend.append('profilePic', profilePicFile);
+  formDataToSend.append("doctorProfile", JSON.stringify(doctorProfileData));
+
+if(profilePicFile)
+{
+  
+  formDataToSend.append("profilePic", profilePicFile);
+}
+
+for (let entry of formDataToSend.entries()) {
+  console.log(entry[0], entry[1]);
+}
+
+  // 5️⃣ Submit
+  try {
+    await registerDoctor0(formDataToSend);
+    toast.success("Registration successful!");
+  } catch (error: any) {
+    console.log(error)
+    toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
+    console.error("Registration error:", error);
   }
-    
-    try {
-      await registerDoctor0(formDataToSend);
-      toast.success("Registration successful!");
-      // Optionally redirect or reset form
-      router.push("/login");  
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
-      console.error("Registration error:", error);
-    }
-  };
+};
+
   // Handle adding an education entry
   const addEducationEntry = () => {
     if (educationFields.degreeName.trim()) {

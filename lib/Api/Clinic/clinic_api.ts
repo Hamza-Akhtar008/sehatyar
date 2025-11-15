@@ -19,3 +19,14 @@ export async function FetchUserbyClinic(role:string) {
     throw error
   }
 }
+
+
+
+export async function CreateAppointmentRep(payload:any) {
+  try {
+    const response = await axiosInstance.post(`/appointments/by/clinic`,payload)
+    return response.data
+  } catch (error: any) {
+    throw error
+  }
+}

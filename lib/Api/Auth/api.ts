@@ -25,17 +25,12 @@ export async function registerDoctor(payload: any) {
 }
 
 
-export async function registerDoctor0(payload: any) {
+export async function registerDoctor0(payload: FormData) {
     const token = localStorage.getItem("authToken");
     try {
 
         const response = await axiosInstance.post('/doctor-profile/by/clinic', payload,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                   "Content-Type": "multipart/form-data"
-                },
-            }
+            
         );
         return response.data;
 
