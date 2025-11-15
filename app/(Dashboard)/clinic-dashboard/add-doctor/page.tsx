@@ -114,13 +114,13 @@ for (let entry of formDataToSend.entries()) {
   try {
     await registerDoctor0(formDataToSend);
     toast.success("Registration successful!");
+    router.push("/clinic-dashboard/doctors");
   } catch (error: any) {
     console.log(error)
     toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
     console.error("Registration error:", error);
   }
 };
-
   // Handle adding an education entry
   const addEducationEntry = () => {
     if (educationFields.degreeName.trim()) {
