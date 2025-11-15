@@ -15,7 +15,8 @@ export interface Slot {
   endTime: string | null;
   isActive: boolean;
   availabilityType: AvailabilityType;
-hospital:Hospital;
+
+address:string
   slotType: SlotType;
   createdAt?: string;
   updatedAt?: string;
@@ -24,7 +25,7 @@ hospital:Hospital;
 //get availability
 export const getAvailability = async (doctorId?: number) => {
     try {
-        const url = doctorId ? `/availability?doctorId=${doctorId}` : "/availability";
+        const url = `/availability?doctorId=${doctorId}` 
         const response = await axiosInstance.get(url);
         return response.data as Slot[];
     } catch (error) {

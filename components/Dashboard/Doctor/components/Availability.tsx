@@ -32,7 +32,7 @@ interface Slot {
   endTime: string | null;
   isActive: boolean;
   availabilityType: AvailabilityType;
-  hospitalId?: number;
+  Address?: string;
 }
 
 interface Hospital {
@@ -46,6 +46,8 @@ const Availability: React.FC = () => {
   const [availabilityType, setAvailabilityType] = useState<AvailabilityType>(
     AvailabilityType.CLINIC
   );
+
+  
   const [slots, setSlots] = useState<Slot[]>([]);
   const [pendingSlots, setPendingSlots] = useState<Slot[]>([]);
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
@@ -56,10 +58,10 @@ const Availability: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getAvailability(parseInt(user?.doctorId || "0")), GetHospital(user?.doctorId || "0")])
-      .then(([slotData, hospitalData]) => {
+    Promise.all([getAvailability(parseInt(user?.doctorId || "0"))])
+      .then(([slotData]) => {
         setSlots(slotData);
-        setHospitals(hospitalData);
+        setHospitals([]);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -152,7 +154,7 @@ const Availability: React.FC = () => {
       endTime: "",
       isActive: true,
       availabilityType,
-      hospitalId: undefined,
+      Address: "",
     };
     setPendingSlots((prev) => [...prev, newSlot]);
   };
@@ -226,13 +228,13 @@ const Availability: React.FC = () => {
       for (const slot of modifiedSlots) {
         if (slot.id) {
           const payload = {
-            doctorId: slot.doctorId,
+          
             dayOfWeek: slot.dayOfWeek,
             startTime: slot.startTime,
             endTime: slot.endTime,
             isActive: slot.isActive,
             availabilityType: slot.availabilityType,
-            hospitalId: slot.hospitalId,
+            address: slot.Address,
           };
           await PatchAvailability(payload, slot.id);
         }
@@ -353,25 +355,15 @@ const Availability: React.FC = () => {
                             }
                           />
                           {availabilityType === AvailabilityType.CLINIC && (
-                            <select
+                            <input
                               className="border border-gray-200 rounded px-2 py-1 text-[11px] focus:ring-[#5fe089] flex-1 min-w-[100px]"
-                              value={slot.hospitalId || ""}
-                              onChange={(e) =>
-                                handleSlotChange(
-                                  slot,
-                                  "hospitalId",
-                                  Number(e.target.value),
-                                  isPending
-                                )
-                              }
-                            >
-                              <option value="">Select Hospital</option>
-                              {hospitals.map((hosp) => (
-                                <option key={hosp.id} value={hosp.id}>
-                                  {hosp.name}
-                                </option>
-                              ))}
-                            </select>
+                              value={slot.Address || ""}
+                             onChange={(e) =>
+                              handleSlotChange(slot, "Address", e.target.value, isPending)
+                            }
+                              
+                           />
+                             
                           )}
                         </div>
                       </div>

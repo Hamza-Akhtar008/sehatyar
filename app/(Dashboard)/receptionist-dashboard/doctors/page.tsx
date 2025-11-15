@@ -1,4 +1,4 @@
-import { DoctorsManagement } from '@/components/admin/doctoComponents'
+import { DoctorsManagement } from '@/components/receptionist/doctoComponents'
 import React from 'react'
 
 const page = () => {

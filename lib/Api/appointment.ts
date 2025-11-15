@@ -24,6 +24,20 @@ export const postAppointment = async (data: AppointmentRequest) => {
   }
 };
 
+export const patchAppointment = async (data: FormData,id:string) => {
+  try {
+    const response = await axiosInstance.patch(`/appointments/${id}`, data,
+ { headers: {
+        "Content-Type": "multipart/form-data",
+      },}
+
+    );
+    return response.data;
+  } catch (error: any) {
+  
+    throw error?.response?.data || error;
+  }
+};
 // Get appointments for the logged-in doctor (token required)
 export const getAppointmentsForLoggedInDoctor = async () => {
     try {
