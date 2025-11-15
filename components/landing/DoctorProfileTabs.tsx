@@ -14,6 +14,9 @@ export default function DoctorProfileTabs({
   country,
   Description,
   doctorName,
+  reviews = [],
+  reviewCount = 0,
+  reviewStats = { satisfiedPercent: 100, totalPatients: 75, doctorCheckup: 98, clinicEnvironment: 98, staffBehaviour: 98 },
 }: {
   servicesTreatementOffered?: string[];
   education?: { institute: string; degreeName: string; fieldOfStudy?: string }[];
@@ -26,6 +29,21 @@ export default function DoctorProfileTabs({
   country?: string;
   Description?: string;
   doctorName?: string;
+  reviews?: Array<{
+    id: number;
+    title: string;
+    content: string;
+    patient?: { id: number; profilePic?: string; };
+    createdAt?: string;
+  }>;
+  reviewCount?: number;
+  reviewStats?: {
+    satisfiedPercent?: number;
+    totalPatients?: number;
+    doctorCheckup?: number;
+    clinicEnvironment?: number;
+    staffBehaviour?: number;
+  };
 }) {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(0);
@@ -42,6 +60,17 @@ export default function DoctorProfileTabs({
     }
   }, [activeTab, isMobile]);
   
+  // Helper for review time (months ago)
+  function getMonthsAgo(dateStr?: string) {
+    if (!dateStr) return "";
+    const reviewDate = new Date(dateStr);
+    const now = new Date();
+    const months =
+      (now.getFullYear() - reviewDate.getFullYear()) * 12 +
+      (now.getMonth() - reviewDate.getMonth());
+    return months > 0 ? `${months} months ago` : "recently";
+  }
+
   const tabList = ["Feedback", "Services", "Education", "Other Info", "FAQs"];
 
   return (
@@ -108,7 +137,9 @@ export default function DoctorProfileTabs({
             marginBottom: isMobile ? 12 : 16,
             paddingRight: isMobile ? 8 : 0
           }}>
-            Dr. Shazia Humayun Malik's Reviews (75)
+            {doctorName
+              ? `Dr. ${doctorName}'s Reviews (${reviewCount && reviewCount > 0 ? reviewCount : reviews?.length ?? 0})`
+              : `Doctor's Reviews (${reviewCount && reviewCount > 0 ? reviewCount : reviews?.length ?? 0})`}
           </div>
           <div style={{ 
             display: "flex", 
@@ -137,10 +168,12 @@ export default function DoctorProfileTabs({
                 fontSize: isMobile ? 14 : 16,
                 marginRight: 16,
               }}>
-                100%
+                {reviewStats?.satisfiedPercent ?? 100}%
               </div>
               <div style={{ textAlign: "left" }}>
-                <div style={{ fontSize: 14, color: "#52525B" }}>Satisfied out of 75</div>
+                <div style={{ fontSize: 14, color: "#52525B" }}>
+                  Satisfied out of {reviewStats?.totalPatients ?? 0}
+                </div>
                 <div style={{ fontSize: 14, color: "#52525B" }}>Patients</div>
               </div>
             </div>
@@ -150,105 +183,54 @@ export default function DoctorProfileTabs({
               width: isMobile ? "100%" : "auto"
             }}>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 16 : 24 }}>
-                <div style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: isMobile ? 10 : 18 
-                }}>
-                  <span style={{ 
-                    width: isMobile ? 100 : 120, 
-                    fontSize: 14, 
-                    color: "#52525B", 
-                    whiteSpace: "nowrap" 
-                  }}>Doctor Checkup</span>
-                  <div style={{ 
-                    width: isMobile ? "calc(100% - 150px)" : 150, 
-                    height: 8, 
-                    borderRadius: 4, 
-                    background: "#01503F", 
-                    alignSelf: "center", 
-                    flexGrow: isMobile ? 1 : 0 
-                  }}></div>
-                  <span style={{ 
-                    width: 36, 
-                    textAlign: "right", 
-                    fontSize: 14, 
-                    color: "#222" 
-                  }}>98%</span>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
+                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Doctor Checkup</span>
+                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
+                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+                    {reviewStats?.doctorCheckup ?? 98}%
+                  </span>
                 </div>
-                <div style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: isMobile ? 10 : 18 
-                }}>
-                  <span style={{ 
-                    width: isMobile ? 100 : 120, 
-                    fontSize: 14, 
-                    color: "#52525B", 
-                    whiteSpace: "nowrap" 
-                  }}>Clinic Environment</span>
-                  <div style={{ 
-                    width: isMobile ? "calc(100% - 150px)" : 150, 
-                    height: 8, 
-                    borderRadius: 4, 
-                    background: "#01503F", 
-                    alignSelf: "center", 
-                    flexGrow: isMobile ? 1 : 0 
-                  }}></div>
-                  <span style={{ 
-                    width: 36, 
-                    textAlign: "right", 
-                    fontSize: 14, 
-                    color: "#222" 
-                  }}>98%</span>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
+                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Clinic Environment</span>
+                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
+                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+                    {reviewStats?.clinicEnvironment ?? 98}%
+                  </span>
                 </div>
-                <div style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: isMobile ? 10 : 18 
-                }}>
-                  <span style={{ 
-                    width: isMobile ? 100 : 120, 
-                    fontSize: 14, 
-                    color: "#52525B", 
-                    whiteSpace: "nowrap" 
-                  }}>Staff Behaviour</span>
-                  <div style={{ 
-                    width: isMobile ? "calc(100% - 150px)" : 150, 
-                    height: 8, 
-                    borderRadius: 4, 
-                    background: "#01503F", 
-                    alignSelf: "center", 
-                    flexGrow: isMobile ? 1 : 0 
-                  }}></div>
-                  <span style={{ 
-                    width: 36, 
-                    textAlign: "right", 
-                    fontSize: 14, 
-                    color: "#222" 
-                  }}>98%</span>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
+                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Staff Behaviour</span>
+                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
+                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+                    {reviewStats?.staffBehaviour ?? 98}%
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <div style={{ 
-            marginTop: isMobile ? 24 : 32, 
-            maxWidth: isMobile ? "100%" : 400,
-            width: "100%" 
-          }}>
-            <div style={{ 
-              borderRadius: 12, 
-              border: "1px solid #CDCDCD", 
-              padding: 16, 
-              background: "#fff" 
-            }}>
-              <div style={{ fontSize: 14, color: "#414141" }}>
-                One of the best surgeons! 100% recommended
+          <div style={{ marginTop: isMobile ? 24 : 32, maxWidth: isMobile ? "100%" : 400, width: "100%" }}>
+            {/* --- Dynamic reviews from API --- */}
+            {reviews && reviews.length > 0 ? (
+              reviews.map((review, idx) => (
+                <div key={review.id || idx} style={{ borderRadius: 12, border: "1px solid #CDCDCD", padding: 16, background: "#fff", marginBottom: 16 }}>
+                  <div style={{ fontSize: 14, color: "#414141" }}>
+                    {review.title ? review.title : "Review"}{review.content ? `: ${review.content}` : ""}
+                  </div>
+                  <div style={{ fontSize: 14, color: "#676767", marginTop: 4 }}>
+                    Verified patient: {review.patient?.id ? `P${review.patient.id}` : "Anonymous"} · {getMonthsAgo(review.createdAt)}
+                  </div>
+                </div>
+              ))
+            ) : (
+              // fallback if no reviews
+              <div style={{ borderRadius: 12, border: "1px solid #CDCDCD", padding: 16, background: "#fff" }}>
+                <div style={{ fontSize: 14, color: "#414141" }}>
+                  One of the best surgeons! 100% recommended
+                </div>
+                <div style={{ fontSize: 14, color: "#676767", marginTop: 4 }}>
+                  Verified patient: S**a · 5 months ago
+                </div>
               </div>
-              <div style={{ fontSize: 14, color: "#676767", marginTop: 4 }}>
-                Verified patient: S**a · 5 months ago
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}

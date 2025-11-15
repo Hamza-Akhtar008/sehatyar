@@ -1,4 +1,4 @@
-import { AppointmentsManagement } from '@/components/admin/appointment-management'
+import { AppointmentsManagement } from '@/components/receptionist/appointment-management'
 import React from 'react'
 
 const page = () => {

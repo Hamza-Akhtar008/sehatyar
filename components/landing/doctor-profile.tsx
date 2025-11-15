@@ -38,6 +38,13 @@ interface DoctorProfile {
   profilePicture?: string;
   profilePic?: string; // API field
   qualifications?: string;
+  availabilities?: {
+    availabilityType: string;
+    address: string;
+    startTime: string;
+    endTime: string;
+    days: string[];
+  }[];
   languages?: string[];
   availableForVideoConsultation: boolean;
   user: {
@@ -282,12 +289,20 @@ export default function DoctorProfile() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Fee:</span>
-                    <span className="text-[#111827]">Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                    <span className="text-[#111827]">
+                      Rs. {(doctor.FeesPerConsultation && doctor.FeesPerConsultation !== "0")
+                        ? doctor.FeesPerConsultation
+                        : doctor.consultationFee && doctor.consultationFee !== 0
+                          ? doctor.consultationFee
+                          : "N/A"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Address:</span>
                     <span className="text-right text-[#111827]">
-                      Use phone/laptop for video call
+                      {/* Show online availability address if present, else fallback */}
+                      {doctor.availabilities?.find(a => a.availabilityType === "online" && a.address)?.address
+                        || "Use phone/laptop for video call"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-[#52525B]">
@@ -312,12 +327,21 @@ export default function DoctorProfile() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Fee:</span>
-                    <span className="text-[#111827]">Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || 'N/A'}</span>
+                    <span className="text-[#111827]">
+                      Rs. {(doctor.FeesPerConsultation && doctor.FeesPerConsultation !== "0")
+                        ? doctor.FeesPerConsultation
+                        : doctor.consultationFee && doctor.consultationFee !== 0
+                          ? doctor.consultationFee
+                          : "N/A"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#52525B]">Address:</span>
                     <span className="text-right text-[#111827]">
-                      {doctor.clinicAddress || `${doctor.city || ''}, ${doctor.state || ''}`}
+                      {/* Show clinic availability address if present, else fallback */}
+                      {doctor.availabilities?.find(a => a.availabilityType === "clinic" && a.address)?.address
+                        || doctor.clinicAddress
+                        || `${doctor.city || ''}, ${doctor.state || ''}`}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-[#52525B]">
@@ -347,12 +371,19 @@ export default function DoctorProfile() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-[#52525B]">Fee:</span>
-                      <span className="text-[#111827]">Rs. 5,000</span>
+                      <span className="text-[#111827]">
+                        Rs. {(doctor.FeesPerConsultation && doctor.FeesPerConsultation !== "0")
+                          ? doctor.FeesPerConsultation
+                          : doctor.consultationFee && doctor.consultationFee !== 0
+                            ? doctor.consultationFee
+                            : "N/A"}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-[#52525B]">Address:</span>
                       <span className="text-right text-[#111827] font-semibold">
-                        Use phone/laptop for video call
+                        {doctor.availabilities?.find(a => a.availabilityType === "online" && a.address)?.address
+                          || "Use phone/laptop for video call"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-[#52525B]">
@@ -376,12 +407,19 @@ export default function DoctorProfile() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-[#52525B]">Fee:</span>
-                      <span className="text-[#111827]">Rs. 5,000</span>
+                      <span className="text-[#111827]">
+                        Rs. {(doctor.FeesPerConsultation && doctor.FeesPerConsultation !== "0")
+                          ? doctor.FeesPerConsultation
+                          : doctor.consultationFee && doctor.consultationFee !== 0
+                            ? doctor.consultationFee
+                            : "N/A"}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-[#52525B]">Address:</span>
                       <span className="text-right text-[#111827] font-semibold">
-                        152 A - G / 1, Canal Bank, Johar Town, Lahore
+                        {doctor.availabilities?.find(a => a.availabilityType === "clinic" && a.address)?.address
+                          || "152 A - G / 1, Canal Bank, Johar Town, Lahore"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-[#52525B]">

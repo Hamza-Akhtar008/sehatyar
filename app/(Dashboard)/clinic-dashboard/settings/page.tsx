@@ -1,5 +1,5 @@
-import SettingsForm from "@/components/Dashboard/Doctor/components/Settings";
+import UpdatePassword from "@/components/Dashboard/Doctor/components/updatePassword";
 
 export default function SettingsPage() {
-    return <SettingsForm />;
+    return <UpdatePassword />;
 }

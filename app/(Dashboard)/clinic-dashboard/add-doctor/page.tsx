@@ -40,7 +40,9 @@ const [profilePicFile, setProfilePicFile] = useState<File | null>(null); // For 
     userFields.password.trim() &&
     userFields.confirmPassword.trim();
 
-const handleRegister = async () => {
+const [loading, setLoading] = useState(false); // loader for submit button
+
+  const handleRegister = async () => {
   // 1️⃣ Password validation
   if (userFields.password !== userFields.confirmPassword) {
     setPasswordError("Password and Confirm Password do not match.");
@@ -112,6 +114,7 @@ for (let entry of formDataToSend.entries()) {
 
   // 5️⃣ Submit
   try {
+    setLoading(true); // start loader
     await registerDoctor0(formDataToSend);
     toast.success("Registration successful!");
     router.push("/clinic-dashboard/doctors");
@@ -119,6 +122,8 @@ for (let entry of formDataToSend.entries()) {
     console.log(error)
     toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
     console.error("Registration error:", error);
+  } finally {
+    setLoading(false); // stop loader
   }
 };
   // Handle adding an education entry
@@ -999,12 +1004,21 @@ const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                     formData.yearsOfExperience.trim() &&
                     formData.primarySpecializations.length > 0 &&
                     formData.servicesTreatment.length > 0 &&
-                    formData.education.trim()
+                    // removed education input validation here
+                    educationList.length > 0 // <-- validation only for popup
                   ) ||
-                  !!passwordError
+                  !!passwordError ||
+                  loading // disable while loading
                 }
               >
-                Submit
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#003227]" />
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
             {/* Show error message if button is disabled */}
@@ -1012,7 +1026,8 @@ const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               !formData.yearsOfExperience.trim() ||
               formData.primarySpecializations.length === 0 ||
               formData.servicesTreatment.length === 0 ||
-              !formData.education.trim()
+              // removed education input validation here
+              educationList.length === 0 // <-- validation only for popup
             ) && (
               <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
                 Please fill all required fields .

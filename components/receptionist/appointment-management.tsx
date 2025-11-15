@@ -445,8 +445,13 @@ export function AppointmentsManagement() {
 
   useEffect(() => {
     async function fetchAppointments() {
+      const token = localStorage.getItem("authToken");
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}appointments`, { cache: "no-store" });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}appointments/by/clinic`, {
+          headers :{
+            Authorization: `Bearer ${token}`,
+          }
+        });
         if (!res.ok) throw new Error("Failed to fetch appointments");
         const data = await res.json();
         if (Array.isArray(data)) {

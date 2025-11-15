@@ -36,6 +36,8 @@ const RegisterPage = () => {
     userFields.password.trim() &&
     userFields.confirmPassword.trim();
 
+  const [loading, setLoading] = useState(false); // loader for submit button
+
   // Handler for registration submit
  const handleRegister = async () => {
   if (userFields.password !== userFields.confirmPassword) {
@@ -107,6 +109,7 @@ for (let entry of formDataToSend.entries()) {
 }
 
   // 5️⃣ Submit
+  setLoading(true); // start loader
   try {
     await registerDoctor(formDataToSend);
     toast.success("Registration successful!");
@@ -115,6 +118,8 @@ for (let entry of formDataToSend.entries()) {
     console.log(error)
     toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
     console.error("Registration error:", error);
+  } finally {
+    setLoading(false); // stop loader
   }
 };
   
@@ -960,7 +965,7 @@ for (let entry of formDataToSend.entries()) {
                 Fees Per Consultation
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="500"
                 value={formData.FeesPerConsultation}
                 onChange={(e) =>
@@ -992,12 +997,20 @@ for (let entry of formDataToSend.entries()) {
                     formData.yearsOfExperience.trim() &&
                     formData.primarySpecializations.length > 0 &&
                     formData.servicesTreatment.length > 0 &&
-                    formData.education.trim()
+                    educationList.length > 0 // <-- validation only for popup
                   ) ||
-                  !!passwordError
+                  !!passwordError ||
+                  loading // disable while loading
                 }
               >
-                Submit
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#003227]" />
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
             {/* Show error message if button is disabled */}
@@ -1005,7 +1018,7 @@ for (let entry of formDataToSend.entries()) {
               !formData.yearsOfExperience.trim() ||
               formData.primarySpecializations.length === 0 ||
               formData.servicesTreatment.length === 0 ||
-              !formData.education.trim()
+              educationList.length === 0 // <-- validation only for popup
             ) && (
               <div className="w-full text-red-600 text-center text-sm font-medium mt-2 mb-2">
                 Please fill all required fields .
