@@ -15,7 +15,7 @@ export default function DoctorProfileTabs({
   Description,
   doctorName,
   reviews = [],
-  reviewCount = 0,
+  reviewCount ,
   reviewStats = { satisfiedPercent: 100, totalPatients: 75, doctorCheckup: 98, clinicEnvironment: 98, staffBehaviour: 98 },
 }: {
   servicesTreatementOffered?: string[];
@@ -490,12 +490,11 @@ export default function DoctorProfileTabs({
           )}
         </div>
       )}
-      {/* ...existing code for other tabs... */}
+     
     </div>
   );
 }
 
-// Add this CSS for hiding scrollbar but keeping scroll functionality
 const scrollbarStyles = `
   div[style*="overflow-x: auto"]::-webkit-scrollbar {
     display: none;

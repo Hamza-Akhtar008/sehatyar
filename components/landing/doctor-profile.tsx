@@ -176,6 +176,8 @@ export default function DoctorProfile() {
     }
   ];
 
+  const reviews = (doctor as any).reviews || [];
+
   return (
     <main className="w-full">
      
@@ -274,6 +276,8 @@ export default function DoctorProfile() {
               country={doctor.country}
               Description={doctor.Description}
               doctorName={doctor.user?.fullName}
+              reviews={reviews}           // <-- use the safe reviews variable
+              reviewCount={doctor.reviewCount}
             />
           </section>
 
