@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Calendar, Users, DollarSign, Plus, X, Eye, Trash2, User, ChevronRight, Phone, MapPin, Stethoscope, ChevronLeft } from "lucide-react"
+import { Calendar, Users, DollarSign, Plus, X, Eye, Trash2, User, ChevronRight, Phone, MapPin, Stethoscope, ChevronLeft, Mail, Clock } from "lucide-react"
 import { CreateAppointmentRep, FetchDoctorbyClinic, FetchUserbyClinic } from "@/lib/Api/Clinic/clinic_api";
 import { UserRole } from "@/src/types/enums";
 import { getAvailability, type Slot as AvailabilitySlot } from "@/lib/Api/availability";
@@ -795,15 +795,140 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, title }: DeleteConfirm
   )
 }
 
+// --- Appointment Detail Modal ---
+function AppointmentDetailModal({ isOpen, onClose, appointment }: { isOpen: boolean; onClose: () => void; appointment: any }) {
+  if (!isOpen || !appointment) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Appointment Details</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          {/* Patient Info */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-600 mb-4">Patient Information</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <User style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Name</p>
+                  <p className="font-semibold text-gray-900">{appointment.patientName || "N/A"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Phone</p>
+                  <p className="font-semibold text-gray-900">{appointment.phoneNumber || "N/A"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Email</p>
+                  <p className="font-semibold text-gray-900">{appointment.email || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Doctor & Hospital Info */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-600 mb-4">Doctor Information</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs text-gray-600">Doctor</p>
+                <p className="font-semibold text-gray-900">{appointment.doctorName || "N/A"}</p>
+                <p className="text-sm text-gray-600">{appointment.specialty || "N/A"}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Hospital</p>
+                  <p className="font-semibold text-gray-900">{appointment.hospitalName || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Appointment Details */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-600 mb-4">Appointment Details</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Calendar style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Date</p>
+                  <p className="font-semibold text-gray-900">{appointment.appointmentDate || "N/A"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Time</p>
+                  <p className="font-semibold text-gray-900">{appointment.appointmentTime || "N/A"}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Appointment For</p>
+                <p className="font-semibold text-gray-900">{appointment.appointmentFor || "N/A"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Info */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-600 mb-4">Payment Information</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs text-gray-600">Payment Method</p>
+                <p className="font-semibold text-gray-900 capitalize">{appointment.paymentMethod || "N/A"}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <DollarSign style={{ color: "#62e18b" }} className="w-5 h-5" />
+                <div>
+                  <p className="text-xs text-gray-600">Amount</p>
+                  <p className="font-semibold text-gray-900">${appointment.amount || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-600 mb-2">Notes</h3>
+          <p className="text-gray-700">{appointment.notes || "N/A"}</p>
+        </div>
+
+        <div className="flex gap-3 mt-8">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ReceptionistDashboard() {
   const [activeTab, setActiveTab] = useState("appointments")
   const [isAddAppointmentModalOpen, setIsAddAppointmentModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [selectedData, setSelectedData] = useState<Record<string, any> | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string>("")
    const [doctors, setDoctors] = useState<DoctorType[]>([]);
-    const [loading, setLoading] = useState<boolean>(false); // loader state
+    const [loading, setLoading] = useState<boolean>(false); 
 
   const [ExistingPatient,setExistingPatient]=useState<Patient[]>([]);
 const fetchExistingPatient=async()=>
@@ -852,8 +977,8 @@ const fetchExistingPatient=async()=>
 
 },[])
 
-  const handleViewDetails = (data: Record<string, any>, type: string) => {
-    setSelectedData(data);
+  const handleViewDetails = (appointment: any, type: string) => {
+    setSelectedAppointment(appointment);
     setIsDetailModalOpen(true);
   };
 
@@ -866,7 +991,27 @@ const fetchExistingPatient=async()=>
     setIsDeleteModalOpen(false)
   }
 
-  const confirmCount = appointmentsData.filter((a) => a.status === "Confirmed").length
+  const [appointments, setAppointments] = useState<any[]>([]);
+  useEffect(() => {
+    async function fetchAppointments() {
+      const token = localStorage.getItem("authToken");
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}appointments/by/clinic`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch appointments");
+        const data = await res.json();
+        setAppointments(Array.isArray(data) ? data : []);
+      } catch {
+        setAppointments([]);
+      }
+    }
+    fetchAppointments();
+  }, []);
+
+  const confirmCount = appointments.filter((a) => a.status === "Confirmed").length
   const totalRevenue = appointmentsData.reduce((sum, a) => sum + Number.parseFloat(a.amount), 0)
 
   return (
@@ -945,32 +1090,47 @@ const fetchExistingPatient=async()=>
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Doctor</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Date & Time</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient Name</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Payment Method</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Amount</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Notes</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Time</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {appointmentsData.map((appointment) => (
+                  {appointments.map((appointment) => (
                     <tr key={appointment.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
-                      <td className="px-4 md:px-6 py-4 font-semibold text-gray-900">{appointment.patientName}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">{appointment.doctorName}</td>
-                      <td className="px-4 md:px-6 py-4 text-gray-600">
-                        {appointment.appointmentDate} {appointment.appointmentTime}
-                      </td>
-                      <td className="px-4 md:px-6 py-4">
+                      <td className="px-6 py-4">{appointment.patientName || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.phoneNumber || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.email || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.paymentMethod || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.amount || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.notes || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.appointmentDate || "N/A"}</td>
+                      <td className="px-6 py-4">{appointment.appointmentTime || "N/A"}</td>
+                      <td className="px-6 py-4">
                         <span
                           style={{
-                            backgroundColor: appointment.status === "Confirmed" ? "#62e18b" : "#fcd34d",
+                            backgroundColor:
+                              appointment.status === "Confirmed"
+                                ? "#62e18b"
+                                : appointment.status === "Pending"
+                                ? "#fcd34d"
+                                : appointment.status === "Cancelled"
+                                ? "#ef4444"
+                                : "#f3f4f6",
                           }}
                           className="px-3 py-1 rounded-full text-sm font-semibold text-black"
                         >
-                          {appointment.status}
+                          {appointment.status || "N/A"}
                         </span>
                       </td>
-                      <td className="px-4 md:px-6 py-4">
+                      <td className="px-6 py-4">
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleViewDetails(appointment, "Appointment")}
@@ -1007,18 +1167,17 @@ const fetchExistingPatient=async()=>
       {/* Modals */}
       <AddAppointmentModal isOpen={isAddAppointmentModalOpen} onClose={() => setIsAddAppointmentModalOpen(false)} ExistingPateint={ExistingPatient}Doctors ={doctors}/>
 
-      <DetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        title={deleteTitle}
-        data={selectedData}  
-      />
-
       <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         title={deleteTitle}
+      />
+
+      <AppointmentDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        appointment={selectedAppointment}
       />
     </div>
   )
