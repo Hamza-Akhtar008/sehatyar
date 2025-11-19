@@ -95,8 +95,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
       [UserRole.ADMIN]: "/admin-dashboard",
       [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
       [UserRole.CLINIC]:'/clinic-dashboard',
+      [UserRole.INDIVIDUALDOCTOR]:"/doctor-dashboard",
       [UserRole.CLINICDOCTOR]:"/doctor-dashboard",
       [UserRole.CLINICRECEPTIONIST]: "/receptionist-dashboard",
+    
+      
 
 
     };

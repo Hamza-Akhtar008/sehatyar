@@ -243,7 +243,7 @@ const footerDiagonal2: [number, number][] = [
 
   // Page number
   doc.text(`${doc.internal.pages.length - 1}`, pageWidth / 2, pageHeight - 8, { align: "center" })
-
+doc.save();
   
   const pdfBlob = doc.output("blob")
   return pdfBlob

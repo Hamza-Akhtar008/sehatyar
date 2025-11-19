@@ -11,7 +11,7 @@ export default function StatsCards({ appointments, loading }: StatsCardsProps) {
   const total = appointments.length;
   const upcoming = appointments.filter(a => a.status === "pending" || a.status === "Scheduled").length;
   const completed = appointments.filter(a => a.status === "completed").length;
-  const nextAppointment = appointments[0]?.appointmentTime || "-";
+  const nextAppointment = appointments.filter(a => a.status === "pending" || a.status === "Scheduled")[0]?.appointmentTime || "-";
 
   const stats = [
     {

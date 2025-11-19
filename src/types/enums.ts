@@ -16,5 +16,7 @@ export enum UserRole {
   PATIENT = 'patient',
   CLINIC='clinic',
   CLINICDOCTOR='clinic_doctor',
-  CLINICRECEPTIONIST='clinic_receptionist'
+  CLINICRECEPTIONIST='clinic_receptionist',
+  SUPERADMIN='superadmin',
+  INDIVIDUALDOCTOR='individual_doctor'
 }

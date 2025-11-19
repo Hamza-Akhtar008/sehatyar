@@ -66,7 +66,7 @@ export default function DoctorDashboardPage() {
         </div>
 
         {/* Calendar */}
-        <div className="w-full mt-2 h-[400px]">
+        <div className="w-full mt-2  h-full">
           <CalendarView />
         </div>
       </div>

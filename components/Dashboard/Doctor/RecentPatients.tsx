@@ -26,7 +26,7 @@ export default function RecentPatients() {
   }, [user?.token]);
 
   return (
-    <div className="bg-white rounded-[22px] w-full lg:w-[460px] p-6 sm:p-5 shadow-sm border border-[#F2F2F2] flex flex-col">
+    <div className="bg-white rounded-[22px] w-full lg:w-[460px] p-6 sm:p-5 shadow-sm border border-[#F2F2F2] flex flex-col h-full">
       {/* Header */}
          <h2 className="text-[20px] md:text-[22px] font-bold text-[#52525B] mb-2">Recent  Patients</h2>
 

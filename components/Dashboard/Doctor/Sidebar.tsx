@@ -30,6 +30,8 @@ const adminSidebar: SidebarItem[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/admin-dashboard" },
   { label: "Clinics", icon: Hospital, href: "/admin-dashboard/clinics" },
   { label: "Doctors", icon: UserRound, href: "/admin-dashboard/doctors" },
+  { label: "Individual Doctors", icon: UserRound, href: "/admin-dashboard/individual-doctors" },
+
   { label: "Patients", icon: Users, href: "/admin-dashboard/patients" },
   {
     label: "Receptionists",
@@ -71,16 +73,12 @@ const ClinicSideBar: SidebarItem[] = [
 ];
 
 
-const doctorsidebar: SidebarItem[] = [
+
+const baseDoctorSidebar: SidebarItem[] = [
   {
     label: "Dashboard",
     icon: "/assets/sidebar/dashboard.svg",
     href: "/doctor-dashboard",
-  },
-  {
-    label: "Hospitals",
-    icon: "/assets/sidebar/appointment.svg",
-    href: "/doctor-dashboard/Hospital",
   },
   {
     label: "Appointment",
@@ -112,6 +110,74 @@ const doctorsidebar: SidebarItem[] = [
     icon: "/assets/sidebar/settings.svg",
     href: "/doctor-dashboard/settings",
   },
+];
+
+const doctorsidebar: SidebarItem[] = [
+  {
+    label: "Dashboard",
+    icon: "/assets/sidebar/dashboard.svg",
+    href: "/doctor-dashboard",
+
+  },
+    {
+    label: "Receptionists",
+    icon: UserCog,
+    href: "/clinic-dashboard/receptionists",
+  },
+  // {
+  //   label: "Hospitals",
+  //   icon: "/assets/sidebar/appointment.svg",
+  //   href: "/doctor-dashboard/Hospital",
+  // },
+  {
+    label: "Appointment",
+    icon: "/assets/sidebar/appointment.svg",
+    href: "/doctor-dashboard/appointment",
+  },
+  {
+    label: "Patients",
+    icon: "/assets/sidebar/patients.svg",
+    href: "/doctor-dashboard/patients",
+  },
+  {
+    label: "Availability",
+    icon: "/assets/sidebar/availability.svg",
+    href: "/doctor-dashboard/availability",
+  },
+  {
+    label: "Message",
+    icon: "/assets/sidebar/message.svg",
+    href: "/doctor-dashboard/messages",
+  },
+  {
+    label: "Analytics",
+    icon: "/assets/sidebar/analytics.svg",
+    href: "/doctor-dashboard/analytics",
+  },
+  {
+    label: "Settings",
+    icon: "/assets/sidebar/settings.svg",
+    href: "/doctor-dashboard/settings",
+  },
+];
+
+
+const individualDoctorSidebar: SidebarItem[] = [
+  {
+    label: "Dashboard",
+    icon: "/assets/sidebar/dashboard.svg",
+    href: "/doctor-dashboard",
+  },
+
+  // 👇 Insert Receptionists as the second tab
+  {
+    label: "Receptionists",
+    icon: UserCog,
+    href: "/doctor-dashboard/receptionist",
+  },
+
+  // Now append the rest (but skip the original Dashboard)
+  ...baseDoctorSidebar.slice(1),
 ];
 
 const patientsidebar: SidebarItem[] = [
@@ -181,14 +247,35 @@ export default function DoctorSidebar() {
     router.push("/login");
   };
 
-  let sidebarItems: SidebarItem[] = [];
+  
+let sidebarItems: SidebarItem[] = [];
 
-  if (user?.role === UserRole.PATIENT) sidebarItems = patientsidebar;
-  else if (user?.role === UserRole.DOCTOR||user?.role===UserRole.CLINICDOCTOR) sidebarItems = doctorsidebar;
-  else if (user?.role === UserRole.ADMIN) sidebarItems = adminSidebar;
-  else if (user?.role === UserRole.RECEPTIONIST||user?.role===UserRole.CLINICRECEPTIONIST) sidebarItems = receptionistSidebar;
-  else 
-    sidebarItems = ClinicSideBar;
+if (user?.role === UserRole.PATIENT) {
+  sidebarItems = patientsidebar;
+}
+
+else if (
+  user?.role === UserRole.DOCTOR ||
+  user?.role === UserRole.CLINICDOCTOR
+) {
+  sidebarItems = baseDoctorSidebar; // no receptionists
+}
+
+else if (user?.role === UserRole.INDIVIDUALDOCTOR) {
+  sidebarItems = individualDoctorSidebar; // receptionists included
+}
+
+else if (
+  user?.role === UserRole.RECEPTIONIST ||
+  user?.role === UserRole.CLINICRECEPTIONIST
+) {
+  sidebarItems = receptionistSidebar;
+}
+
+else {
+  sidebarItems = ClinicSideBar;
+}
+
 
 
   return (

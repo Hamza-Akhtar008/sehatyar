@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 import { useAuth } from "@/src/contexts/AuthContext";
+import { UserRole } from "@/src/types/enums";
 
 const PRIMARY = "#5fe089";
 const BORDER = "#BDBDBD";
@@ -24,7 +25,7 @@ const LoginPage = () => {
       // Redirect based on role
       if (user.role === "patient") {
         router.push("/patient-dashboard");
-      } else if (user.role === "doctor") {
+      } else if (user.role === "doctor" ||user.role=="individual_doctor" || user.role==UserRole.CLINICDOCTOR) {
         router.push("/doctor-dashboard");
       } else if (user.role === "admin") {
         router.push("/admin-dashboard");

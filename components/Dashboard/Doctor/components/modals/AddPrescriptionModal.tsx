@@ -143,8 +143,7 @@ const onSubmit = async (data: PrescriptionFormValues) => {
 
 const formData = new FormData()
 formData.append("prescriptionFile", pdfFile)
-const file = new File([pdfBlob], "file.pdf", { type: "application/pdf" });
-formData.append("medicalHistoryFiles", file);
+
 
 
 for (let pair of formData.entries()) {
@@ -173,7 +172,7 @@ for (let pair of formData.entries()) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl max-h-[70vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <DialogHeader className="border-b pb-4">
