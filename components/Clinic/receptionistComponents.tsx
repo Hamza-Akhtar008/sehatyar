@@ -74,7 +74,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
         email: formData.email,
         phoneNumber: formData.phoneNumber,
         password: formData.password,
-        role: "receptionist" 
+        role: UserRole.CLINICRECEPTIONIST
       };
 
       const response = await axios.post(

@@ -29,7 +29,7 @@ const LoginPage = () => {
         router.push("/doctor-dashboard");
       } else if (user.role === "admin") {
         router.push("/admin-dashboard");
-      } else if (user.role === "receptionist") {
+      } else if (user.role === "receptionist" || user.role === UserRole.CLINICRECEPTIONIST) {
         router.push("/receptionist-dashboard");
       } else if (user.role === "clinic") {
         router.push("/receptionist-dashboard");
