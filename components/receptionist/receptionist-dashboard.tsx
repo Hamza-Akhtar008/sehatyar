@@ -764,6 +764,7 @@ function DetailModal({ isOpen, onClose, title, data }: DetailModalProps) {
         </button>
       </div>
     </div>
+    
   )
 }
 
@@ -794,8 +795,6 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, title }: DeleteConfirm
     </div>
   )
 }
-
-// --- Appointment Detail Modal ---
 function AppointmentDetailModal({ isOpen, onClose, appointment }: { isOpen: boolean; onClose: () => void; appointment: any }) {
   if (!isOpen || !appointment) return null;
 

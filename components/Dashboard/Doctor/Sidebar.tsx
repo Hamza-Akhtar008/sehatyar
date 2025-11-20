@@ -271,6 +271,9 @@ else if (
 ) {
   sidebarItems = receptionistSidebar;
 }
+else if (user?.role === UserRole.ADMIN) {
+  sidebarItems = adminSidebar;
+}
 
 else {
   sidebarItems = ClinicSideBar;
