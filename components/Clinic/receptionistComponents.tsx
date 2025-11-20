@@ -297,12 +297,13 @@ export function ReceptionistsManagement() {
   const [maleCount, setMaleCount] = useState(0);
   const [femaleCount, setFemaleCount] = useState(0);
 
+  
   useEffect(() => {
     async function fetchReceptionists() {
       const token = localStorage.getItem('authToken')
       setLoading(true);
       try {
-         const res = await fetch(`${BASE_URL}users/by/clinic?role=receptionist`, {
+         const res = await fetch(`${BASE_URL}users/by/clinic?role=${UserRole.CLINICRECEPTIONIST}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
@@ -338,13 +339,11 @@ export function ReceptionistsManagement() {
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
-      // Update existing (do not append)
       setReceptionists(receptionists.map((r) =>
         r.id === editingReceptionist.id ? { ...r, ...formData, id: editingReceptionist.id } : r
       ));
       setEditingReceptionist(null);
     } else {
-      // Add with real DB id coming from modal onSave
       setReceptionists([...receptionists, { ...formData, id: formData.id }]);
     }
     setIsAddModalOpen(false);

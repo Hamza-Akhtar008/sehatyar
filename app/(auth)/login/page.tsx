@@ -43,7 +43,6 @@ const LoginPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
     if (!email || !password) {
       setLoginError("Please fill in all fields");
       return;
@@ -56,7 +55,6 @@ const LoginPage = () => {
       const response = await login(email, password);
       console.log("LOGIN RESPONSE:", response);
       return response;
-      // The login function from AuthContext will handle redirects based on user role
     } catch (error: any) {
       // Handle 401 Invalid credentials
       if (
