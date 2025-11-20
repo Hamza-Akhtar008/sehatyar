@@ -30,3 +30,15 @@ export async function CreateAppointmentRep(payload:any) {
     throw error
   }
 }
+
+
+
+
+export async function FetchClinicStats() {
+  try {
+    const response = await axiosInstance.get(`clinic/stats/overview`)
+    return response.data
+  } catch (error: any) {
+    throw error
+  }
+}

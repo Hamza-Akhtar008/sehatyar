@@ -1,5 +1,6 @@
 "use client"
 
+import { FetchClinicStats } from "@/lib/Api/Clinic/clinic_api"
 import {
   Users,
   UserCheck,
@@ -13,6 +14,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react"
+import { useEffect, useState } from "react"
 import {
   BarChart,
   Bar,
@@ -28,25 +30,105 @@ import {
 } from "recharts"
 
 const PRIMARY_COLOR = "#62e18b"
+interface StatItem {
+  icon: any;
+  label: string;
+  value: string;
+  change: string;
+  positive: boolean;
+}
+
+interface AppointmentChartItem {
+  month: string;
+  appointments: number;
+  revenue: number;
+}
+
+interface MonthWiseStat {
+  month: string;              // "2025-11"
+  totalrevenue: string;       // "500"
+  totalappointments: string;  // "1"
+}
 
 export function AdminDashboard() {
-  const stats = [
-    { icon: Users, label: "Total Patients", value: "2,543", change: "+12%", positive: true },
-    { icon: UserCheck, label: "Total Doctors", value: "128", change: "+5%", positive: true },
-    { icon: Calendar, label: "Appointments", value: "45", change: "+8%", positive: true },
-  
-    { icon: DollarSign, label: "Revenue", value: "$48.5K", change: "+23%", positive: true },
-  ]
 
-  const appointmentData = [
-    { month: "Jan", appointments: 400, revenue: 24 },
-    { month: "Feb", appointments: 520, revenue: 32 },
-    { month: "Mar", appointments: 450, revenue: 28 },
-    { month: "Apr", appointments: 680, revenue: 41 },
-    { month: "May", appointments: 750, revenue: 45 },
-    { month: "Jun", appointments: 890, revenue: 52 },
-  ]
 
+
+const [stats, setStats] = useState<StatItem[]>([]);
+const [appointmentData, setAppointmentData] = useState<AppointmentChartItem[]>([]);
+
+  const fetchStats = async () => {
+    const response = await FetchClinicStats();
+    const { usersCount, totalAppointments } = response;
+
+    const updatedStats = [
+      {
+        icon: Users,
+        label: "Total Patients",
+        value: usersCount?.patientCount?.toString() || "0",
+        change: "+0%",
+        positive: true,
+      },
+      {
+        icon: UserCheck,
+        label: "Total Doctors",
+        value: usersCount?.doctorsCount?.toString() || "0",
+        change: "+0%",
+        positive: true,
+      },
+      {
+        icon: Calendar,
+        label: "Appointments",
+        value: totalAppointments?.count?.toString() || "0",
+        change: "+0%",
+        positive: true,
+      },
+      {
+        icon: DollarSign,
+        label: "Revenue",
+        value: `${totalAppointments?.revenue?.toLocaleString() || "0"} PKR`,
+        change: "+0%",
+        positive: true,
+      },
+    ];
+
+    setStats(updatedStats);
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// type the api map
+const apiMap: Record<number, { appointments: number; revenue: number }> = {};
+
+(totalAppointments?.monthWiseStats as MonthWiseStat[]).forEach((item: MonthWiseStat) => {
+  const monthIndex = Number(item.month.split("-")[1]) - 1;
+
+  apiMap[monthIndex] = {
+    appointments: Number(item.totalappointments),
+    revenue: Number(item.totalrevenue),
+  };
+});
+
+// build full year dataset with fallback 0,0
+const fullYearData: AppointmentChartItem[] = monthNames.map((name, index) => {
+  const apiData = apiMap[index];
+
+  return {
+    month: name,
+    appointments: apiData?.appointments ?? 0,
+    revenue: apiData?.revenue ?? 0,
+  };
+});
+
+setAppointmentData(fullYearData);
+
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+
+ 
   const departmentData = [
     { name: "Cardiology", value: 35, color: PRIMARY_COLOR },
     { name: "Neurology", value: 25, color: "#3b82f6" },
@@ -92,7 +174,7 @@ export function AdminDashboard() {
 
       {/* Stats Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat, index) => {
+        {stats && stats.map((stat, index) => {
           const Icon = stat.icon
           return (
             <div
