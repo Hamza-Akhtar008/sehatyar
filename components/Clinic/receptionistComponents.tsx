@@ -58,7 +58,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
       city: "",
       phoneNumber: "",
       password: "",
-      role: "receptionist", 
+      role: "clinic_receptionist", 
     }
   );
 
@@ -114,7 +114,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
           city: "",
           phoneNumber: "",
           password: "",
-          role: "receptionist",
+          role: "clinic_receptionist",
         });
         onClose();
       }
@@ -302,7 +302,7 @@ export function ReceptionistsManagement() {
       const token = localStorage.getItem('authToken')
       setLoading(true);
       try {
-         const res = await fetch(`${BASE_URL}users/by/clinic?role=receptionist`, {
+         const res = await fetch(`${BASE_URL}users/by/clinic?role=clinic_receptionist`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }

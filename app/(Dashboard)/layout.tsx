@@ -89,23 +89,20 @@ export default function DashboardLayout({ children }: LayoutProps) {
       return;
     }
 
-    const rolePaths = {
-      [UserRole.DOCTOR]: "/doctor-dashboard",
-      [UserRole.PATIENT]: "/patient-dashboard",
-      [UserRole.ADMIN]: "/admin-dashboard",
-      [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
-      [UserRole.CLINIC]:'/clinic-dashboard',
-      [UserRole.INDIVIDUALDOCTOR]:"/doctor-dashboard",
-      [UserRole.CLINICDOCTOR]:"/doctor-dashboard",
-      [UserRole.CLINICRECEPTIONIST]: "/receptionist-dashboard",
-    
-      
+const rolePaths: Partial<Record<UserRole, string>> = {
+  [UserRole.DOCTOR]: "/doctor-dashboard",
+  [UserRole.PATIENT]: "/patient-dashboard",
+  [UserRole.ADMIN]: "/admin-dashboard",
+  [UserRole.RECEPTIONIST]: "/receptionist-dashboard",
+  [UserRole.CLINIC]: "/clinic-dashboard",
+  [UserRole.INDIVIDUALDOCTOR]: "/doctor-dashboard",
+  [UserRole.CLINICDOCTOR]: "/doctor-dashboard",
+  [UserRole.CLINICRECEPTIONIST]: "/receptionist-dashboard",
+};
 
+const targetPath = rolePaths[user?.role] ?? "/"; // fallback (optional)
+const isOnTargetPath = pathname.startsWith(targetPath);
 
-    };
-
-    const targetPath = rolePaths[user?.role as UserRole];
-    const isOnTargetPath = pathname.startsWith(targetPath);
 
    
 
