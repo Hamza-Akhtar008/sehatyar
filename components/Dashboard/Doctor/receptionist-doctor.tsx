@@ -58,7 +58,7 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
       city: "",
       phoneNumber: "",
       password: "",
-      role: "receptionist", 
+      role: "receptionist-clinic", 
     }
   );
 
@@ -74,11 +74,11 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
         email: formData.email,
         phoneNumber: formData.phoneNumber,
         password: formData.password,
-        role: "receptionist" 
+
       };
 
-      const response = await axios.post(
-        `${BASE_URL}users/by/clinic`,
+      const response = await axios.patch(
+        `${BASE_URL}doctor-profile/add/resceptionist`,
         postData,
         {
           headers: {
@@ -114,19 +114,24 @@ function ReceptionistModal({ isOpen, onClose, receptionist, onSave }: Receptioni
           city: "",
           phoneNumber: "",
           password: "",
-          role: "receptionist",
+          role: "receptionist-clinic",
         });
         onClose();
       }
 
     } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response?.status === 400 && (error.response.data?.message || "").toLowerCase().includes("user already exists")) {
-        toast.error("receptionist already exists");
-      } else {
-        toast.error("Failed to create receptionist");
-      }
-      console.error("Error creating user:", error);
+  if (axios.isAxiosError(error)) {
+    const backendMessage = error.response?.data?.message;
+
+    if (backendMessage) {
+      toast.error(backendMessage);  // show exact backend error
+      return;
     }
+  }
+
+ 
+  console.error("Error creating user:", error);
+}
   }
 
   if (!isOpen) return null
@@ -297,44 +302,56 @@ export function ReceptionistsDoctorManagement() {
   const [maleCount, setMaleCount] = useState(0);
   const [femaleCount, setFemaleCount] = useState(0);
 
-  useEffect(() => {
-    async function fetchReceptionists() {
-      const token = localStorage.getItem('authToken')
-      setLoading(true);
-      try {
-         const res = await fetch(`${BASE_URL}users/by/clinic?role=receptionist-clinic`, {
+  async function fetchReceptionists() {
+    const token = localStorage.getItem("authToken");
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `${BASE_URL}doctor-profile/individual/doctor/receptionist`,
+        {
           headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        });        
-        if (!res.ok) throw new Error("Failed to fetch users");
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setReceptionists(
-            data.map((u: any) => ({
-              id: u.id,
-              name: u.fullName || "",
-              gender: u.gender?.toLowerCase() || "",
-              email: u.email || "",
-              phone: u.phoneNumber || "",
-              address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
-              status: u.isActive ? "Active" : "Inactive",
-              profilePic: u.profilePic || "",
-            }))
-          );
-          setMaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "male").length);
-          setFemaleCount(data.filter((u: any) => u.gender?.toLowerCase() === "female").length);
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch {
-        setReceptionists([]);
-        setMaleCount(0);
-        setFemaleCount(0);
-      } finally {
-        setLoading(false);
-      }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch users");
+
+      const data = await res.json();
+      console.log(data);
+
+      // Ensure data is always an array
+      const list = Array.isArray(data) ? data : [data];
+
+      setReceptionists(
+        list.map((u: any) => ({
+          id: u.id,
+          name: u.fullName || "",
+          gender: u.gender?.toLowerCase() || "",
+          email: u.email || "",
+          phone: u.phoneNumber || "",
+          address: `${u.city || ""}${u.country ? ", " + u.country : ""}`,
+          status: u.isActive ? "Active" : "Inactive",
+          profilePic: u.profilePic || "",
+        }))
+      );
+
+      setMaleCount(list.filter((u: any) => u.gender?.toLowerCase() === "male").length);
+      setFemaleCount(list.filter((u: any) => u.gender?.toLowerCase() === "female").length);
+    } catch {
+      setReceptionists([]);
+      setMaleCount(0);
+      setFemaleCount(0);
+    } finally {
+      setLoading(false);
     }
-    fetchReceptionists();
-  }, []);
+  }
+ useEffect(() => {
+
+  fetchReceptionists();
+}, []);
+
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
@@ -344,8 +361,9 @@ export function ReceptionistsDoctorManagement() {
       ));
       setEditingReceptionist(null);
     } else {
+      fetchReceptionists();
       // Add with real DB id coming from modal onSave
-      setReceptionists([...receptionists, { ...formData, id: formData.id }]);
+  
     }
     setIsAddModalOpen(false);
   };

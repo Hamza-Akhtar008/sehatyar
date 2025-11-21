@@ -160,8 +160,7 @@ setAppointmentData(fullYearData);
 
   const quickActions = [
     { icon: Plus, label: "Add Doctor" },
-    { icon: Plus, label: "Add Hospital" },
-
+ 
   ]
 
   return (
