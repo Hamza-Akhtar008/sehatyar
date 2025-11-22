@@ -5,6 +5,7 @@ import { Stethoscope, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import { UserRole } from "@/src/types/enums";
 import Link from "next/link";
+import DoctorModal from "./DoctorModal";
 
 // --- Types ---
 type DoctorType = {
@@ -19,12 +20,7 @@ type DoctorType = {
   profilePic?: string; // added profilePic for rendering
 };
 
-interface DoctorModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  doctor: DoctorType | null;
-  onSave: (formData: DoctorType) => void;
-}
+
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -33,179 +29,9 @@ interface DeleteConfirmModalProps {
   doctorName?: string;
 }
 
-const doctorsData = [
-  {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiology",
-    email: "sarah.johnson@hospital.com",
-    phone: "+1-800-123-4567",
-    hospital: "City Medical Center",
-    experience: "12 years",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Dr. Michael Chen",
-    specialty: "Neurology",
-    email: "michael.chen@hospital.com",
-    phone: "+1-800-234-5678",
-    hospital: "Green Valley Hospital",
-    experience: "8 years",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Dr. Emily Rodriguez",
-    specialty: "Pediatrics",
-    email: "emily.rodriguez@hospital.com",
-    phone: "+1-800-345-6789",
-    hospital: "Sunset Health Clinic",
-    experience: "10 years",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Dr. James Wilson",
-    specialty: "Orthopedics",
-    email: "james.wilson@hospital.com",
-    phone: "+1-800-456-7890",
-    hospital: "Downtown Care Hospital",
-    experience: "15 years",
-    status: "Active",
-  },
-  {
-    id: 5,
-    name: "Dr. Lisa Anderson",
-    specialty: "Dermatology",
-    email: "lisa.anderson@hospital.com",
-    phone: "+1-800-567-8901",
-    hospital: "North Star Medical",
-    experience: "9 years",
-    status: "Active",
-  },
-]
 
-function DoctorModal({ isOpen, onClose, doctor, onSave }: DoctorModalProps) {
-  const [formData, setFormData] = useState<DoctorType>(
-    doctor || {
-      id: 0,
-      name: "",
-      specialty: "",
-      email: "",
-      phone: "",
-      hospital: "",
-      experience: "",
-      status: "Active",
-    }
-  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    onSave(formData)
-    onClose()
-  }
-
-  if (!isOpen) return null
-
-  return (
-    <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">{doctor ? "Edit Doctor" : "Add New Doctor"}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Specialty</label>
-            <input
-              type="text"
-              value={formData.specialty}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, specialty: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Hospital</label>
-            <input
-              type="text"
-              value={formData.hospital}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, hospital: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Experience</label>
-            <input
-              type="text"
-              value={formData.experience}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, experience: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-              required
-            />
-          </div>
-
-          <div className="flex gap-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              style={{ backgroundColor: "#62e18b" }}
-              className="flex-1 px-4 py-2 text-black rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
+ 
 
 function DeleteConfirmModal({ isOpen, onClose, onConfirm, doctorName }: DeleteConfirmModalProps) {
   if (!isOpen) return null;
@@ -242,63 +68,59 @@ const BASE_URL =
   
 
 export function DoctorsManagement() {
-  const [doctors, setDoctors] = useState<DoctorType[]>(doctorsData);
+  const [doctors, setDoctors] = useState<DoctorType[]>();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingDoctor, setEditingDoctor] = useState<DoctorType | null>(null);
   const [deletingDoctor, setDeletingDoctor] = useState<DoctorType | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // loader state
 
-  useEffect(() => {
-    async function fetchDoctors() {
-      setLoading(true);
-      const token =  localStorage.getItem("authToken");
-      try {
-        const res = await fetch(`${BASE_URL}doctor-profile/by/clinic`
-          ,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },  
-          })
-        if (!res.ok) throw new Error("Failed to fetch doctors");
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setDoctors(
-            data.map((doc: any) => ({
-              id: doc.id,
-              name: doc.user?.fullName || "",
-              specialty: Array.isArray(doc.primarySpecialization)
-                ? doc.primarySpecialization.join(", ")
-                : "",
-              email: doc.user?.email || "",
-              phone: doc.user?.phoneNumber || "",
-              hospital: doc.hospitals?.[0]?.name || "",
-              experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
-              status: doc.isActive ? "Active" : "Inactive",
-              profilePic: doc.profilePic || "",
-            }))
-          );
-        }
-      } catch {
-        setDoctors([]);
-      } finally {
-        setLoading(false);
+  async function fetchDoctors() {
+    setLoading(true);
+    const token =  localStorage.getItem("authToken");
+    try {
+      const res = await fetch(`${BASE_URL}doctor-profile/by/clinic`
+        ,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },  
+        })
+      if (!res.ok) throw new Error("Failed to fetch doctors");
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setDoctors(
+          data.map((doc: any) => ({
+            id: doc.id,
+            name: doc.user?.fullName || "",
+            specialty: Array.isArray(doc.primarySpecialization)
+              ? doc.primarySpecialization.join(", ")
+              : "",
+            email: doc.user?.email || "",
+            phone: doc.user?.phoneNumber || "",
+            hospital: doc.hospitals?.[0]?.name || "",
+            experience: doc.yearsOfExperience ? `${doc.yearsOfExperience} years` : "",
+            status: doc.isActive ? "Active" : "Inactive",
+            profilePic: doc.profilePic || "",
+          }))
+        );
       }
+    } catch {
+      setDoctors([]);
+    } finally {
+      setLoading(false);
     }
+  }
+  useEffect(() => {
     fetchDoctors();
   }, []);
 
-  const handleSaveDoctor = (formData: DoctorType) => {
-    if (editingDoctor) {
-      setDoctors(doctors.map((d) => (d.id === editingDoctor.id ? { ...formData, id: d.id } : d)));
-      setEditingDoctor(null);
-    } else {
-      setDoctors([...doctors, { ...formData, id: Date.now(), status: "Active" }]);
-    }
+  const handleSaveDoctor = async(formData: DoctorType) => {
+   await fetchDoctors();
     setIsAddModalOpen(false);
   };
 
   const handleDeleteDoctor = async () => {
+
     if (!deletingDoctor) return;
     try {
       await fetch(`${BASE_URL}doctor-profile/${deletingDoctor.id}`, {
@@ -307,7 +129,7 @@ export function DoctorsManagement() {
     } catch (err) {
       // Optionally handle error
     }
-    setDoctors(doctors.filter((d) => d.id !== deletingDoctor.id));
+   await fetchDoctors();
     setIsDeleteModalOpen(false);
     setDeletingDoctor(null);
   };
@@ -340,15 +162,14 @@ export function DoctorsManagement() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-gray-900">Doctors</h1>
-            <Link href="/clinic-dashboard/add-doctor">
               <button
+                onClick={() => setIsAddModalOpen(true)}
                 style={{ backgroundColor: "#62e18b" }}
                 className="px-6 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
                 Add Doctor
               </button>
-            </Link>
           </div>
           <p className="text-gray-600">Manage doctor accounts and information</p>
         </div>
@@ -412,7 +233,7 @@ export function DoctorsManagement() {
                 </tr>
               </thead>
               <tbody>
-                {doctors.map((doctor) => (
+                {(doctors ?? []).map((doctor) => (
                   <tr key={doctor.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
                     {/* Profile Pic column */}
                     <td className="px-6 py-4">
@@ -497,8 +318,7 @@ export function DoctorsManagement() {
       <DoctorModal
         isOpen={isAddModalOpen}
         onClose={handleCloseModal}
-        doctor={editingDoctor}
-        onSave={handleSaveDoctor}
+        onSubmit={handleSaveDoctor}
       />
 
       <DeleteConfirmModal

@@ -11,7 +11,13 @@ const GENDER_BG = "#01503f"
 const GENDER_ACTIVE = "#003227"
 const BORDER = "#BDBDBD"
 
-const RegisterPage = () => {
+type AddDoctorModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+};
+
+const DoctorModal = ({ isOpen, onClose }: AddDoctorModalProps ) => {
   const router = useRouter();
   const [userFields, setUserFields] = useState({
     fullName: "",
@@ -482,6 +488,7 @@ for (let entry of formDataToSend.entries()) {
       }
     }
 
+
     return (
       <div>
         <label className="block text-[12px] font-medium text-[#343434] mb-3">{label}</label>
@@ -604,12 +611,22 @@ const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   }, [userFields.password, userFields.confirmPassword]);
 
+if (!isOpen) return null;
+
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-white">
-      {/* <Toaster position="top-right" /> */}
-      <div className="w-full max-w-[672px] px-4 md:px-0 pt-14 pb-10">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl shadow-xl p-6 relative">
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-600 hover:text-black"
+        >
+          ✕
+        </button>
         {/* Header */}
-        <div className="mx-auto flex flex-col items-center gap-[30px] w-full max-w-[560px]">
+        <div className="mx-auto flex flex-col items-center gap-[30px] w-full max-w-[560px] ">
           <h1 className="text-[28px] font-semibold leading-none tracking-tight text-[#343434]">
             Add Doctor For <span style={{ color: PRIMARY }}>Clinic</span>
           </h1>
@@ -1117,4 +1134,4 @@ const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   )
 }
 
-export default RegisterPage
+export default DoctorModal

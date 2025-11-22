@@ -5,7 +5,6 @@ import { Stethoscope, Mail, Phone, Edit2, Trash2, Plus, X } from "lucide-react"
 import Image from "next/image"
 import { UserRole } from "@/src/types/enums";
 
-// --- Types ---
 type DoctorType = {
   id: number;
   name: string;
@@ -15,7 +14,7 @@ type DoctorType = {
   hospital: string;
   experience: string;
   status: string;
-  profilePic?: string; // added profilePic for rendering
+  profilePic?: string; 
 };
 
 interface DoctorModalProps {

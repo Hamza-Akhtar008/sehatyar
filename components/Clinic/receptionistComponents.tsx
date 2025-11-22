@@ -472,7 +472,7 @@ export function ReceptionistsManagement() {
               {receptionists.map((receptionist) => (
                 <tr key={receptionist.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
                   {/* Removed Profile and Age columns */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4">  
                     <div className="flex items-center gap-3">
                       <Users style={{ color: "#62e18b" }} className="w-5 h-5" />
                       <span className="font-semibold text-gray-900">{receptionist.name}</span>
