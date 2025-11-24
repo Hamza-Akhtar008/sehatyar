@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { io } from "socket.io-client";
 import VideoCallScreen from "@/components/ui/call/CallingUi";
 
-const backendDomain = "https://geekjives-26190134d520.herokuapp.com/signaling";
+const backendDomain = "https://sehatyarr-c23468ec8014.herokuapp.com/signaling";
 
 const peerConfiguration = {
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -395,81 +395,107 @@ export default function IndividualMeetingRoom() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-black text-white">
-      {isInCall ? (
-        <VideoCallScreen
-          participants={participants}
-          setParticipants={setParticipants}
-          localUserName={userName.trim()}
-          socket={socketRef.current}
-          roomID={roomID}
-          onToggleScreenShare={handleToggleScreenShare}
-          isSharingScreen={!!screenStream} // True if screenStream is not null
-          isAudioOnly={isAudioOnly} // ADDED: Pass the prop to the UI component
-        />
-      ) : (
-        <div className="container mx-auto px-4 lg:px-20 py-8">
-          <div className={`grid ${stream ? "lg:grid-cols-2" : "grid-cols-1"} gap-8`}>
-            <div className="border border-gray-600 p-6 rounded-lg flex flex-col items-center justify-center min-h-[350px]">
-              {!stream && !permissionDenied && (
-                <div className="text-center">
-                  <h2 className="text-xl mb-4">Ready to join?</h2>
-                   {/* CHANGED: Text updates based on call type */}
-                  <p className="text-sm text-gray-500 mb-6">
-                    Grant {isAudioOnly ? "microphone" : "camera and mic"} access to continue.
-                  </p>
-                  <Button onClick={requestMediaPermissions} className="rounded-full px-7">Grant Access</Button>
-                </div>
-              )}
-              {permissionDenied && <PermissionDenied isAudioOnly={isAudioOnly} />}
-              {/* If it's an audio call, we don't need the video element, show an icon instead */}
-              {isAudioOnly && stream && (
-                 <div className="span-full flex flex-col items-center">
-                   <Mic className="h-24 w-24 text-green-500 mb-4" />
-                   <p className="text-lg">Microphone is active.</p>
-                 </div>
-              )}
-              <video ref={localVideoRef} autoPlay playsInline muted className={`rounded-lg w-full h-full object-cover ${stream && !isAudioOnly ? 'block' : 'hidden'}`} />
-            </div>
-            {stream && (
-              <div className="self-center p-6 rounded-lg flex flex-col space-y-6">
-                <h2 className="text-3xl font-semibold text-center">You're all set</h2>
-                <Input
-                  placeholder="Enter your name"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="!border-gray-700 bg-gray-900 text-white border"
-                />
-                <Button disabled={loadingForJoiningCall || !socketRef.current?.connected} onClick={handleJoin} className="rounded-full py-3 text-lg">
-                  {loadingForJoiningCall ? <Loader2 className="animate-spin w-5 h-5" /> : `Join ${isAudioOnly ? "Audio Call" : "Video Call"}`}
-                </Button>
-              </div>
-            )}
+<div className="min-h-screen flex justify-center items-center bg-gray-950 text-white px-4">
+  {isInCall ? (
+    <VideoCallScreen
+      participants={participants}
+      setParticipants={setParticipants}
+      localUserName={userName.trim()}
+      socket={socketRef.current}
+      roomID={roomID}
+      onToggleScreenShare={handleToggleScreenShare}
+      isSharingScreen={!!screenStream}
+      isAudioOnly={isAudioOnly}
+    />
+  ) : (
+    <div className="max-w-5xl w-full grid lg:grid-cols-2 gap-12 items-center">
+      
+      {/* Media preview / access card */}
+      <div className="border border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center bg-gradient-to-br from-[#5fe089]/30 via-[#00bfa6]/20 to-[#5fe089]/30 shadow-lg backdrop-blur-sm min-h-[400px]">
+        {!stream && !permissionDenied && (
+          <div className="text-center">
+            <h2 className="text-2xl lg:text-3xl font-semibold mb-4 text-white">Ready to join?</h2>
+            <p className="text-sm text-gray-300 mb-6">
+              Grant {isAudioOnly ? "microphone" : "camera and mic"} access to continue.
+            </p>
+            <Button 
+              onClick={requestMediaPermissions} 
+              className="rounded-full px-8 py-3 bg-gradient-to-r from-[#5fe089] to-[#00bfa6] hover:from-[#00bfa6] hover:to-[#5fe089] text-black font-semibold shadow-md transition-all duration-200"
+            >
+              Grant Access
+            </Button>
           </div>
-        </div>
-      )}
+        )}
+
+        {permissionDenied && <PermissionDenied isAudioOnly={isAudioOnly} />}
+
+        {isAudioOnly && stream && (
+          <div className="flex flex-col items-center mt-4">
+            <Mic className="h-24 w-24 text-[#5fe089] mb-4" />
+            <p className="text-lg text-white">Microphone is active</p>
+          </div>
+        )}
+
+        {!isAudioOnly && stream && (
+          <video
+            ref={localVideoRef}
+            autoPlay
+            playsInline
+            muted
+            className="rounded-xl w-full h-64 lg:h-80 object-cover shadow-inner"
+          />
+        )}
+      </div>
+
+      {/* User info / join form */}
+      <div className="flex flex-col gap-6 p-8 rounded-xl bg-gradient-to-br from-[#5fe089]/20 via-[#00bfa6]/10 to-[#5fe089]/20 backdrop-blur-md shadow-lg">
+        <h2 className="text-3xl lg:text-4xl font-bold text-center text-[#5fe089]">You're all set</h2>
+        <Input
+          placeholder="Enter your name"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          className="!border-gray-700 bg-gray-800 text-white rounded-lg px-4 py-3"
+        />
+        <Button
+          disabled={loadingForJoiningCall || !socketRef.current?.connected}
+          onClick={handleJoin}
+          className="rounded-full py-3 bg-gradient-to-r from-[#5fe089] to-[#00bfa6] hover:from-[#00bfa6] hover:to-[#5fe089] text-black font-semibold shadow-md transition-all duration-200 text-lg flex items-center justify-center gap-2"
+        >
+          {loadingForJoiningCall ? <Loader2 className="animate-spin w-5 h-5" /> : `Join ${isAudioOnly ? "Audio Call" : "Video Call"}`}
+        </Button>
+      </div>
     </div>
+  )}
+</div>
+
+
   );
 }
 
 // MODIFIED: Accept isAudioOnly prop to show relevant message
 const PermissionDenied = memo(({ isAudioOnly }) => (
-    <div className="max-w-md mx-auto p-4 space-y-4 bg-gray-950 rounded-xl">
-    <Alert variant="destructive" className="border-red-900/50 bg-red-950/50 border-2">
-      <div className="flex text-white items-center gap-4 justify-center">
-        <Camera className="h-5 w-5" />
-        <AlertTitle className="text-lg !mb-0 font-semibold">Permission Required</AlertTitle>
-      </div>
-    </Alert>
-    <div className="p-2">
-      <h3 className="text-lg font-medium text-gray-100 mb-4">
-        Please enable {isAudioOnly ? "microphone" : "camera and microphone"} access in your browser settings to continue.
-      </h3>
-      <Button onClick={() => window.location.reload()} className="mt-4 w-full rounded-full">
-        <RefreshCw className="h-4 w-4 mr-2" />
-        Refresh and Try Again
-      </Button>
-    </div>
+ <div className="max-w-md mx-auto p-4 space-y-4 bg-gray-950 rounded-xl shadow-lg backdrop-blur-sm border border-gray-800">
+  <Alert 
+    variant="destructive" 
+    className="flex items-center justify-center gap-4 border-2 border-red-700/50 bg-gradient-to-r from-red-800/70 via-red-900/60 to-red-800/70 shadow-inner rounded-lg"
+  >
+    <Camera className="h-5 w-5 text-white" />
+    <AlertTitle className="text-lg font-semibold text-white !mb-0">Permission Required</AlertTitle>
+  </Alert>
+
+  <div className="p-2">
+    <h3 className="text-lg font-medium text-gray-100 mb-4 text-center">
+      Please enable {isAudioOnly ? "microphone" : "camera and microphone"} access in your browser settings to continue.
+    </h3>
+    <Button 
+      onClick={() => window.location.reload()} 
+      className="mt-4 w-full rounded-full bg-gradient-to-r from-[#5fe089] to-[#00bfa6] hover:from-[#00bfa6] hover:to-[#5fe089] text-black font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+    >
+      <RefreshCw className="h-4 w-4" />
+      Refresh and Try Again
+    </Button>
   </div>
+</div>
+
 ));
 PermissionDenied.displayName = "PermissionDenied";
