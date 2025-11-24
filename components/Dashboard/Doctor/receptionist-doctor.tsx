@@ -322,7 +322,7 @@ export function ReceptionistsDoctorManagement() {
       console.log(data);
 
       // Ensure data is always an array
-      const list = Array.isArray(data) ? data : [data];
+      const list = Array.isArray(data.receptionist) ? data.receptionist : [data.receptionist];
 
       setReceptionists(
         list.map((u: any) => ({
