@@ -297,12 +297,13 @@ export function ReceptionistsManagement() {
   const [maleCount, setMaleCount] = useState(0);
   const [femaleCount, setFemaleCount] = useState(0);
 
+  
   useEffect(() => {
     async function fetchReceptionists() {
       const token = localStorage.getItem('authToken')
       setLoading(true);
       try {
-         const res = await fetch(`${BASE_URL}users/by/clinic?role=clinic_receptionist`, {
+         const res = await fetch(`${BASE_URL}users/by/clinic?role=${UserRole.CLINICRECEPTIONIST}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
@@ -338,13 +339,11 @@ export function ReceptionistsManagement() {
 
   const handleSaveReceptionist = (formData: ReceptionistType) => {
     if (editingReceptionist) {
-      // Update existing (do not append)
       setReceptionists(receptionists.map((r) =>
         r.id === editingReceptionist.id ? { ...r, ...formData, id: editingReceptionist.id } : r
       ));
       setEditingReceptionist(null);
     } else {
-      // Add with real DB id coming from modal onSave
       setReceptionists([...receptionists, { ...formData, id: formData.id }]);
     }
     setIsAddModalOpen(false);
@@ -473,7 +472,7 @@ export function ReceptionistsManagement() {
               {receptionists.map((receptionist) => (
                 <tr key={receptionist.id} className="border-b border-gray-200 hover:bg-gray-50 transition">
                   {/* Removed Profile and Age columns */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4">  
                     <div className="flex items-center gap-3">
                       <Users style={{ color: "#62e18b" }} className="w-5 h-5" />
                       <span className="font-semibold text-gray-900">{receptionist.name}</span>
