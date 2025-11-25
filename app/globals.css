@@ -3333,3 +3333,37 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Video Filters */
+.filter-none { filter: none; }
+.filter-blur { filter: blur(5px); }
+.filter-sepia { filter: sepia(0.6); }
+.filter-grayscale { filter: grayscale(1); }
+.filter-vintage { filter: sepia(0.4) contrast(1.2) brightness(0.9) saturate(0.8); }
+.filter-warm { filter: sepia(0.3) saturate(1.6) contrast(1.1); }
+.filter-cool { filter: hue-rotate(180deg) saturate(0.5) brightness(1.1); }
+.filter-invert { filter: invert(1); }
+.filter-brightness { filter: brightness(1.5); }
+.filter-contrast { filter: contrast(2); }
