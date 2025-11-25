@@ -267,6 +267,12 @@ export default function IndividualMeetingRoom() {
       }));
     };
 
+    const handleUserFilterUpdated = ({ userName, filter }) => {
+      setParticipants(prev => prev.map(p =>
+        p.name === userName ? { ...p, filter } : p
+      ));
+    };
+
     socket.on("receiveOffer", handleReceiveOffer);
     socket.on("receiveAnswer", handleReceiveAnswer);
     socket.on("receiveIceCandidate", handleReceiveIceCandidate);
@@ -276,6 +282,7 @@ export default function IndividualMeetingRoom() {
     socket.on("userDisconnected", handleUserDisconnected);
     socket.on("screenShareStatus", handleScreenShareStatus);
     socket.on("newUserJoined", handleNewUserJoined);
+    socket.on("userFilterUpdated", handleUserFilterUpdated);
 
     return () => {
       socket.off("receiveOffer");
@@ -287,6 +294,7 @@ export default function IndividualMeetingRoom() {
       socket.off("userDisconnected");
       socket.off("screenShareStatus");
       socket.off("newUserJoined");
+      socket.off("userFilterUpdated");
     };
   }, [userName, stream, roomID, createPeerConnection, createAndSendOffer, createScreenPeerConnection]);
 
@@ -314,7 +322,12 @@ export default function IndividualMeetingRoom() {
     // If not sharing, start it
     try {
       const newScreenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: "always" },
+        video: {
+          cursor: "always",
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30 }
+        },
         audio: false // Typically, you don't share system audio
       });
       setParticipants(prev => prev.map(p =>
@@ -361,8 +374,19 @@ export default function IndividualMeetingRoom() {
 
       // CHANGED: Conditionally request video based on isAudioOnly state
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: isAudioOnly ? false : hasCamera,
-        audio: hasMic
+        video: isAudioOnly || !hasCamera ? false : {
+          width: { ideal: 1920 }, // Request Full HD
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30 },
+          facingMode: "user"
+        },
+        audio: !hasMic ? false : {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          sampleRate: 48000, // High quality audio
+          sampleSize: 16
+        }
       });
 
       setStream(mediaStream);

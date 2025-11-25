@@ -20,6 +20,11 @@ const ParticipantVideo = memo(({ participant, localUserName, isScreenShareView =
 
   const isLocalUser = participant.name === localUserName;
 
+  // Determine the filter to apply:
+  // 1. For local user: use the passed `filterClass` (which comes from `selectedFilter` state)
+  // 2. For remote user: use `participant.filter` which is synced via socket
+  const appliedFilter = isLocalUser ? filterClass : (participant.filter || "");
+
   return (
     <div className="relative w-full h-full rounded-2xl overflow-hidden flex items-center justify-center glass-panel shadow-2xl transition-all duration-300 hover:scale-[1.01]">
       {/* Video */}
@@ -32,7 +37,7 @@ const ParticipantVideo = memo(({ participant, localUserName, isScreenShareView =
           "w-full h-full transition-transform duration-300",
           isScreenShareView ? "object-contain" : "object-cover mirror-self",
           streamToDisplay && (isScreenShareView || participant.videoOn) ? "" : "hidden",
-          isLocalUser && !isScreenShareView ? filterClass : ""
+          !isScreenShareView ? appliedFilter : ""
         )}
       />
 
@@ -127,6 +132,17 @@ const VideoCallScreen = memo(({
     if (timeLeft > 1 * 60) return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30";
     return "bg-red-500/20 text-red-500 border-red-500/30 animate-pulse";
   };
+
+  // Emit filter change to other participants
+  useEffect(() => {
+    if (socket && roomID && localUserName) {
+      socket.emit("updateUserFilter", {
+        roomID,
+        userName: localUserName,
+        filter: selectedFilter
+      });
+    }
+  }, [selectedFilter, socket, roomID, localUserName]);
 
   useEffect(() => {
     const localUser = participants.find(p => p.name === localUserName);
