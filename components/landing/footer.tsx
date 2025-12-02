@@ -110,29 +110,8 @@ export default function Footer() {
                 <Image src="/images/AppStore1.png" width={180} height={65} alt="footer-image"/>
                 <Image src="/images/AppStore2.png" width={180} height={65} alt="footer-image"/>
             </div>
-            {/* Mobile View end */}
 
 
-        </div>
-        <div className='md:mt-12.5 py-5.5 px-8 md:px-15.5 border-[1px] rounded-2xl md:rounded-full border-[#CDCDCD]'>
-            {/* <div className='flex justify-between'> */}
-            <div className='md:flex justify-between'>
-                <div className='flex items-center gap-3 text-sm font-light text-black'>
-                 Copyright @ 2015 - 2025 MediConnect Services, a subsidiary of MyDoctor Inc - All Rights Reserved <br></br>
-                                    Reproduction of material from any oladoc.com pages without permission is strictly prohibited.   
-                </div>
-                <div className='flex items-center gap-3 '>
-                    <span className='text-black font-light text-sm'>Contact with us</span>
-                    <div className=''>
-
-                    </div>
-                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="twitter-icon"/>
-                    <Image src="/images/fbIcon.png" width={24} height={24} alt="fb-icon"/>
-                    <Image src="/images/instaIcon.png" width={24} height={24} alt="insta-icon"/>
-                    <Image src="/images/githubIcon.png" width={24} height={24} alt="github-icon"/>
-                    {/* <span className='text-sm text-[#01503F] font-semibold'>100% Satisfaction Guarantee</span> */}
-                </div>
-            </div>
         </div>
     </div>
   )

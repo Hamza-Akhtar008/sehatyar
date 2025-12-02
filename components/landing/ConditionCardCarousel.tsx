@@ -78,7 +78,6 @@ export default function ConditionCardCarousel() {
               <ChevronLeft size={24} />
             </button>
           )}
-
           {/* Right Arrow */}
           {showRightArrow && (
             <button
