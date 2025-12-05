@@ -5,7 +5,8 @@ import { useAuth } from "@/src/contexts/AuthContext";
 import { initSocket } from "@/lib/Sockets/socket";
 import { Fetchpatients } from "@/lib/Api/Patient/patient_api";
 import axios from "axios";
-import { Search, Plus, Send, Paperclip, MoreVertical, Phone, Video, ArrowLeft, Check, CheckCheck } from "lucide-react";
+import { Search, Plus, Send, Paperclip, MoreVertical, Phone, Video, ArrowLeft, Check, CheckCheck, Image as ImageIcon } from "lucide-react";
+import { UploadFile } from "@/lib/Api/Message/Message_Api";
 
 export interface Patient {
   id: number;
@@ -34,9 +35,6 @@ export interface ChatMessage {
   senderName: string;
   text: string;
   time: string;
-  type?: 'text' | 'image' | 'file';
-  fileUrl?: string;
-  fileName?: string;
 }
 
 export default function Messages() {
@@ -44,6 +42,7 @@ export default function Messages() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
   const [input, setInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,13 +64,48 @@ export default function Messages() {
   const fetchPatients = async () => {
     try {
       const response = (await Fetchpatients("patient")) as Patient[];
-      // Initialize with empty messages and 0 unread
-      setPatients(response.map((p: Patient) => ({ 
-        ...p, 
-        messages: [], 
-        unread: 0,
-        lastMessageTime: p.updatedAt || new Date().toISOString() // Fallback for sorting
-      })));
+      
+      if (!user?.id) return;
+
+      // Fetch last message for each patient
+      const patientsWithHistory = await Promise.all(
+        response.map(async (p: Patient) => {
+          try {
+            const historyRes = await axios.get(
+              "https://sehatyarr-c23468ec8014.herokuapp.com/messages/communication/logs",
+              { params: { senderId: user.id, receiverId: p.id } }
+            );
+            
+            const messages = historyRes.data;
+            const lastMsg = messages.length > 0 ? messages[messages.length - 1] : null;
+            
+            return {
+              ...p,
+              messages: [], 
+              unread: 0,
+              lastMessage: lastMsg ? (lastMsg.messageBody || "") : p.lastMessage,
+              lastMessageTime: lastMsg ? lastMsg.createdAt : (p.updatedAt || new Date().toISOString())
+            };
+          } catch (err) {
+            console.error(`Failed to fetch history for patient ${p.id}`, err);
+            return {
+              ...p,
+              messages: [],
+              unread: 0,
+              lastMessageTime: p.updatedAt || new Date().toISOString()
+            };
+          }
+        })
+      );
+
+      // Sort by last message time
+      const sortedPatients = patientsWithHistory.sort((a, b) => {
+        const timeA = new Date(a.lastMessageTime || 0).getTime();
+        const timeB = new Date(b.lastMessageTime || 0).getTime();
+        return timeB - timeA;
+      });
+
+      setPatients(sortedPatients);
     } catch (error) {
       console.error("Failed to fetch patients", error);
     }
@@ -92,12 +126,13 @@ export default function Messages() {
 
   const mapApiMessageToChatMessage = (msg: any): ChatMessage => {
     const isCurrentUserSender = msg.sendBy.id === user?.id;
+    const text = msg.messageBody || "";
+
     return {
       senderId: msg.sendBy.id,
       senderName: isCurrentUserSender ? "You" : msg.sendBy.fullName,
-      text: msg.messageBody,
+      text: text,
       time: msg.createdAt,
-      type: msg.type || 'text', // Assuming API might have this
     };
   };
 
@@ -109,6 +144,8 @@ export default function Messages() {
         "https://sehatyarr-c23468ec8014.herokuapp.com/messages/communication/logs",
         { params: { senderId: user.id, receiverId } }
       );
+
+      console.log("sentRes :",sentRes.data);
 
       const sentMessages: ChatMessage[] = sentRes.data.map(mapApiMessageToChatMessage);
       const history: ChatMessage[] = [...sentMessages].sort(
@@ -146,14 +183,13 @@ export default function Messages() {
         const updatedPatients = prev.map((p) => {
           if (p.id === msg.senderId || p.id === msg.receiverId) {
             const isActive = p.id === selectedPatientId;
+            const text = msg.message || "";
+
             const newMessage: ChatMessage = {
               senderId: msg.senderId,
               senderName: msg.senderId === parseInt(user?.id || "0") ? "You" : p.fullName,
-              text: msg.message,
+              text,
               time: new Date().toISOString(),
-              type: msg.type || 'text',
-              fileUrl: msg.fileUrl,
-              fileName: msg.fileName
             };
             
             return {
@@ -183,18 +219,20 @@ export default function Messages() {
     };
   }, [user?.id, selectedPatientId]); 
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if ((!input.trim()) || !user || !selectedPatientId) return;
 
     const receiver = patients.find(p => p.id === selectedPatientId);
     if (!receiver) return;
 
     const senderId = parseInt(user.id, 10);
+    
     const payload = {
       message: input,
       senderId,
       receiverId: receiver.id,
-      type: 'text'
+      type: 'text',
+      isFile: false,
     };
 
     socketRef.current.emit("message", payload);
@@ -211,7 +249,6 @@ export default function Messages() {
                   senderName: "You",
                   text: input,
                   time: new Date().toISOString(),
-                  type: 'text'
                 } as ChatMessage,
               ],
               lastMessage: input,
@@ -225,62 +262,58 @@ export default function Messages() {
     setInput("");
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !selectedPatientId) return;
 
-    // In a real app, upload to server here and get URL.
-    // For now, we'll simulate sending a file message.
-    // We can use FileReader to show a preview if it's an image.
-    
-    const reader = new FileReader();
-    reader.onload = () => {
-        const fileUrl = reader.result as string;
-        const isImage = file.type.startsWith('image/');
-        
-        const senderId = parseInt(user.id, 10);
-        const receiver = patients.find(p => p.id === selectedPatientId);
-        if(!receiver) return;
+    // Upload file to server endpoint and get URL
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const uploadRes = await UploadFile(formData)
+      console.log(uploadRes)
+      const fileUrl = uploadRes.messageBody;
 
-        const payload = {
-            message: isImage ? "Sent an image" : `Sent a file: ${file.name}`,
-            senderId,
-            receiverId: receiver.id,
-            type: isImage ? 'image' : 'file',
-            fileUrl: fileUrl, // Sending base64 (not recommended for large files in prod, but works for demo)
-            fileName: file.name
-        };
+      const senderId = parseInt(user.id, 10);
+      const receiver = patients.find(p => p.id === selectedPatientId);
+      if (!receiver) return;
 
-        socketRef.current.emit("message", payload);
+      const payload = {
+        message: fileUrl,
+        senderId,
+        receiverId: receiver.id,
+        isFile: true,
+      };
 
-        setPatients(prev => {
-            const updated = prev.map(p =>
-              p.id === selectedPatientId
-                ? {
-                    ...p,
-                    messages: [
-                      ...(p.messages || []),
-                      {
-                        senderId,
-                        senderName: "You",
-                        text: payload.message,
-                        time: new Date().toISOString(),
-                        type: payload.type as 'text' | 'image' | 'file',
-                        fileUrl: fileUrl,
-                        fileName: file.name
-                      },
-                    ],
-                    lastMessage: payload.message,
-                    lastMessageTime: new Date().toISOString(),
-                  }
-                : p
-            );
-            return updated.sort((a, b) => new Date(b.lastMessageTime || 0).getTime() - new Date(a.lastMessageTime || 0).getTime());
-          });
-    };
-    reader.readAsDataURL(file);
-    
-    // Reset input
+      socketRef.current.emit('message', payload);
+
+      // Update UI with file message
+      setPatients(prev => {
+        const updated = prev.map(p =>
+          p.id === selectedPatientId
+            ? {
+                ...p,
+                messages: [
+                  ...(p.messages || []),
+                  {
+                      senderId,
+                      senderName: "You",
+                      text: fileUrl, // Use URL as text for consistent parsing
+                      time: new Date().toISOString(),
+                    } as ChatMessage,
+                ],
+                lastMessage: fileUrl,
+                lastMessageTime: new Date().toISOString(),
+              }
+            : p
+        );
+        return updated.sort((a, b) => new Date(b.lastMessageTime || 0).getTime() - new Date(a.lastMessageTime || 0).getTime());
+      });
+    } catch (err) {
+      console.error('File upload failed', err);
+    }
+
+    // Reset file input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -323,6 +356,8 @@ export default function Messages() {
                 <input
                     type="text"
                     placeholder="Search patients..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/40 shadow-lg focus:ring-2 focus:ring-[#5FE089]/30 focus:bg-white/80 transition-all text-sm text-gray-700 placeholder:text-gray-400"
                 />
             </div>
@@ -330,7 +365,7 @@ export default function Messages() {
 
         {/* Patient List */}
         <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2 custom-scrollbar">
-          {patients.map((patient) => (
+          {patients.filter(p => p.fullName?.toLowerCase().includes(searchQuery.toLowerCase())).map((patient) => (
             <div
               key={patient.id}
               onClick={() => handleSelectPatient(patient.id)}
@@ -367,7 +402,32 @@ export default function Messages() {
                     )}
                 </div>
                 <p className={`text-xs truncate ${patient.unread ? 'font-semibold text-gray-800' : 'text-gray-500'}`}>
-                    {patient.lastMessage || "No messages yet"}
+                    {(() => {
+                        const text = patient.lastMessage || "";
+                        const callMatch = text.match(/https:\/\/sehatyar\.vercel\.app\/call\?roomId=([^&]+)&type=([^&]+)/);
+                        if (callMatch) {
+                            const type = callMatch[2];
+                            return (
+                                <span className="flex items-center gap-1">
+                                    {type === 'video' ? <Video size={14} /> : <Phone size={14} />}
+                                    {type === 'video' ? "Video Call" : "Audio Call"}
+                                </span>
+                            );
+                        }
+
+                        const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+                        if (urlMatch) {
+                             const url = urlMatch[0];
+                             const isImage = /\.(png|jpe?g|gif|webp|svg)$/i.test(url);
+                             return (
+                                 <span className="flex items-center gap-1">
+                                     {isImage ? <ImageIcon size={14} /> : <Paperclip size={14} />}
+                                     {isImage ? "Photo" : "Attachment"}
+                                 </span>
+                             );
+                        }
+                        return text || "No messages yet";
+                    })()}
                 </p>
               </div>
 
@@ -422,17 +482,7 @@ export default function Messages() {
                     </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                    <button className="p-2.5 text-gray-500 hover:text-[#5FE089] hover:bg-white/60 hover:backdrop-blur-sm rounded-full transition-all shadow-sm hover:shadow-md border border-transparent hover:border-white/40">
-                        <Phone size={20} />
-                    </button>
-                    <button className="p-2.5 text-gray-500 hover:text-[#5FE089] hover:bg-white/60 hover:backdrop-blur-sm rounded-full transition-all shadow-sm hover:shadow-md border border-transparent hover:border-white/40">
-                        <Video size={20} />
-                    </button>
-                    <button className="p-2.5 text-gray-500 hover:text-gray-700 hover:bg-white/60 hover:backdrop-blur-sm rounded-full transition-all shadow-sm hover:shadow-md border border-transparent hover:border-white/40">
-                        <MoreVertical size={20} />
-                    </button>
-                </div>
+              
             </div>
 
             {/* Messages List */}
@@ -449,24 +499,74 @@ export default function Messages() {
                                             : 'bg-white/70 text-gray-700 border border-white/40 rounded-tl-none'
                                     }`}
                                 >
-                                    {msg.type === 'image' && msg.fileUrl ? (
-                                        <div className="mb-2 rounded-lg overflow-hidden border border-white/30 shadow-lg">
-                                            <Image 
-                                                src={msg.fileUrl} 
-                                                alt="Shared image" 
-                                                width={200} 
-                                                height={200} 
-                                                className="w-full h-auto object-cover"
-                                            />
-                                        </div>
-                                    ) : msg.type === 'file' ? (
-                                        <div className="flex items-center gap-2 mb-1 p-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                                            <Paperclip size={16} />
-                                            <span className="underline truncate max-w-[150px]">{msg.fileName || "Attachment"}</span>
-                                        </div>
-                                    ) : null}
+                                    {(() => {
+                                        const text = msg.text || "";
+                                        const callMatch = text.match(/https:\/\/sehatyar\.vercel\.app\/call\?roomId=([^&]+)&type=([^&]+)/);
+                                        
+                                        if (callMatch) {
+                                            const callRoomId = callMatch[1];
+                                            const callType = callMatch[2] as 'video' | 'audio';
+                                            return (
+                                                <div className="flex flex-col gap-2 min-w-[200px]">
+                                                    <div className="flex items-center gap-2 font-semibold">
+                                                        {callType === 'video' ? <Video size={20} /> : <Phone size={20} />}
+                                                        <span>{callType === 'video' ? 'Video Call' : 'Audio Call'}</span>
+                                                    </div>
+                                                    <p className="text-xs opacity-80">
+                                                        {msg.senderId === parseInt(user?.id || "0") ? "You started a call" : "Incoming call..."}
+                                                    </p>
+                                                    <a 
+                                                        href={`https://sehatyar.vercel.app/call?roomId=${callRoomId}&type=${callType}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={`mt-2 py-2 px-4 rounded-xl text-center font-semibold text-sm transition-all shadow-md ${
+                                                            isSender 
+                                                                ? 'bg-white text-[#5FE089] hover:bg-gray-50' 
+                                                                : 'bg-[#5FE089] text-white hover:bg-[#4CD078]'
+                                                        }`}
+                                                    >
+                                                        Join Call
+                                                    </a>
+                                                </div>
+                                            );
+                                        }
+
+                                        const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+                                        if (urlMatch) {
+                                            const fileUrl = urlMatch[0];
+                                            const isImage = /\.(png|jpe?g|gif|webp|svg)$/i.test(fileUrl);
+                                            
+                                            if (isImage) {
+                                                return (
+                                                    <div className="mb-2 rounded-lg overflow-hidden border border-white/30 shadow-lg">
+                                                        <Image 
+                                                            src={fileUrl} 
+                                                            alt="Shared image" 
+                                                            width={200} 
+                                                            height={200} 
+                                                            className="w-full h-auto object-cover"
+                                                        />
+                                                    </div>
+                                                );
+                                            } else {
+                                                const fileName = fileUrl.split('/').pop() || "Attachment";
+                                                return (
+                                                    <a
+                                                        href={fileUrl}
+                                                        download={fileName}
+                                                        className="flex items-center gap-2 p-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 hover:bg-white/30"
+                                                    >
+                                                        <Paperclip size={16} />
+                                                        <span className="underline truncate max-w-[150px]">{fileName}</span>
+                                                    </a>
+                                                );
+                                            }
+                                        }
+
+                                        return text;
+                                    })()}
                                     
-                                    {msg.text}
+                                  
                                 </div>
                                 <div className="flex items-center gap-1 mt-1.5 px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full">
                                     <span className="text-[10px] text-gray-600">{formatTime(msg.time)}</span>

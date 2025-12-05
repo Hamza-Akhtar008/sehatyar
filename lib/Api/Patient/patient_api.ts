@@ -39,7 +39,7 @@ export const uploadMedicalHistoryFiles = async (  payload:FormData, appointmentI
 
 export async function Fetchpatients(role?: string) {
   try {
-    const response = await axiosInstance.get(`/users`, {
+    const response = await axiosInstance.get(`/users?role=${role}`, {
    
     });
     return response.data;
