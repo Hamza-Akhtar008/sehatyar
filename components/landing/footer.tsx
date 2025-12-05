@@ -1,136 +1,151 @@
 import React from 'react'
 import Image from 'next/image'
-// import {tickIcon} from '../../public/helperFile'
 
 export default function Footer() {
   return (
-    <div className='p-10 md:p-14 lg:p-25'>
-        {/* <div className='flex gap-32.5'> */}
-        <div className='md:flex lg:gap-5 xl:gap-15 2xl:gap-22 gap-4'>
-            <div className='md:w-3/12'>
-            <Image src="/images/logo2.webp" width={130} height={40} alt="sehatyar-logo"/>
-           <p className='mt-8 text-base'>Book appointments with the best Doctors and Specialists such as Gynecologists, Skin Specialists, Child Specialists, Surgeons, etc. Avail test services such as MRI, CT scan, Ultrasound, X-Ray, etc. and Online Doctor Video Consultations all across Pakistan conveniently.</p>
-            </div>
-            <div className='hidden md:flex md:w-2/12'>
-                <ul className='md:flex flex-col gap-5'>
-                    <li className='uppercase  font-bold text-[#01503F] text-lg'>Company</li>
-                    <li className='text-base'>Doctors</li>
-                    <li className='text-base'>Clinics</li>
-                    <li className='text-base'>How It’s Works</li>
-                    <li className='text-base'>About Us</li>
-                </ul>
-            </div>
-            <div className='hidden md:flex md:w-2/12'>
-                 <ul className='md:flex flex-col gap-5'>
-                    <li className='font-bold uppercase text-[#01503F] text-lg'>More</li>
-                    <li className='text-base'>Health Blog</li>
-                    <li className='text-base'>Forum</li>
-                    <li className='text-base'>For Doctors</li>
-                    <li className='text-base'>Pharmacy</li>
-                    <li className='text-base'>Labs</li>
-                    <li className='text-base'>Lab Tests</li>
-                </ul>
+    <div className='w-full flex justify-center py-10 md:py-14 lg:py-20 px-4'>
+        <div className='w-full max-w-[1370px] flex flex-col gap-8'>
+            {/* Logo and Description */}
+            <div className='md:hidden'>
+                <Image src="/images/logo.png" width={130} height={40} alt="sehatyar-logo"/>
+                <p className='mt-6 text-[15px] leading-relaxed text-gray-700'>
+                    Sehatyar is a complete hospital and clinic management system offering smart appointment scheduling, online consultations, seamless billing, and comprehensive healthcare management across Abbottabad, Mansehra, Haripur, and Battagram.
+                </p>
             </div>
 
-
-
-{/* Mobile View start */}
-<div className='flex md:hidden py-8'>
-
-  <div className='w-6/12 md:w-2/12'>
-                <ul className='md:flex flex-col gap-5'>
-                    <li className='uppercase  font-bold text-[#01503F] text-lg'>Company</li>
-                    <li className='text-base'>Doctors</li>
-                    <li className='text-base'>Clinics</li>
-                    <li className='text-base'>How It’s Works</li>
-                    <li className='text-base'>About Us</li>
-                </ul>
-            </div>
-            <div className='w-6/12 md:w-2/12'>
-                 <ul className='md:flex flex-col gap-5'>
-                    <li className='font-bold uppercase text-[#01503F] text-lg'>More</li>
-                    <li className='text-base'>Health Blog</li>
-                    <li className='text-base'>Forum</li>
-                    <li className='text-base'>For Doctors</li>
-                    <li className='text-base'>Pharmacy</li>
-                    <li className='text-base'>Labs</li>
-                    <li className='text-base'>Lab Tests</li>
-                </ul>
-            </div>
-
-</div>
-{/* Mobile View end */}
-
-
-
-
-
-
-            <div className='flex flex-col gap-3 md:w-5/12 lg:w-4/12'>
-                <div className='flex py-4.5 px-5.5 items-center bg-[#F5F5F5] rounded-full gap-3'>
-                    <div className=''>
-<Image src="/images/tick.png" width={47} height={47} alt="tick-icon"/>
-                    </div>
-<div className='flex flex-col'>
-    <h1 className='text-sm text-[#01503F] font-semibold tracking-wide mb-3'>PMDC Verified Doctors</h1>
-    <p className='text-base'>Authentic & updates information</p>
-</div>
+            {/* Desktop Layout */}
+            <div className='hidden md:flex md:gap-6 lg:gap-10 xl:gap-16'>
+                {/* Logo and Description - Desktop */}
+                <div className='md:w-[35%] lg:w-[30%]'>
+                    <Image src="/images/logo.png" width={130} height={40} alt="sehatyar-logo"/>
+                    <p className='mt-6 text-[15px] leading-relaxed text-gray-700'>
+                        Book appointments with the best doctors and specialists - including Gynecologists, Skin Specialists, Child Specialists, Surgeons, and more.
+                    </p>
+                    <p className='mt-3 text-[15px] leading-relaxed text-gray-700'>
+                        Sehatyar is a complete hospital and clinic management system offering smart appointment scheduling, online consultations, seamless billing, and comprehensive healthcare management across Abbottabad, Mansehra, Haripur, and Battagram.
+                    </p>
                 </div>
 
-<div className='flex py-4.5 px-5.5 items-center bg-[#F5F5F5] rounded-full gap-3'>
-                    <div className=''>
-                        {/* {tickIcon} */}
-                        <Image src="/images/headphones.png" width={47} height={47} alt="tick-icon"/>
-                    </div>
-<div className='flex flex-col'>
-    <h1 className='text-sm text-[#01503F] font-semibold tracking-wide'>Reliable Customer Support</h1>
-    <p className='text-base'>7 days a week</p>
-</div>
+                {/* Company Links - Desktop */}
+                <div className='md:w-[15%]'>
+                    <ul className='flex flex-col gap-4'>
+                        <li className='uppercase font-bold text-[#FF6B35] text-sm mb-1'>COMPANY</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Doctors</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Clinics</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>How It's Works</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>About Us</li>
+                    </ul>
                 </div>
 
-                <div className='flex py-4.5 px-5.5 items-center bg-[#F5F5F5] rounded-full gap-3'>
-                    <div className=''>
-                        {/* {tickIcon} */}
-                        <Image src="/images/tickshield.png" width={43} height={43} alt="tick-icon"/>
-                    </div>
-<div className='flex flex-col'>
-    <h1 className='text-sm text-[#01503F] font-semibold tracking-wide'>Secure Online Payment</h1>
-    <p className='text-base'>Secure checkout using SSL Certificate</p>
-</div>
+                {/* More Links - Desktop */}
+                <div className='md:w-[15%]'>
+                    <ul className='flex flex-col gap-4'>
+                        <li className='font-bold uppercase text-[#FF6B35] text-sm mb-1'>MORE</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Health Blog</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Forum</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>For Doctors</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Pharmacy</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Labs</li>
+                        <li className='text-[15px] text-gray-700 hover:text-[#FF6B35] cursor-pointer transition-colors'>Lab Tests</li>
+                    </ul>
                 </div>
 
-            </div>
-            <div className='lg:flex flex-col hidden gap-4 text-black'>
-                <Image src="/images/AppStore1.png" width={202} height={65} alt="footer-image"/>
-                <Image src="/images/AppStore2.png" width={202} height={65} alt="footer-image"/>
-            </div>
-
-{/* Mobile View start */}
-<div className='md:hidden flex gap-4 text-black py-8'>
-                <Image src="/images/AppStore1.png" width={180} height={65} alt="footer-image"/>
-                <Image src="/images/AppStore2.png" width={180} height={65} alt="footer-image"/>
-            </div>
-            {/* Mobile View end */}
-
-
-        </div>
-        <div className='md:mt-12.5 py-5.5 px-8 md:px-15.5 border-[1px] rounded-2xl md:rounded-full border-[#CDCDCD]'>
-            {/* <div className='flex justify-between'> */}
-            <div className='md:flex justify-between'>
-                <div className='flex items-center gap-3 text-sm font-light text-black'>
-                 Copyright @ 2015 - 2025 MediConnect Services, a subsidiary of MyDoctor Inc - All Rights Reserved <br></br>
-                                    Reproduction of material from any oladoc.com pages without permission is strictly prohibited.   
-                </div>
-                <div className='flex items-center gap-3 '>
-                    <span className='text-black font-light text-sm'>Contact with us</span>
-                    <div className=''>
-
+                {/* Feature Cards - Desktop */}
+                <div className='flex flex-col gap-4 md:w-[35%] lg:w-[30%]'>
+                    {/* PMDC Verified Doctors */}
+                    <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                        <div className='flex-shrink-0'>
+                            <Image src="/images/one.png" width={45} height={45} alt="tick-icon"/>
+                        </div>
+                        <div className='flex flex-col'>
+                            <h3 className='text-[15px] text-[#FF6B35] font-semibold mb-1'>PMDC Verified Doctors</h3>
+                            <p className='text-[13px] text-gray-600'>Authentic & updates information</p>
+                        </div>
                     </div>
-                    <Image src="/images/twitterIcon.png" width={24} height={24} alt="twitter-icon"/>
-                    <Image src="/images/fbIcon.png" width={24} height={24} alt="fb-icon"/>
-                    <Image src="/images/instaIcon.png" width={24} height={24} alt="insta-icon"/>
-                    <Image src="/images/githubIcon.png" width={24} height={24} alt="github-icon"/>
-                    {/* <span className='text-sm text-[#01503F] font-semibold'>100% Satisfaction Guarantee</span> */}
+
+                    {/* Reliable Customer Support */}
+                    <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                        <div className='flex-shrink-0'>
+                            <Image src="/images/two.png" width={45} height={45} alt="support-icon"/>
+                        </div>
+                        <div className='flex flex-col'>
+                            <h3 className='text-[15px] text-[#FF6B35] font-semibold mb-1'>Reliable Customer Support</h3>
+                            <p className='text-[13px] text-gray-600'>7 days a week</p>
+                        </div>
+                    </div>
+
+                    {/* Secure Online Payment */}
+                    <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                        <div className='flex-shrink-0'>
+                            <Image src="/images/three.png" width={45} height={45} alt="security-icon"/>
+                        </div>
+                        <div className='flex flex-col'>
+                            <h3 className='text-[15px] text-[#FF6B35] font-semibold mb-1'>Secure Online Payment</h3>
+                            <p className='text-[13px] text-gray-600'>Secure checkout using SSL Certificate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Links - Two Column Grid */}
+            <div className='md:hidden grid grid-cols-2 gap-8'>
+                {/* Company Links - Mobile */}
+                <div>
+                    <ul className='flex flex-col gap-3'>
+                        <li className='uppercase font-bold text-[#FF6B35] text-sm mb-1'>COMPANY</li>
+                        <li className='text-[14px] text-gray-700'>Doctors</li>
+                        <li className='text-[14px] text-gray-700'>Clinics</li>
+                        <li className='text-[14px] text-gray-700'>How It's Works</li>
+                        <li className='text-[14px] text-gray-700'>About Us</li>
+                    </ul>
+                </div>
+
+                {/* More Links - Mobile */}
+                <div>
+                    <ul className='flex flex-col gap-3'>
+                        <li className='font-bold uppercase text-[#FF6B35] text-sm mb-1'>MORE</li>
+                        <li className='text-[14px] text-gray-700'>FAQs</li>
+                        <li className='text-[14px] text-gray-700'>Forum</li>
+                        <li className='text-[14px] text-gray-700'>Privacy Policy</li>
+                        <li className='text-[14px] text-gray-700'>Payment Policy</li>
+                        <li className='text-[14px] text-gray-700'>Contact Us</li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Feature Cards - Mobile */}
+            <div className='md:hidden flex flex-col gap-4'>
+                {/* PMDC Verified Doctors */}
+                <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                    <div className='flex-shrink-0'>
+                        <Image src="/images/one.png" width={40} height={40} alt="tick-icon"/>
+                    </div>
+                    <div className='flex flex-col'>
+                        <h3 className='text-[14px] text-[#FF6B35] font-semibold mb-1'>PMDC Verified Doctors</h3>
+                        <p className='text-[12px] text-gray-600'>Authentic & updates information</p>
+                    </div>
+                </div>
+
+                {/* Reliable Customer Support */}
+                <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                    <div className='flex-shrink-0'>
+                        <Image src="/images/two.png" width={40} height={40} alt="support-icon"/>
+                    </div>
+                    <div className='flex flex-col'>
+                        <h3 className='text-[14px] text-[#FF6B35] font-semibold mb-1'>Reliable Customer Support</h3>
+                        <p className='text-[12px] text-gray-600'>7 days a week</p>
+                    </div>
+                </div>
+
+                {/* Secure Online Payment */}
+                <div className='flex items-center bg-[#F5F5F5] rounded-full p-4 gap-4'>
+                    <div className='flex-shrink-0'>
+                        <Image src="/images/three.png" width={40} height={40} alt="security-icon"/>
+                    </div>
+                    <div className='flex flex-col'>
+                        <h3 className='text-[14px] text-[#FF6B35] font-semibold mb-1'>Secure Online Payment</h3>
+                        <p className='text-[12px] text-gray-600'>Secure checkout using SSL Certificate</p>
+                    </div>
                 </div>
             </div>
         </div>

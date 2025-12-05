@@ -7,16 +7,23 @@ import Specialists from "@/components/landing/specialists";
 import { Conditions } from "@/components/landing";
 import Partners from "@/components/landing/partners";
 import DoctorByCondition from "@/components/landing/doctor-by-condition";
+import Carousel from "@/components/landing/Carousel";
+import ConditionCardCarousel from "@/components/landing/ConditionCardCarousel";
+import Footer2 from "@/components/landing/Footer2";
+import CustomerReview from "@/components/landing/CustomerReview";
 
 export default function Home() {
   return (
    <>
    <HeroSection />
+   <Carousel/>
    <Doctors />
    <Hospitals />
    <Specialists />
-   <Conditions />
+   {/* <Conditions /> */}
+   <ConditionCardCarousel/>
    <Partners />
+   <CustomerReview />
    <DoctorByCondition />
  
    </>
