@@ -1,4 +1,3 @@
-
 import Header from "@/components/ui/header";
 import HeroSection from "@/components/landing/hero-section";
 import Hospitals from "@/components/landing/hospitals";

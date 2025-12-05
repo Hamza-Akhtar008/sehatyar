@@ -19,39 +19,35 @@ export default function Partners() {
     { src: "/partners/image 30.png", width: 68, height: 68 },
   ]
 
-  // Duplicate logos for seamless scrolling
   const scrollingLogos = [...logos, ...logos]
-
   return (
-    <section className="py-10 md:py-53 px-10 text-center">
-      <h1 className="text-4xl font-semibold">
-        Our <span className="text-green-500">Partners</span>
+    <section className="py-2 md:py-28 px-4 md:px-10 text-center max-w-[1370px] mx-auto">
+      <h1 className="text-3xl md:text-5xl font-bold text-[#45278b] ">
+        Our <span className="text-[#f97316]">Partners</span>
       </h1>
 
-      {/* Wrapper with fade */}
       <div
-        className="relative overflow-hidden mt-10"
+        className="relative overflow-hidden mt-8 md:mt-12"
         style={{
           WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 40%, black 60%, transparent 100%)",
+            "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
           maskImage:
-            "linear-gradient(to right, transparent 0%, black 40%, black 60%, transparent 100%)",
+            "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
           WebkitMaskRepeat: "no-repeat",
           maskRepeat: "no-repeat",
           WebkitMaskSize: "100% 100%",
           maskSize: "100% 100%",
         }}
       >
-        <div className="flex animate-marquee gap-6">
+        <div className="flex animate-marquee gap-8 md:gap-10 ">
           {scrollingLogos.map((logo, index) => (
-            <div key={index} className="flex-[0_0_auto] flex items-center justify-center">
+            <div key={index} className="flex-[0_0_auto] flex items-center justify-center mt-8">
               <Image
                 src={logo.src || "/placeholder.svg"}
                 alt={`Partner logo ${index + 1}`}
                 width={logo.width}
                 height={logo.height}
-                style={{ height: "68px", width: "auto" }}
-                className="object-contain"
+                className="object-contain h-12 md:h-[70px] w-auto max-w-[120px] md:max-w-[180px]"
               />
             </div>
           ))}
@@ -70,7 +66,7 @@ export default function Partners() {
         .animate-marquee {
           display: flex;
           width: max-content;
-          animation: marquee 10s linear infinite; /* slow scroll */
+          animation: marquee 80s linear infinite; /* slow scroll */
         }
       `}</style>
     </section>
