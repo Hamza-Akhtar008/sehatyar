@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDownIcon,  ArrowRight, User, Settings, LogOut } from "lucide-react";
+import { ChevronDownIcon, ArrowRight, User, Settings, LogOut, Menu, X } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -24,8 +24,9 @@ import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-const {user,isAuthenticated,logout}=useAuth();
- 
+  const { user, isAuthenticated, logout } = useAuth();
+  const [language, setLanguage] = useState("EN");
+
   const specialties = [
     {
       name: "Cardiology",
@@ -68,20 +69,17 @@ const {user,isAuthenticated,logout}=useAuth();
       ],
     },
     {
-      name: "Dental Sugery",
+      name: "Dental Surgery",
       cities: [
-        " Dental Sugery in Abbottobad",
-        " Dental Sugery in Lahore",
-        " Dental Sugery in Islamabad",
+        "Dental Surgery in Abbottobad",
+        "Dental Surgery in Lahore",
+        "Dental Surgery in Islamabad",
       ],
     },
-   
   ];
-
 
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  // Inline expand/collapse for clinics
   const clinics = [
     {
       name: "Lahore Clinics",
@@ -113,217 +111,269 @@ const {user,isAuthenticated,logout}=useAuth();
   const [mobileClinicsOpen, setMobileClinicsOpen] = useState<boolean>(false);
 
   return (
-    <header className="site-header bg-white">
-      <div className="header-container flex items-center w-full">
-      <div className="site-logo">
-  <Link href="/">
-    <Image src="/assets/Test 2.png" alt="Sehatyar logo" width={156} height={41} priority />
-  </Link>
-</div>
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div className="max-w-[1370px] mx-auto my-3 px-4 lg:px-0">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link href="/">
+              <Image
+                src="/logos/main-logo.svg"
+                alt="Sehatyar logo"
+                width={200}
+                height={52}
+                priority
+                className="h-[52px] w-auto" 
+              />
+            </Link>
+          </div>
 
-  <div className="desktop-nav-group hidden md:flex items-center flex-1 min-w-0 ">
-          <NavigationMenu>
-            <NavigationMenuList className="nav-menu">
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-black bg-white">Doctors</NavigationMenuTrigger>
-                <NavigationMenuContent className="navigation-menu-content">
-                  <div className="doctor-dropdown">
-                    <div className="doctor-dropdown-title">Find doctor by Specialty</div>
-                    {specialties.map((spec) => (
-                      <div key={spec.name}>
-                        <button
-                          className={`doctor-specialty-btn${expanded === spec.name ? " expanded" : ""}`}
-                          onClick={() => setExpanded(expanded === spec.name ? null : spec.name)}
-                          type="button"
-                        >
-                          {spec.name}
-                          <ChevronDownIcon size={16} style={{ marginLeft: 8, transform: expanded === spec.name ? "rotate(180deg)" : "none" }} />
-                        </button>
-                        {expanded === spec.name && (
-                          
-                          <div className="doctor-cities-list">
-                            {spec.cities.map((city) => (
-                              <div key={city} className="doctor-city-item">
-                             <Link
-          key={city}
-          href={{
-            pathname: "/doctor",
-            query: {
-              query: spec.name, // specialization name
-              city: city.split(" in ")[1],
-            },
-          }}
-          className="doctor-city-item hover:underline text-gray-700"
-        >
-          {city}
-        </Link>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8 flex-1 ml-11">
+            {/* Doctors Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-gray-700 hover:text-gray-900 font-medium text-base transition-colors bg-transparent border-none outline-none">
+                Doctors
+                <ChevronDownIcon className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 bg-white shadow-lg rounded-lg p-2">
+                {specialties.map((spec) => (
+                  <div key={spec.name} className="mb-1">
+                    <button
+                      className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+                      onClick={() => setExpanded(expanded === spec.name ? null : spec.name)}
+                      type="button"
+                    >
+                      {spec.name}
+                      <ChevronDownIcon
+                        className={`w-4 h-4 transition-transform ${
+                          expanded === spec.name ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {expanded === spec.name && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        {spec.cities.map((city) => (
+                          <Link
+                            key={city}
+                            href={{
+                              pathname: "/doctor",
+                              query: {
+                                query: spec.name,
+                                city: city.split(" in ")[1],
+                              },
+                            }}
+                            className="block px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                          >
+                            {city}
+                          </Link>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-black bg-white">Clinics</NavigationMenuTrigger>
-                <NavigationMenuContent className="navigation-menu-content">
-                  <div className="doctor-dropdown">
-                    <div className="doctor-dropdown-title">Find clinic by City</div>
-                    {clinics.map((city) => (
-                      <div key={city.name}>
-                        <button
-                          className={`doctor-specialty-btn${expanded === city.name ? " expanded" : ""}`}
-                          onClick={() => setExpanded(expanded === city.name ? null : city.name)}
-                          type="button"
-                        >
-                          {city.name}
-                          <ChevronDownIcon size={16} style={{ marginLeft: 8, transform: expanded === city.name ? "rotate(180deg)" : "none" }} />
-                        </button>
-                        {expanded === city.name && (
-                          <div className="doctor-cities-list">
-                            {city.hospitals.map((hospital) => (
-                              <div key={hospital} className="doctor-city-item">
-                                {hospital}
-                              </div>
-                            ))}
+            {/* Clinics Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-gray-700 hover:text-gray-900 font-medium text-base transition-colors bg-transparent border-none outline-none">
+                Clinics
+                <ChevronDownIcon className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 bg-white shadow-lg rounded-lg p-2">
+                {clinics.map((city) => (
+                  <div key={city.name} className="mb-1">
+                    <button
+                      className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+                      onClick={() => setExpanded(expanded === city.name ? null : city.name)}
+                      type="button"
+                    >
+                      {city.name}
+                      <ChevronDownIcon
+                        className={`w-4 h-4 transition-transform ${
+                          expanded === city.name ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {expanded === city.name && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        {city.hospitals.map((hospital) => (
+                          <div
+                            key={hospital}
+                            className="block px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                          >
+                            {hospital}
                           </div>
-                        )}
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link href="/how-it-works" className={navigationMenuTriggerStyle()}>
-                      How It&apos;s Work
+            {/* Regular Links */}
+            <Link
+              href="/how-it-works"
+              className="text-gray-700 hover:text-gray-900 font-medium text-base transition-colors"
+            >
+              How it Works
+            </Link>
+
+            <Link
+              href="/about-us"
+              className="text-gray-700 hover:text-gray-900 font-medium text-base transition-colors"
+            >
+              About Us
+            </Link>
+
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-gray-900 font-medium text-base transition-colors"
+            >
+              Contact
+            </Link>
+          </nav>
+
+          {/* Right Side Actions */}
+          <div className="hidden lg:flex items-center gap-4">
+            {/* Language Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-gray-700 hover:text-gray-900 font-medium text-base transition-colors bg-transparent border-none outline-none">
+                {language}
+                <ChevronDownIcon className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white shadow-lg rounded-lg p-1 min-w-[80px]">
+                <DropdownMenuItem
+                  onClick={() => setLanguage("EN")}
+                  className="cursor-pointer hover:bg-gray-50 rounded-md"
+                >
+                  EN
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setLanguage("UR")}
+                  className="cursor-pointer hover:bg-gray-50 rounded-md"
+                >
+                  UR
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Auth Buttons */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors border-none outline-none">
+                  <User className="w-5 h-5 text-gray-700" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-white shadow-lg rounded-lg p-1 w-48">
+                  <DropdownMenuItem className="cursor-pointer hover:bg-gray-50 rounded-md">
+                    <Link href="/doctor-dashboard" className="flex items-center gap-2 w-full">
+                      <Settings className="w-4 h-4" /> Dashboard
                     </Link>
-                  </NavigationMenuLink>
-              </NavigationMenuItem>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer hover:bg-gray-50 rounded-md">
+                    <button onClick={logout} className="flex items-center gap-2 w-full text-left">
+                      <LogOut className="w-4 h-4" /> Logout
+                    </button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-6 py-3.5 border-[1.5px] border-black rounded-full text-black hover:bg-gray-50 font-medium text-sm transition-colors"
+                >
+                  Login / Sign Up
+                </Link>
 
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/about-us" className={navigationMenuTriggerStyle()}>
-                    About Us
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+                <Link
+                  href="/register"
+                  className="pl-6 pr-2 py-1 bg-[#4E148C] text-white hover:bg-[#ff6600] rounded-full text-sm transition-colors flex items-center gap-3"
+                >
+                  Join as Doctor
+                 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="44" height="44" rx="22" fill="white"/>
+<path d="M18.5919 23.8798L25.4073 20.1197M25.4073 20.1197L21.3475 18.8036M25.4073 20.1197L24.3556 24.256" stroke="#4E148C" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Button + Join as Doctor */}
+          <div className="lg:hidden flex items-center gap-3">
+            <Link
+              href="/register"
+              className="px-4 py-2 bg-[#4E148C] text-white hover:bg-[#ff6600] rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+            >
+              Join as Doctor
+              <svg width="24" height="24" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="44" height="44" rx="22" fill="white"/>
+                <path d="M18.5919 23.8798L25.4073 20.1197M25.4073 20.1197L21.3475 18.8036M25.4073 20.1197L24.3556 24.256" stroke="#4E148C" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
+            <button
+              className="p-2 text-gray-700 hover:text-gray-900 transition-colors"
+              onClick={() => setOpen(!open)}
+              aria-label="Toggle menu"
+            >
+              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
-      <div className="header-desktop-actions ml-auto flex items-center gap-2 md:gap-3 lg:gap-[12px] ">
-  {isAuthenticated ? (
-<DropdownMenu>
-  <DropdownMenuTrigger
-    className="flex items-center justify-center w-10 h-10 rounded-full border-none transition-colors duration-200"
-    style={{
-      backgroundColor: 'var(--background)',
-      color: 'var(--foreground)',
-    }}
-  >
-    <User className="w-5 h-5" />
-  </DropdownMenuTrigger>
-
-  <DropdownMenuContent
-    className="z-[9999] w-48 rounded-md shadow-md overflow-hidden"
-    style={{
-      backgroundColor: 'var(--card)',
-      color: 'var(--card-foreground)',
-      border: '1px solid var(--border)',
-    }}
-  >
-    <DropdownMenuItem
-      className="flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-var(--brand-green-300) hover:text-var(--brand-green-900) hover:scale-105 cursor-pointer"
-      style={{ borderRadius: 'var(--radius)' }}
-    >
-      <Link href="/doctor-dashboard" className="flex items-center gap-2 w-full">
-        <Settings className="w-4 h-4" /> Dashboard
-      </Link>
-    </DropdownMenuItem>
-
-    <DropdownMenuItem
-      className="flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-var(--brand-green-300) hover:text-var(--brand-green-900) hover:scale-105 cursor-pointer"
-      style={{ borderRadius: 'var(--radius)' }}
-    >
-      <button
-        onClick={logout}
-        className="flex items-center gap-2 w-full text-left"
-      >
-        <LogOut className="w-4 h-4" /> Logout
-      </button>
-    </DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>
-
-
-  ) : (
-    <>
-      <Link
-        href="/login"
-        className="hide-on-mobile flex flex-row justify-center items-center px-4 py-2 gap-[10px] lg:px-[22px] lg:py-[12px] w-auto h-10 lg:w-[159px] lg:h-[48px] border border-black rounded-[99px] whitespace-nowrap"
-      >
-        <span className="font-jakarta font-semibold text-[14px] leading-[24px] text-black">
-          Login / Sign Up
-        </span>
-      </Link>
-
-      <Link
-        href="/register"
-        className="hide-on-mobile btn btn-primary font-semibold font-montserrat text-[14px] bg-[#5FE089] flex items-center px-4 py-2 rounded-full whitespace-nowrap"
-      >
-        Join As Doctor
-        <div className="icon-container rounded-full bg-white p-[13px] gap-[10px] flex justify-center items-center">
-          <ArrowRight className="w-4 h-4 rotate-[-25deg]" />
-        </div>
-      </Link>
-    </>
-  )}
-</div>
-
-        {/* Mobile navigation toggle */}
-        <button className="md:hidden mobile-toggle" aria-label="Toggle menu" onClick={() => setOpen(!open)}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
       </div>
 
-      {/* Mobile menu (shown when open state is true) */}
+      {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden mobile-menu bg-white p-4">
-          <ul className="flex flex-col space-y-2">
-            {/* Doctors collapsible */}
-            <li>
+        <div className="lg:hidden bg-white border-t border-gray-100">
+          <div className="px-4 py-4 space-y-3">
+            {/* Doctors Mobile */}
+            <div>
               <button
-                className="w-full flex items-center justify-between py-3 text-left"
+                className="w-full flex items-center justify-between py-2 text-gray-700 font-medium"
                 onClick={() => setMobileDoctorsOpen(!mobileDoctorsOpen)}
-                aria-expanded={mobileDoctorsOpen}
-                aria-controls="mobile-doctors-panel"
                 type="button"
               >
-                <span>Doctors</span>
-                <ChevronDownIcon className={`w-4 h-4 transition-transform ${mobileDoctorsOpen ? 'rotate-180' : ''}`} />
+                Doctors
+                <ChevronDownIcon
+                  className={`w-5 h-5 transition-transform ${
+                    mobileDoctorsOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
               {mobileDoctorsOpen && (
-                <div id="mobile-doctors-panel" className="pl-3 pb-2 space-y-1">
+                <div className="pl-4 mt-2 space-y-2">
                   {specialties.map((spec) => (
                     <div key={spec.name}>
                       <button
-                        className={`w-full flex items-center justify-between py-2 text-left text-sm text-gray-600 ${expanded === spec.name ? 'font-medium' : ''}`}
+                        className="w-full flex items-center justify-between py-2 text-sm text-gray-600"
                         onClick={() => setExpanded(expanded === spec.name ? null : spec.name)}
                         type="button"
                       >
-                        <span>{spec.name}</span>
-                        <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${expanded === spec.name ? 'rotate-180' : ''}`} />
+                        {spec.name}
+                        <ChevronDownIcon
+                          className={`w-4 h-4 transition-transform ${
+                            expanded === spec.name ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
                       {expanded === spec.name && (
-                        <div className="pl-3 py-1 space-y-1">
+                        <div className="pl-4 space-y-1">
                           {spec.cities.map((city) => (
-                            <Link key={city} href="#" className="block py-1 text-sm text-gray-500">
+                            <Link
+                              key={city}
+                              href={{
+                                pathname: "/doctor",
+                                query: {
+                                  query: spec.name,
+                                  city: city.split(" in ")[1],
+                                },
+                              }}
+                              className="block py-1 text-sm text-gray-500"
+                            >
                               {city}
                             </Link>
                           ))}
@@ -333,38 +383,44 @@ const {user,isAuthenticated,logout}=useAuth();
                   ))}
                 </div>
               )}
-            </li>
+            </div>
 
-            {/* Clinics collapsible */}
-            <li>
+            {/* Clinics Mobile */}
+            <div>
               <button
-                className="w-full flex items-center justify-between py-3 text-left"
+                className="w-full flex items-center justify-between py-2 text-gray-700 font-medium"
                 onClick={() => setMobileClinicsOpen(!mobileClinicsOpen)}
-                aria-expanded={mobileClinicsOpen}
-                aria-controls="mobile-clinics-panel"
                 type="button"
               >
-                <span>Clinics</span>
-                <ChevronDownIcon className={`w-4 h-4 transition-transform ${mobileClinicsOpen ? 'rotate-180' : ''}`} />
+                Clinics
+                <ChevronDownIcon
+                  className={`w-5 h-5 transition-transform ${
+                    mobileClinicsOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
               {mobileClinicsOpen && (
-                <div id="mobile-clinics-panel" className="pl-3 pb-2 space-y-1">
+                <div className="pl-4 mt-2 space-y-2">
                   {clinics.map((city) => (
                     <div key={city.name}>
                       <button
-                        className={`w-full flex items-center justify-between py-2 text-left text-sm text-gray-600 ${expanded === city.name ? 'font-medium' : ''}`}
+                        className="w-full flex items-center justify-between py-2 text-sm text-gray-600"
                         onClick={() => setExpanded(expanded === city.name ? null : city.name)}
                         type="button"
                       >
-                        <span>{city.name}</span>
-                        <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${expanded === city.name ? 'rotate-180' : ''}`} />
+                        {city.name}
+                        <ChevronDownIcon
+                          className={`w-4 h-4 transition-transform ${
+                            expanded === city.name ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
                       {expanded === city.name && (
-                        <div className="pl-3 py-1 space-y-1">
+                        <div className="pl-4 space-y-1">
                           {city.hospitals.map((hospital) => (
-                            <Link key={hospital} href="#" className="block py-1 text-sm text-gray-500">
+                            <div key={hospital} className="block py-1 text-sm text-gray-500">
                               {hospital}
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -372,22 +428,31 @@ const {user,isAuthenticated,logout}=useAuth();
                   ))}
                 </div>
               )}
-            </li>
+            </div>
 
-            <li>
-              <Link href="/how-it-works" className="block py-3">How It&apos;s Work</Link>
-            </li>
-            <li>
-              <Link href="/about" className="block py-3">About Us</Link>
-            </li>
-            {/* Hide auth actions on tablet/laptop since they are in top header there */}
-            <li className="sm:hidden">
-              <Link href="/login" className="block py-3">Login / Sign Up</Link>
-            </li>
-            <li className="sm:hidden">
-              <Link href="/register" className="block py-3">Join As Doctor</Link>
-            </li>
-          </ul>
+            {/* Other Links */}
+            <Link href="/how-it-works" className="block py-2 text-gray-700 font-medium">
+              How it Works
+            </Link>
+            <Link href="/about-us" className="block py-2 text-gray-700 font-medium">
+              About Us
+            </Link>
+            <Link href="/contact" className="block py-2 text-gray-700 font-medium">
+              Contact
+            </Link>
+
+            {/* Mobile Auth Buttons */}
+            {!isAuthenticated && (
+              <div className="pt-4 border-t border-gray-100">
+                <Link
+                  href="/login"
+                  className="block w-full text-center px-6 py-2.5 border border-gray-300 rounded-full text-gray-700 font-medium"
+                >
+                  Login / Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

@@ -55,6 +55,7 @@ function Carousel({
     {
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
+      duration: 30, // Smooth scroll duration (lower = faster, higher = slower)
     },
     plugins
   )
@@ -68,11 +69,11 @@ function Carousel({
   }, [])
 
   const scrollPrev = React.useCallback(() => {
-    api?.scrollPrev()
+    api?.scrollPrev(true) // true for smooth scrolling
   }, [api])
 
   const scrollNext = React.useCallback(() => {
-    api?.scrollNext()
+    api?.scrollNext(true) // true for smooth scrolling
   }, [api])
 
   const handleKeyDown = React.useCallback(

@@ -2,7 +2,7 @@
 
 import { AuthProvider } from "@/src/contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
-
+import "./globals.css";
 import {
   Geist,
   Geist_Mono,
@@ -21,7 +21,7 @@ const montserrat = Montserrat({
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plusjakarta",
   subsets: ["latin"],
-  weight: ["500", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${montserrat.variable} ${plusJakarta.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className={plusJakarta.className}>
         <AuthProvider>
           <ThemeProvider
             attribute="class"

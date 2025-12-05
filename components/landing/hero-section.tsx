@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -13,444 +13,346 @@ const specializations = [
   "Allergy and Immunology",
   "Anesthesiology",
   "Cardiology",
-  "Cardiothoracic Surgery",
-  "Cardiovascular Surgery",
-  "Clinical Neurophysiology",
-  "Clinical Pharmacology",
-  "Colon and Rectal Surgery",
-  "Community Medicine",
-  "Critical Care Medicine",
-  "Dental Surgery",
   "Dermatology",
-  "Diagnostic Radiology",
-  "Emergency Medicine",
-  "Endocrinology, Diabetes & Metabolism",
-  "Family Medicine",
+  "Endocrinology",
   "Gastroenterology",
-  "General Practice",
   "General Surgery",
-  "Genetics and Genomics",
-  "Geriatric Medicine",
-  "Gynecologic Oncology",
-  "Hand Surgery",
-  "Head and Neck Surgery",
   "Hematology",
-  "Hepatology",
-  "Hospital Medicine",
   "Infectious Disease",
   "Internal Medicine",
-  "Interventional Cardiology",
-  "Interventional Radiology",
-  "Legal Medicine",
-  "Maternal and Fetal Medicine",
-  "Medical Oncology",
-  "Medical Toxicology",
-  "Neonatal-Perinatal Medicine",
   "Nephrology",
-  "Neurocritical Care",
-  "Neurodevelopmental Disabilities",
   "Neurology",
-  "Neuromuscular Medicine",
-  "Neuroradiology",
-  "Neurosurgery",
-  "Nuclear Medicine",
   "Obstetrics & Gynecology",
-  "Occupational Medicine",
   "Oncology",
   "Ophthalmology",
-  "Optometry",
-  "Oral and Maxillofacial Surgery",
   "Orthopedic Surgery",
   "Otolaryngology (ENT)",
-  "Pain Medicine",
-  "Palliative Care",
-  "Pathology",
-  "Pediatric Allergy & Immunology",
-  "Pediatric Anesthesiology",
-  "Pediatric Cardiology",
-  "Pediatric Critical Care Medicine",
-  "Pediatric Dermatology",
-  "Pediatric Emergency Medicine",
-  "Pediatric Endocrinology",
-  "Pediatric Gastroenterology",
-  "Pediatric Hematology & Oncology",
-  "Pediatric Infectious Diseases",
-  "Pediatric Nephrology",
-  "Pediatric Neurology",
-  "Pediatric Neurosurgery",
-  "Pediatric Oncology",
-  "Pediatric Ophthalmology",
-  "Pediatric Orthopedics",
-  "Pediatric Otolaryngology",
-  "Pediatric Pathology",
-  "Pediatric Pulmonology",
-  "Pediatric Radiology",
-  "Pediatric Rheumatology",
-  "Pediatric Surgery",
-  "Pediatric Urology",
   "Pediatrics",
-  "Physical Medicine & Rehabilitation",
   "Plastic Surgery",
-  "Preventive Medicine",
   "Psychiatry",
-  "Psychosomatic Medicine",
-  "Public Health",
-  "Pulmonary Disease",
-  "Radiation Oncology",
+  "Pulmonology",
   "Radiology",
-  "Reproductive Endocrinology and Infertility",
   "Rheumatology",
-  "Sleep Medicine",
-  "Spinal Cord Injury Medicine",
-  "Sports Medicine",
-  "Surgical Critical Care",
-  "Thoracic Surgery",
-  "Transplant Surgery",
-  "Trauma Surgery",
   "Urology",
-  "Vascular Neurology",
-  "Vascular Surgery",
-  "Adolescent Medicine",
-  "Aerospace Medicine",
-  "Biochemical Genetics",
-  "Chemical Pathology",
-  "Clinical Biochemistry",
-  "Clinical Cytogenetics",
-  "Clinical Immunology",
-  "Clinical Microbiology",
-  "Clinical Pathology",
-  "Clinical Psychology",
-  "Community Health",
-  "Dental Public Health",
-  "Developmental Pediatrics",
-  "Endodontics",
-  "Epidemiology",
-  "Forensic Medicine",
-  "Forensic Pathology",
-  "Gastrointestinal Surgery",
-  "General Internal Medicine",
-  "Geriatric Psychiatry",
-  "Health Informatics",
-  "Hematopathology",
-  "Hospice and Palliative Medicine",
-  "Immunopathology",
-  "Interventional Neuroradiology",
-  "Laboratory Medicine",
-  "Laparoscopic Surgery",
-  "Lifestyle Medicine",
-  "Maxillofacial Surgery",
-  "Medical Biochemistry",
-  "Medical Genetics",
-  "Medical Microbiology",
-  "Military Medicine",
-  "Molecular Pathology",
-  "Musculoskeletal Radiology",
-  "Neonatology",
-  "Neuroendocrinology",
-  "Neuroimaging",
-  "Neurointerventional Surgery",
-  "Neuropathology",
-  "Neuropsychiatry",
-  "Nuclear Cardiology",
-  "Occupational Health",
-  "Oncologic Surgery",
-  "Oral Medicine",
-  "Oral Pathology",
-  "Orthodontics",
-  "Orthopedic Oncology",
-  "Pain Rehabilitation",
-  "Pediatric Dentistry",
-  "Pediatric Emergency Care",
-  "Pediatric Gastrohepatic Surgery",
-  "Pediatric Infectious Medicine",
-  "Pediatric Intensive Care",
-  "Pediatric Neuroradiology",
- 
-  "Pediatric Plastic Surgery",
-  "Pediatric Rehabilitation",
-  "Pediatric Thoracic Surgery",
-  "Perinatal Medicine",
-  "Phlebology",
-  "Physician Executive",
-  "Plastic and Reconstructive Surgery",
-  "Primary Care",
-  "Proctology",
-  "Pulmonology (Respiratory Medicine)",
-  "Radiologic Physics",
-  "Rehabilitation Psychology",
-  "Reproductive Medicine",
-  "Rural Medicine",
-  "Sleep Disorders Medicine",
-  "Spine Surgery",
-  "Surgical Oncology",
-  "Tropical Medicine",
-  "Undersea and Hyperbaric Medicine",
-  "Urgent Care Medicine",
-  "Urogynecology",
-  "Vascular and Interventional Radiology",
-  "Virology",
-  "Women's Health",
-  "Wound Care Medicine"
-]
+];
+
 export default function HeroSection() {
-  const router = useRouter()
-  const [query, setQuery] = useState("")
-  const [city,setcity]=useState("");
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [city, setCity] = useState("");
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(-1)
-  const [isFocused, setIsFocused] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Filter suggestions based on user input
   const filtered = useMemo(() => {
-    if (!query.trim()) return []
+    if (!query.trim()) return [];
     return specializations.filter((item) =>
       item.toLowerCase().includes(query.toLowerCase())
-    )
-  }, [query])
+    );
+  }, [query]);
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!filtered.length) return
+    if (!filtered.length) return;
 
     if (e.key === "ArrowDown") {
-      e.preventDefault()
-      setFocusedIndex((prev) => (prev + 1) % filtered.length)
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev + 1) % filtered.length);
     } else if (e.key === "ArrowUp") {
-      e.preventDefault()
-      setFocusedIndex((prev) => (prev - 1 + filtered.length) % filtered.length)
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev - 1 + filtered.length) % filtered.length);
     } else if (e.key === "Enter" && focusedIndex >= 0) {
-      e.preventDefault()
-      setQuery(filtered[focusedIndex])
-      setIsFocused(false)
+      e.preventDefault();
+      setQuery(filtered[focusedIndex]);
+      setIsFocused(false);
     }
-  }
+  };
 
   // Hide dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsFocused(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsFocused(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearch = () => {
-    router.push(`/doctor?query=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`)
-  }
+    router.push(
+      `/doctor?query=${encodeURIComponent(query)}&city=${encodeURIComponent(
+        city
+      )}`
+    );
+  };
 
   return (
-  <section
-    aria-label="Hero section"
-    // className="px-[100px] mt-[50px] relative"
-    className="px-5 xl:px-25 mt-12.5 relative"
-  >
-  <Card
-    className="hero-card bg-[#F4F4F4] md:p-10 shadow-sm relative overflow-visible rounded-4xl"
-    // style={{ width: '100%', height: '740px', borderRadius: '42px',  }}
-  >
-    
-    {/* ---------- Decorative Backgrounds ---------- */}
-    <div className="absolute bottom-0 left-0 w-[250px] sm:w-[300px] md:w-[380px]  pointer-events-none">
-      <Image
-        src="/hero-bg.png"
-        alt="Decorative background bottom left"
-        width={286}
-        height={200}
-        className="object-contain select-none"
-      />
-    </div>
+    <section aria-label="Hero section" className="max-w-[1370px] mx-auto mt-10 px-4 md:px-0 relative">
+      {/* Main Hero Container */}
+      <div className="relative bg-[#F4F4F4] rounded-[32px] md:rounded-[42px] overflow-hidden min-h-[350px] md:min-h-[380px] lg:min-h-[407px] flex items-center">
+        {/* Mobile Background Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/hero-mobile.svg"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover md:hidden"
+        />
+        {/* Desktop Background Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/hero-backgound.svg"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover hidden md:block"
+        />
+        <div className="relative z-10 w-full">
+          <div className="flex flex-col md:flex-row items-center">
+            {/* Left Content */}
+            <div className="w-full md:w-1/2 md:ml-6 lg:ml-10 md:mt-2 lg:mt-3 px-6 py-8 md:py-0">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-white border-none px-3 py-1.5 mb-5 rounded-full shadow-sm">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FF6600]"></div>
+                <span className="text-gray-600 text-sm font-medium">
+                  50M+ patients served
+                </span>
+              </div>
 
-    <div className="absolute top-0 right-0 w-[200px] sm:w-[280px] md:w-[350px]  pointer-events-none">
-      <Image
-        src="/hero-bg2.png"
-        alt="Decorative background top right"
-       width={400}
-        height={100}
-        className="object-contain select-none"
-      />
-    </div>
+              {/* Heading */}
+              <div className="space-y-1 md:text-left mb-6 md:mb-0">
+                <h1 className="text-4xl sm:text-3xl md:text-3xl lg:text-5xl font-bold text-[#4E148C] leading-tight">
+                  Find and Book the
+                </h1>
+                <h1 className="text-4xl sm:text-3xl md:text-3xl lg:text-5xl font-bold leading-tight">
+                  <span className="text-[#FF6600]">Best Doctors</span>{" "}
+                  <span className="text-[#4E148C]">near you</span>
+                </h1>
+              </div>
 
-    {/* ---------- Main Hero Content ---------- */}
-    <div className="flex flex-col lg:flex-row relative z-10 items-center md:gap-20 lg:gap-40 xl:gap-52 2xl:gap-68.5">
-      
-      {/* ---------- Left Content ---------- */}
-      <div className="w-11/12 lg:w-7/12 space-y-6 mt-6 ">
-        
-        <div className="flex flex-col gap-10">
-        {/* Patients Served */}
+              {/* Mobile Location Dropdown */}
+              <div className="md:hidden w-full max-w-md  mb-2">
+                <div className="flex items-center gap-2 text-gray-700">
+               <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.16947 15.246C7.03442 15.343 6.87234 15.3952 6.70607 15.3952C6.5398 15.3952 6.37772 15.343 6.24267 15.246C2.24667 12.3978 -1.99427 6.5391 2.29301 2.30561C3.47 1.14781 5.05507 0.499275 6.70607 0.500001C8.36107 0.500001 9.94904 1.14959 11.1191 2.30478C15.4064 6.53827 11.1655 12.3961 7.16947 15.246Z" stroke="#52525B" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.70676 7.9477C7.14569 7.9477 7.56665 7.77333 7.87702 7.46296C8.18739 7.15258 8.36176 6.73163 8.36176 6.2927C8.36176 5.85376 8.18739 5.43281 7.87702 5.12243C7.56665 4.81206 7.14569 4.6377 6.70676 4.6377C6.26782 4.6377 5.84687 4.81206 5.5365 5.12243C5.22612 5.43281 5.05176 5.85376 5.05176 6.2927C5.05176 6.73163 5.22612 7.15258 5.5365 7.46296C5.84687 7.77333 6.26782 7.9477 6.70676 7.9477Z" stroke="#52525B" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 
-        <div className="flex items-center gap-2.5 py-1 px-3 bg-white w-fit rounded-3xl mx-auto lg:mx-0">
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <p className="text-[#52525B] text-sm font-normal" style={{ fontFamily: 'var(--font-inter)' }}>50M+ patients served</p>
-        </div>
-
-
-        {/* Headings */}
-        <div className=" text-center lg:text-left">
-          <h1 className="text-3xl md:text-4xl xl:text-5xl  font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
-            Find and Book the
-          </h1>
-          <h1 className="text-3xl md:text-4xl xl:text-5xl  font-extrabold text-[#323232] mb-0" style={{ fontFamily: 'var(--font-plusjakarta)' }}>
-            <span className="text-[#4ADE80]">
-              Best Doctors
-              </span> near you
-          </h1>
-        </div>
-
-        {/* Search Bar */}
-        <div
-          className="  md:flex md:flex-row flex flex-col gap-5 md:gap-3.5 bg-white rounded-2xl md:rounded-full shadow-sm text-[#52525B] py-3 px-2 border-[1px] border-[#CACACA] items-center"
-       
-          ref={dropdownRef}
-        >
-          
-          {/* Search Input */}
-          <div
-            className="md:w-5/12 flex items-center text-base bg-[#F4F4F4] rounded-full px-3"
-            style={{
-              // width: '344.3640441894531px',
-              // height: '66.64610290527344px',
-              borderRadius: '35.88px',
-              paddingTop: '10.32px',
-              paddingRight: '26.65px',
-              paddingBottom: '10.32px',
-              paddingLeft: '16.65px',
-              // gap: '12.37px',
-              background: '#F4F4F4',
-              opacity: 1,
-              transform: 'rotate(0deg)'
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </svg>
-            <Input
-              type="text"
-              placeholder="Search Specialist or Hospital"
-               value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-              className="hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full text-lg"
-            />
-             {isFocused && filtered.length > 0 && (
-        <div className="absolute top-[70px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
-          {filtered.map((item, index) => (
-            <div
-              key={item}
-              onMouseDown={() => {
-                setQuery(item)
-                setIsFocused(false)
-              }}
-              className={`px-4 py-2 text-sm cursor-pointer transition ${
-                index === focusedIndex
-                  ? "bg-[#5fe089] text-white"
-                  : "hover:bg-gray-100 text-gray-700"
-              }`}
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      )}
-          </div>
-
-     
-
-          {/* Location Input */}
-          <div
-            className="md:w-5/12 flex items-center text-base bg-[#F4F4F4] rounded-full px-3"
-            style={{
-              // width: '344.3640441894531px',
-              // height: '66.64610290527344px',
-              borderRadius: '35.88px',
-              paddingTop: '10.32px',
-              paddingRight: '26.65px',
-              paddingBottom: '10.32px',
-              paddingLeft: '16.65px',
-              // gap: '12.37px',
-              background: '#F4F4F4',
-              opacity: 1,
-              transform: 'rotate(0deg)'
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <Input
-              type="text"
-              onChange={(e)=>setcity(e.target.value)}
-              placeholder="Near you or Enter City"
-              className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input min-w-0 rounded-md border px-3 py-1 transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hero-input border-none shadow-none bg-transparent focus:ring-0 h-full w-full text-lg"
-            />
-          </div>
-
-          {/* Find Button */}
-      <Button
-  className="text-white inline-flex items-center justify-center hover:cursor-pointer transition-all duration-300 bg-green-400 rounded-full px-8 py-7"
-
-  onMouseEnter={(e) => (e.currentTarget.style.background = "#4ad87b")}
-  onMouseLeave={(e) => (e.currentTarget.style.background = "#5FE089")}
-  onClick={handleSearch}
->
-  Find
-</Button>
-
-        </div>
-      </div>
-        </div>
-
-      {/* ---------- Right Side (absolute) ---------- */}
-      <div className="mt-5 md:mt-0 w-11/12 md:w-5/12 lg:w-5/12 "
-      >
-        {/* <h1>myheading</h1> */}
-        <div className="flex justify-end relative">
-          <Image
-            src="/assets/Hero.svg"
-            alt="Doctor on call"
-            width={480}
-            height={580}
-            className="object-contain select-none"
-          />
-          {/* Consult Online Now card */}
-            <div className="absolute bottom-20 md:bottom-25  md:-left-50 lg:-left-25 xl:-left-38 bg-white p-6 rounded-2xl z-1000 ">
-              <div className="hero-consult-header z-20">
-                <h3 className="hero-consult-title z-20  text-lg lg:text-2xl ">Consult Online Now</h3>
-                <div className="hero-consult-icon" onClick={() => setIsConsultModalOpen(true)}>
-                  <ArrowRight className="w-5 h-5 -rotate-45 text-white z-20 cursor-pointer hover:scale-110 transition-transform" />
+                  <select
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="bg-transparent border-none outline-none text-gray-700 text-base font-medium cursor-pointer"
+                  >
+                    <option value="">Select City</option>
+                    <option value="Abbottabad">Abbottabad</option>
+                    <option value="Islamabad">Islamabad</option>
+                    <option value="Lahore">Lahore</option>
+                    <option value="Karachi">Karachi</option>
+                  </select>
+               
                 </div>
               </div>
-              <p className="hero-consult-description z-20">
-                Instantly connect with Specialists through
-                <br></br>
-                 Video call.
-              </p>
-            </div>
-            <Dialog open={isConsultModalOpen} onOpenChange={setIsConsultModalOpen}>
-              <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
-                <ConsultOnline />
-              </DialogContent>
-            </Dialog>
-        </div>
 
-
-
-            {/* Floating Badge (In Clinic Appointment) */}
-            <div className="flex absolute  lg:right-8 bottom-5 items-center rounded-full px-6 py-2 bg-white/90 backdrop-blur-lg shadow-md">
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-3" />
-              <span className="font-medium text-base text-[#414141]">In Clinic Appointment</span>
-              <div className="ml-4 flex items-center">
-                <ArrowRight className="w-4 h-4 -rotate-12 text-gray-700" />
+              {/* Mobile Search Bar */}
+              <div className="md:hidden w-full max-w-md">
+                <div className="bg-white p-4 rounded-[22px] shadow-lg border border-gray-200 flex items-center gap-2">
+                  <div className="flex-1 bg-[#F5F5F5] rounded-[22px] px-4 py-4  flex items-center gap-2">
+                    <Search className="w-4 h-4 text-gray-400" />
+                    <Input
+                      type="text"
+                      placeholder="Doctors, Hospital, Specialties"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      className="border-none bg-transparent p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-gray-700 text-sm w-full"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleSearch}
+                    className="bg-[#4E148C] hover:bg-[#ff781e] text-white rounded-[22px] px-5 py-4 h-auto text-sm font-medium transition-colors"
+                  >
+                    Search
+                  </Button>
+                </div>
               </div>
-            </div>           
+
+              {/* Desktop Search Bar */}
+              <div
+                className="hidden md:flex bg-white p-2 shadow-lg max-w-[1000px] border rounded-full border-gray-100 flex-row gap-2"
+                ref={dropdownRef}
+              >
+                <div className="flex-1 relative bg-[#F4F4F4] rounded-full px-6 py-2 flex items-center gap-3">
+                  <Search className="w-5 h-5 text-gray-400" />
+                  <div className="flex-1 relative">
+                    <Input
+                      type="text"
+                      placeholder="Specialist or Hospital"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onFocus={() => setIsFocused(true)}
+                      onKeyDown={handleKeyDown}
+                      className="border-none bg-transparent p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-gray-700 text-base w-full"
+                    />
+                    {isFocused && filtered.length > 0 && (
+                      <div className="absolute top-full left-0 mt-4 w-full bg-white border border-gray-100 rounded-xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        {filtered.map((item, index) => (
+                          <div
+                            key={item}
+                            onMouseDown={() => {
+                              setQuery(item);
+                              setIsFocused(false);
+                            }}
+                            className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
+                              index === focusedIndex
+                                ? "bg-[#4E148C] text-white"
+                                : "hover:bg-gray-50 text-gray-700"
+                            }`}
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 bg-[#F4F4F4] rounded-full px-6 py-2 flex items-center gap-3">
+                  <div className="w-5 h-5 flex items-center justify-center">
+                    <div className="w-4 h-4 border-2 border-gray-400 rounded-full flex items-center justify-center">
+                      <div className="w-1 h-1 bg-gray-400 rounded-full" />
+                    </div>
+                  </div>
+                  <Input
+                    type="text"
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Near you or Enter City"
+                    className="border-none bg-transparent p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-gray-700 text-base w-full"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleSearch}
+                  className="bg-[#4E148C] hover:bg-[#ff781e] text-white rounded-full px-6 py-4 h-auto text-base font-medium transition-colors"
+                >
+                  Search
+                </Button>
+              </div>
+            </div>
+
+            {/* Desktop Right Content - Images (inside gray container) */}
+            <div className="hidden md:block md:w-1/2 lg:w-1/2 mt-0">
+              <div className="flex justify-end gap-2 lg:gap-3 items-start md:ml-4 lg:ml-10">
+                {/* Card 1 - Consult Online */}
+                <div className="flex flex-col gap-2 lg:gap-3 w-[180px] lg:w-[260px]">
+                  <div className="relative bg-transparent overflow-hidden h-[130px] lg:h-[200px]">
+                    <Image
+                      src="/hero-section1.svg"
+                      alt="Consult Online"
+                      width={290}
+                      height={200}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="bg-white rounded-[14px] lg:rounded-[20px] p-2.5 lg:p-4 flex flex-col gap-1 lg:gap-2">
+                    <div className="flex items-center justify-between gap-2 lg:gap-3">
+                      <h3 className="font-bold text-[#333333] text-xs lg:text-base leading-tight">
+                        Consult Online Now
+                      </h3>
+                      <button
+                        onClick={() => setIsConsultModalOpen(true)}
+                        className="w-6 h-6 lg:w-9 lg:h-9 bg-[#4E148C] rounded-[10px] lg:rounded-[16.43px] flex items-center justify-center flex-shrink-0 hover:bg-[#ff781e] transition-colors"
+                      >
+                        <ArrowRight className="w-3 h-3 lg:w-4 lg:h-4 text-white -rotate-45" />
+                      </button>
+                    </div>
+                    <p className="text-[9px] lg:text-[11px] text-gray-500 leading-relaxed hidden lg:block">
+                      Instantly connect with Specialists through Video call.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 2 - In Clinic */}
+                <div className="w-[140px] lg:w-[250px] mr-1 lg:mr-2 relative">
+                  <div className="relative rounded-[14px] lg:rounded-[20px] overflow-hidden h-[200px] lg:h-[300px] shadow-lg">
+                    <Image
+                      src="/hero-section2.svg"
+                      alt="In Clinic Appointment"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 right-2 lg:right-3">
+                      <button className="w-full bg-[#4E148C] text-white py-1.5 lg:py-2.5 px-2 lg:px-3 rounded-full flex items-center justify-between text-[9px] lg:text-xs font-medium hover:bg-[#ff781e] transition-colors shadow-lg">
+                        <div className="flex items-center gap-1 lg:gap-2">
+                          <div className="w-1 h-1 lg:w-1.5 lg:h-1.5 rounded-full bg-white" />
+                          In Clinic Appointment
+                        </div>
+                        <ArrowRight className="w-2.5 h-2.5 lg:w-3.5 lg:h-3.5 -rotate-45" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        {/* </div> */}
-      </Card>
+        </div>
+      </div>
+
+      {/* Mobile Image Cards - OUTSIDE gray container */}
+      <div className="md:hidden mt-6 px-2">
+        <div className="flex justify-center gap-3 items-start">
+          {/* Card 1 - Consult Online */}
+          <div className="flex flex-col gap-2 flex-1 max-w-[180px]">
+            <div className="relative rounded-[16px] overflow-hidden h-[200px] shadow-md">
+              <Image
+                src="/hero-section1.svg"
+                alt="Consult Online"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="flex items-center justify-between gap-2 py-2">
+              <h3 className="font-bold text-[#333333] text-sm leading-tight">
+                Consult Online Now
+              </h3>
+              <button
+                onClick={() => setIsConsultModalOpen(true)}
+                className="w-8 h-8 bg-[#4E148C] rounded-lg flex items-center justify-center flex-shrink-0 hover:bg-[#ff781e] transition-colors"
+              >
+                <ArrowRight className="w-3.5 h-3.5 text-white -rotate-45" />
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2 - In Clinic */}
+          <div className="flex-1 max-w-[180px]">
+            <div className="relative rounded-[16px] overflow-hidden h-[260px] shadow-md">
+              <Image
+                src="/hero-section2.svg"
+                alt="In Clinic Appointment"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute bottom-3 left-2 right-2">
+                <button className="w-full bg-[#4E148C] text-white py-2 px-2 rounded-full flex items-center justify-between text-[10px] font-medium hover:bg-[#ff781e] transition-colors shadow-lg">
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                    In Clinic Appointment
+                  </div>
+                  <ArrowRight className="w-3 h-3 -rotate-45" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Dialog open={isConsultModalOpen} onOpenChange={setIsConsultModalOpen}>
+        <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
+          <ConsultOnline />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
