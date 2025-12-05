@@ -113,7 +113,7 @@ const {user,isAuthenticated,logout}=useAuth();
   const [mobileClinicsOpen, setMobileClinicsOpen] = useState<boolean>(false);
 
   return (
-    <header className="site-header">
+    <header className="site-header bg-white">
       <div className="header-container flex items-center w-full">
       <div className="site-logo">
   <Link href="/">
@@ -121,11 +121,11 @@ const {user,isAuthenticated,logout}=useAuth();
   </Link>
 </div>
 
-  <div className="desktop-nav-group hidden md:flex items-center flex-1 min-w-0">
+  <div className="desktop-nav-group hidden md:flex items-center flex-1 min-w-0 ">
           <NavigationMenu>
             <NavigationMenuList className="nav-menu">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-black">Doctors</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-black bg-white">Doctors</NavigationMenuTrigger>
                 <NavigationMenuContent className="navigation-menu-content">
                   <div className="doctor-dropdown">
                     <div className="doctor-dropdown-title">Find doctor by Specialty</div>
@@ -168,7 +168,7 @@ const {user,isAuthenticated,logout}=useAuth();
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-black">Clinics</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-black bg-white">Clinics</NavigationMenuTrigger>
                 <NavigationMenuContent className="navigation-menu-content">
                   <div className="doctor-dropdown">
                     <div className="doctor-dropdown-title">Find clinic by City</div>

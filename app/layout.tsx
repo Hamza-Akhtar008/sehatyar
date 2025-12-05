@@ -2,7 +2,7 @@
 
 import { AuthProvider } from "@/src/contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
-import "./globals.css";
+
 import {
   Geist,
   Geist_Mono,
