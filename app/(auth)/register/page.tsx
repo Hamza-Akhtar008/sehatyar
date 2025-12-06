@@ -1,9 +1,11 @@
 "use client"
 import { registerDoctor } from "@/lib/Api/Auth/api";
 import { toast, Toaster } from "react-hot-toast";
-import { useState, useRef, useEffect, useMemo } from "react"
+import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation";
+import { useLocation } from "@/src/contexts/LocationContext";
+import { MapPin } from "lucide-react";
 
 const PRIMARY = "#5fe089"
 const GENDER_BG = "#01503f"
@@ -12,10 +14,23 @@ const BORDER = "#BDBDBD"
 
 const RegisterPage = () => {
   const router = useRouter();
+  
+  // Use global location context for city autocomplete
+  const { 
+    citySuggestions, 
+    getCitySuggestions, 
+    clearCitySuggestions 
+  } = useLocation();
+  
+  // City autocomplete UI state
+  const [isCityFocused, setIsCityFocused] = useState(false);
+  const [cityFocusedIndex, setCityFocusedIndex] = useState(-1);
+  const cityInputRef = useRef<HTMLInputElement>(null);
+  
   const [userFields, setUserFields] = useState({
     fullName: "",
     gender: "male",
-    country: "",
+    country: "Pakistan",
     city: "",
     email: "",
     phoneNumber: "",
@@ -37,6 +52,37 @@ const RegisterPage = () => {
     userFields.confirmPassword.trim();
 
   const [loading, setLoading] = useState(false); // loader for submit button
+  
+  // Handle city input change with autocomplete
+  const handleCityInputChange = useCallback((value: string) => {
+    setUserFields(prev => ({ ...prev, city: value }));
+    setCityFocusedIndex(-1);
+    getCitySuggestions(value);
+  }, [getCitySuggestions]);
+
+  // Handle city selection from suggestions
+  const handleCitySelect = useCallback((suggestion: string) => {
+    const cityName = suggestion.split(",")[0];
+    setUserFields(prev => ({ ...prev, city: cityName }));
+    clearCitySuggestions();
+    setIsCityFocused(false);
+  }, [clearCitySuggestions]);
+
+  // Handle city keyboard navigation
+  const handleCityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!citySuggestions.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setCityFocusedIndex((prev) => (prev + 1) % citySuggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setCityFocusedIndex((prev) => (prev - 1 + citySuggestions.length) % citySuggestions.length);
+    } else if (e.key === "Enter" && cityFocusedIndex >= 0) {
+      e.preventDefault();
+      handleCitySelect(citySuggestions[cityFocusedIndex]);
+    }
+  };
 
   // Handler for registration submit
  const handleRegister = async () => {
@@ -662,20 +708,52 @@ for (let entry of formDataToSend.entries()) {
                   style={{ borderColor: BORDER }}
                   value={userFields.country}
                   onChange={(e) => setUserFields({ ...userFields, country: e.target.value })}
+                  disabled
                 />
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-[12px] font-medium text-[#343434] mb-2">
                   City <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Abbottabad"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
-                  value={userFields.city}
-                  onChange={(e) => setUserFields({ ...userFields, city: e.target.value })}
-                />
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    ref={cityInputRef}
+                    type="text"
+                    placeholder="Search city..."
+                    className="w-full h-[63px] rounded-[12px] border pl-12 pr-4 text-sm outline-none"
+                    style={{ borderColor: BORDER }}
+                    value={userFields.city}
+                    onChange={(e) => handleCityInputChange(e.target.value)}
+                    onFocus={() => setIsCityFocused(true)}
+                    onBlur={() => setTimeout(() => setIsCityFocused(false), 200)}
+                    onKeyDown={handleCityKeyDown}
+                  />
+                </div>
+                
+                {/* City Suggestions Dropdown */}
+                {isCityFocused && citySuggestions.length > 0 && (
+                  <div 
+                    className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-[12px] shadow-lg z-50 max-h-[200px] overflow-y-auto"
+                    style={{ borderColor: BORDER }}
+                  >
+                    {citySuggestions.map((suggestion, index) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onMouseDown={() => handleCitySelect(suggestion)}
+                        className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors text-sm ${
+                          index === cityFocusedIndex 
+                            ? "bg-[#5fe089] text-white" 
+                            : "hover:bg-gray-100 text-[#343434]"
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4 flex-shrink-0" />
+                        <span>{suggestion}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Email / Phone */}

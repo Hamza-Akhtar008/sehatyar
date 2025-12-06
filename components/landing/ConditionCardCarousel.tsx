@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLocation } from '@/src/contexts/LocationContext'
 
 type Condition = { name: string; icon: string }
 
@@ -27,6 +29,8 @@ for (let i = 0; i < conditions.length; i += 6) {
 }
 
 export default function ConditionCardCarousel() {
+  const router = useRouter()
+  const { city } = useLocation()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const [showLeftArrow, setShowLeftArrow] = useState(false)
@@ -79,6 +83,13 @@ export default function ConditionCardCarousel() {
         behavior: 'smooth',
       })
     }
+  }
+
+  // Handle click on condition to navigate to doctor search page
+  const handleConditionClick = (conditionName: string) => {
+    router.push(
+      `/doctor?query=${encodeURIComponent(conditionName)}&city=${encodeURIComponent(city || '')}`
+    )
   }
 
   return (
@@ -144,7 +155,11 @@ export default function ConditionCardCarousel() {
                   className="grid grid-cols-3 grid-rows-2 gap-4 min-w-full snap-center px-6"
                 >
                   {chunk.map((condition, index) => (
-                    <div key={index} className="flex flex-col items-center gap-2 group cursor-pointer">
+                    <div 
+                      key={index} 
+                      className="flex flex-col items-center gap-2 group cursor-pointer"
+                      onClick={() => handleConditionClick(condition.name)}
+                    >
                       <div className="relative w-14 h-14 rounded-full bg-[#3D0F6E] flex items-center justify-center transition-all duration-300 group-hover:bg-[#ff6600]">
                         <Image
                           src={condition.icon}
@@ -192,7 +207,11 @@ export default function ConditionCardCarousel() {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'smooth' }}
             >
               {conditions.map((condition, index) => (
-                <div key={index} className="flex flex-col items-center gap-4 group cursor-pointer min-w-[120px] snap-start">
+                <div 
+                  key={index} 
+                  className="flex flex-col items-center gap-4 group cursor-pointer min-w-[120px] snap-start"
+                  onClick={() => handleConditionClick(condition.name)}
+                >
                   <div className="relative w-24 h-24 rounded-full bg-[#3D0F6E] flex items-center justify-center transition-all duration-300 group-hover:bg-[#ff6600] z-10">
                     <Image
                       src={condition.icon}

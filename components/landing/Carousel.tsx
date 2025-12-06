@@ -3,16 +3,18 @@
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLocation } from '@/src/contexts/LocationContext'
 
 const specialistsData = [
-  { name: 'Dermatologist', icon: '/images1/dermatologist.png' },
-  { name: 'Gynecologist', icon: '/images1/gynco.png' },
-  { name: 'Gastroenterologist', icon: '/images1/gestro.png' },
-  { name: 'Urologist', icon: '/images1/urologist.png' },
-  { name: 'Dentist', icon: '/images1/dentist.png' },
-  { name: 'Obesity Specialist', icon: '/images1/obesity.png' },
-  { name: 'Orthopedic Surgeon', icon: '/images1/ortheo.png' },
-  { name: 'ENT Specialist', icon: '/images1/ent.png' },
+  { name: 'Dermatology', icon: '/images1/dermatologist.png' },
+  { name: 'Gynecology', icon: '/images1/gynco.png' },
+  { name: 'Gastroenterology', icon: '/images1/gestro.png' },
+  { name: 'Urology', icon: '/images1/urologist.png' },
+  { name: 'Dentistry', icon: '/images1/dentist.png' },
+  { name: 'Obesity', icon: '/images1/obesity.png' },
+  { name: 'Orthopedic', icon: '/images1/ortheo.png' },
+  { name: 'ENT', icon: '/images1/ent.png' },
 ]
 
 // Repeat the list as requested
@@ -26,6 +28,8 @@ for (let i = 0; i < specialists.length; i += 6) {
 }
 
 export default function Carousel() {
+  const router = useRouter()
+  const { city } = useLocation()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const [showLeftArrow, setShowLeftArrow] = useState(false)
@@ -80,6 +84,13 @@ export default function Carousel() {
     }
   }
 
+  // Handle click on specialist to navigate to doctor search page
+  const handleSpecialistClick = (specialistName: string) => {
+    router.push(
+      `/doctor?query=${encodeURIComponent(specialistName)}&city=${encodeURIComponent(city || '')}`
+    )
+  }
+
   return (
     <div className="w-full flex justify-center py-10 px-4">
       <div className="relative bg-[#4E148C] rounded-[22px] px-[20px] md:px-[20px] py-[30px] md:py-[40px] max-w-[1370px] w-full group/carousel">
@@ -118,7 +129,11 @@ export default function Carousel() {
                 className="grid grid-cols-3 grid-rows-2 gap-4 min-w-full snap-center px-6"
               >
                 {chunk.map((specialist, index) => (
-                  <div key={index} className="flex flex-col items-center gap-2 group cursor-pointer">
+                  <div 
+                    key={index} 
+                    className="flex flex-col items-center gap-2 group cursor-pointer"
+                    onClick={() => handleSpecialistClick(specialist.name)}
+                  >
                     <div className="relative w-16 h-16 rounded-full bg-[#3D0F6E] flex items-center justify-center transition-all duration-300 group-hover:bg-[#ff6600]">
                       <Image
                         src={specialist.icon}
@@ -167,7 +182,11 @@ export default function Carousel() {
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'smooth' }}
           >
             {specialists.map((specialist, index) => (
-              <div key={index} className="flex flex-col items-center gap-4 group cursor-pointer min-w-[120px] snap-start">
+              <div 
+                key={index} 
+                className="flex flex-col items-center gap-4 group cursor-pointer min-w-[120px] snap-start"
+                onClick={() => handleSpecialistClick(specialist.name)}
+              >
                 <div className="relative w-24 h-24 rounded-full bg-[#3D0F6E] flex items-center justify-center transition-all duration-300 group-hover:bg-[#ff6600] z-10">
                   <Image
                     src={specialist.icon}

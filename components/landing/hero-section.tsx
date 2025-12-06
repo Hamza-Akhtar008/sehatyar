@@ -3,12 +3,13 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Image from "next/image";
-import { ArrowRight, Search } from "lucide-react";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { ArrowRight, Search, MapPin, Loader2 } from "lucide-react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "../ui/dialog";
 import ConsultOnline from "./consult-online";
 import InClinicAppointment from "./in-clinic-appointment";
+import { useLocation } from "@/src/contexts/LocationContext";
 
 const specializations = [
   "Allergy and Immunology",
@@ -40,12 +41,54 @@ const specializations = [
 export default function HeroSection() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [city, setCity] = useState("");
+  
+  // Use global location context
+  const { 
+    city, 
+    setCity, 
+    isLoadingLocation, 
+    citySuggestions, 
+    getCitySuggestions, 
+    clearCitySuggestions 
+  } = useLocation();
+  
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
   const [isInClinicModalOpen, setIsInClinicModalOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [isFocused, setIsFocused] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // City autocomplete UI state (local, not shared)
+  const [isCityFocused, setIsCityFocused] = useState(false);
+  const [cityFocusedIndex, setCityFocusedIndex] = useState(-1);
+  const cityDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Handle city input change with autocomplete (uses global context)
+  const handleCityInputChange = useCallback((value: string) => {
+    setCity(value);
+    setCityFocusedIndex(-1);
+    getCitySuggestions(value);
+  }, [setCity, getCitySuggestions]);
+
+  // Handle city keyboard navigation
+  const handleCityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!citySuggestions.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setCityFocusedIndex((prev) => (prev + 1) % citySuggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setCityFocusedIndex((prev) => (prev - 1 + citySuggestions.length) % citySuggestions.length);
+    } else if (e.key === "Enter" && cityFocusedIndex >= 0) {
+      e.preventDefault();
+      // Extract just the city name from the full suggestion
+      const selectedCity = citySuggestions[cityFocusedIndex].split(",")[0];
+      setCity(selectedCity);
+      clearCitySuggestions();
+      setIsCityFocused(false);
+    }
+  };
 
   // Filter suggestions based on user input
   const filtered = useMemo(() => {
@@ -80,6 +123,12 @@ export default function HeroSection() {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsFocused(false);
+      }
+      if (
+        cityDropdownRef.current &&
+        !cityDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCityFocused(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -136,25 +185,47 @@ export default function HeroSection() {
               </div>
 
               {/* Mobile Location Dropdown */}
-              <div className="md:hidden w-full max-w-md  mb-2">
+              <div className="md:hidden w-full max-w-md mb-2 relative">
                 <div className="flex items-center gap-2 text-gray-700">
-               <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.16947 15.246C7.03442 15.343 6.87234 15.3952 6.70607 15.3952C6.5398 15.3952 6.37772 15.343 6.24267 15.246C2.24667 12.3978 -1.99427 6.5391 2.29301 2.30561C3.47 1.14781 5.05507 0.499275 6.70607 0.500001C8.36107 0.500001 9.94904 1.14959 11.1191 2.30478C15.4064 6.53827 11.1655 12.3961 7.16947 15.246Z" stroke="#52525B" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M6.70676 7.9477C7.14569 7.9477 7.56665 7.77333 7.87702 7.46296C8.18739 7.15258 8.36176 6.73163 8.36176 6.2927C8.36176 5.85376 8.18739 5.43281 7.87702 5.12243C7.56665 4.81206 7.14569 4.6377 6.70676 4.6377C6.26782 4.6377 5.84687 4.81206 5.5365 5.12243C5.22612 5.43281 5.05176 5.85376 5.05176 6.2927C5.05176 6.73163 5.22612 7.15258 5.5365 7.46296C5.84687 7.77333 6.26782 7.9477 6.70676 7.9477Z" stroke="#52525B" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-                  <select
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="bg-transparent border-none outline-none text-gray-700 text-base font-medium cursor-pointer"
-                  >
-                    <option value="">Select City</option>
-                    <option value="Abbottabad">Abbottabad</option>
-                    <option value="Islamabad">Islamabad</option>
-                    <option value="Lahore">Lahore</option>
-                    <option value="Karachi">Karachi</option>
-                  </select>
-               
+                  {isLoadingLocation ? (
+                    <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+                  ) : (
+                    <MapPin className="w-4 h-4 text-gray-500" />
+                  )}
+                  <div className="flex-1 relative">
+                    <Input
+                      type="text"
+                      value={city}
+                      onChange={(e) => handleCityInputChange(e.target.value)}
+                      onFocus={() => setIsCityFocused(true)}
+                      onKeyDown={handleCityKeyDown}
+                      placeholder={isLoadingLocation ? "Detecting location..." : "Select City"}
+                      className="bg-transparent border-none outline-none text-gray-700 text-base font-medium cursor-pointer p-0 h-auto focus-visible:ring-0 w-full"
+                    />
+                    {isCityFocused && citySuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-xl z-50 overflow-hidden max-h-48 overflow-y-auto">
+                        {citySuggestions.map((suggestion, index) => (
+                          <div
+                            key={suggestion}
+                            onMouseDown={() => {
+                              const selectedCity = suggestion.split(",")[0];
+                              setCity(selectedCity);
+                              clearCitySuggestions();
+                              setIsCityFocused(false);
+                            }}
+                            className={`px-4 py-3 text-sm cursor-pointer transition-colors flex items-center gap-2 ${
+                              index === cityFocusedIndex
+                                ? "bg-[#4E148C] text-white"
+                                : "hover:bg-gray-50 text-gray-700"
+                            }`}
+                          >
+                            <MapPin className={`w-3 h-3 ${index === cityFocusedIndex ? "text-white" : "text-gray-400"}`} />
+                            {suggestion}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -220,18 +291,48 @@ export default function HeroSection() {
                   </div>
                 </div>
 
-                <div className="flex-1 bg-[#F4F4F4] rounded-full px-6 py-2 flex items-center gap-3">
+                <div className="flex-1 bg-[#F4F4F4] rounded-full px-6 py-2 flex items-center gap-3 relative" ref={cityDropdownRef}>
                   <div className="w-5 h-5 flex items-center justify-center">
-                    <div className="w-4 h-4 border-2 border-gray-400 rounded-full flex items-center justify-center">
-                      <div className="w-1 h-1 bg-gray-400 rounded-full" />
-                    </div>
+                    {isLoadingLocation ? (
+                      <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+                    ) : (
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                    )}
                   </div>
-                  <Input
-                    type="text"
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Near you or Enter City"
-                    className="border-none bg-transparent p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-gray-700 text-base w-full"
-                  />
+                  <div className="flex-1 relative">
+                    <Input
+                      type="text"
+                      value={city}
+                      onChange={(e) => handleCityInputChange(e.target.value)}
+                      onFocus={() => setIsCityFocused(true)}
+                      onKeyDown={handleCityKeyDown}
+                      placeholder={isLoadingLocation ? "Detecting location..." : "Near you or Enter City"}
+                      className="border-none bg-transparent p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-gray-700 text-base w-full"
+                    />
+                    {isCityFocused && citySuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 mt-4 w-full bg-white border border-gray-100 rounded-xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        {citySuggestions.map((suggestion, index) => (
+                          <div
+                            key={suggestion}
+                            onMouseDown={() => {
+                              const selectedCity = suggestion.split(",")[0];
+                              setCity(selectedCity);
+                              clearCitySuggestions();
+                              setIsCityFocused(false);
+                            }}
+                            className={`px-4 py-3 text-sm cursor-pointer transition-colors flex items-center gap-2 ${
+                              index === cityFocusedIndex
+                                ? "bg-[#4E148C] text-white"
+                                : "hover:bg-gray-50 text-gray-700"
+                            }`}
+                          >
+                            <MapPin className={`w-4 h-4 ${index === cityFocusedIndex ? "text-white" : "text-gray-400"}`} />
+                            {suggestion}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <Button
