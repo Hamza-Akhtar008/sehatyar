@@ -8,6 +8,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "../ui/dialog";
 import ConsultOnline from "./consult-online";
+import InClinicAppointment from "./in-clinic-appointment";
 
 const specializations = [
   "Allergy and Immunology",
@@ -41,6 +42,7 @@ export default function HeroSection() {
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
+  const [isInClinicModalOpen, setIsInClinicModalOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [isFocused, setIsFocused] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -283,9 +285,15 @@ export default function HeroSection() {
                       className="object-cover"
                     />
                     <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 right-2 lg:right-3">
-                      <button className="w-full bg-[#4E148C] text-white py-1.5 lg:py-2.5 px-2 lg:px-3 rounded-full flex items-center justify-between text-[9px] lg:text-xs font-medium hover:bg-[#ff781e] transition-colors shadow-lg">
+                      <button 
+
+                       onClick={() => setIsInClinicModalOpen(true)}
+                        className="w-full bg-[#4E148C] text-white py-1.5 lg:py-2.5 px-2 lg:px-3 rounded-full flex items-center justify-between text-[9px] lg:text-xs font-medium hover:bg-[#ff781e] transition-colors shadow-lg"
+                      >
                         <div className="flex items-center gap-1 lg:gap-2">
-                          <div className="w-1 h-1 lg:w-1.5 lg:h-1.5 rounded-full bg-white" />
+                          <div
+                           
+                            className="w-1 h-1 lg:w-1.5 lg:h-1.5 rounded-full bg-white" />
                           In Clinic Appointment
                         </div>
                         <ArrowRight className="w-2.5 h-2.5 lg:w-3.5 lg:h-3.5 -rotate-45" />
@@ -335,7 +343,10 @@ export default function HeroSection() {
                 className="object-cover"
               />
               <div className="absolute bottom-3 left-2 right-2">
-                <button className="w-full bg-[#4E148C] text-white py-2 px-2 rounded-full flex items-center justify-between text-[10px] font-medium hover:bg-[#ff781e] transition-colors shadow-lg">
+                <button 
+                  onClick={() => setIsInClinicModalOpen(true)}
+                  className="w-full bg-[#4E148C] text-white py-2 px-2 rounded-full flex items-center justify-between text-[10px] font-medium hover:bg-[#ff781e] transition-colors shadow-lg"
+                >
                   <div className="flex items-center gap-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-white" />
                     In Clinic Appointment
@@ -351,6 +362,14 @@ export default function HeroSection() {
       <Dialog open={isConsultModalOpen} onOpenChange={setIsConsultModalOpen}>
         <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
           <ConsultOnline />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isInClinicModalOpen} onOpenChange={setIsInClinicModalOpen}>
+        <DialogContent showCloseButton={false} className="bg-transparent border-none shadow-none max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl p-0 outline-none">
+          <div className="bg-white rounded-[32px] p-6 w-full max-h-[85vh] overflow-y-auto">
+            <InClinicAppointment />
+          </div>
         </DialogContent>
       </Dialog>
     </section>
