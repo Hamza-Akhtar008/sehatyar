@@ -97,27 +97,20 @@ export default function ConditionCardCarousel() {
       <div className="bg-[#f4f4f4] rounded-[22px] md:rounded-[42px] px-[20px] md:px-[66px] py-[30px] md:py-[40px] max-w-[1370px] w-full flex flex-col gap-6 md:gap-10">
         
         {/* Header Section */}
-   <div className="w-full">
-  <div className="max-w-2xl">
-    <h2 className="text-2xl md:text-4xl font-bold text-[#4e148c] mb-4 md:mb-8">
-      Doctor by <span className="text-[#ff6600]">Condition</span>
-    </h2>
+    <div className="w-full">
+      <div className="flex justify-between items-center mb-4 md:mb-6">
+        <h2 className="text-2xl md:text-4xl font-bold text-[#4e148c]">
+          Doctor by <span className="text-[#ff6600]">Condition</span>
+        </h2>
+        <Button className="bg-[#4E148C] text-white rounded-full hover:bg-[#ff6600] px-6 md:px-8 py-2 md:py-6 text-base md:text-lg">
+          View All
+        </Button>
+      </div>
 
-    <p className="text-gray-600 text-sm md:text-lg">
-      Quickly find the right specialists for common conditions and get trusted medical care when you need it.
-    </p>
-  </div>
-
-  <div className="flex justify-end mt-4 md:mt-6">
-    <Button className="bg-[#4E148C] text-white rounded-full hover:bg-[#ff6600] px-6 md:px-8 py-4 md:py-6 text-base md:text-lg">
-      View All
-    </Button>
-  </div>
-</div>
-
-
-
-
+      <p className="text-gray-600 text-sm md:text-lg max-w-2xl mb-6">
+        Quickly find the right specialists for common conditions and get trusted medical care when you need it.
+      </p>
+    </div>
         {/* Icons Section */}
         <div className="relative bg-[#4E148C] rounded-[22px] px-[20px] md:px-[20px] py-[30px] md:py-[40px] w-full group/carousel">
           
