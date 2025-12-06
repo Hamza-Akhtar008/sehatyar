@@ -295,7 +295,7 @@ export default function Header() {
                   Join as Doctor
                  <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="44" height="44" rx="22" fill="white"/>
-<path d="M18.5919 23.8798L25.4073 20.1197M25.4073 20.1197L21.3475 18.8036M25.4073 20.1197L24.3556 24.256" stroke="#4E148C" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.5919 23.8798L25.4073 20.1197M25.4073 20.1197L21.3475 18.8036M25.4073 20.1197L24.3556 24.256" stroke="#4E148C" strokeLinecap="round" stroke-linejoin="round"/>
 </svg>
 
                 </Link>
