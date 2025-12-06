@@ -17,8 +17,7 @@ const doctorSpecialties = [
   { id: 10, name: 'Neurologist', icon: '/assets/specialityIcons/Neurologist.png', isOnline: true },
   { id: 11, name: 'Child Specialist', icon: '/assets/specialityIcons/ChildSpecialist.png', isOnline: true },
   { id: 12, name: 'Pulmonologist', icon: '/assets/specialityIcons/Pulmonologist.png', isOnline: true },
-  { id: 13, name: 'Eye Specialist', icon: '/assets/specialityIcons/EyeSpecialist.png', isOnline: true },
-  { id: 14, name: 'Medical Specialist', icon: '/assets/specialityIcons/MedicalSpecialist.png', isOnline: true },
+
 ];
 
 // Doctor card component
@@ -36,15 +35,15 @@ const DoctorCard = ({ name, isOnline, icon }: {
             },
           }}>
     <div className="group flex items-center py-3 px-3 sm:py-4 sm:px-6.5 transition-all rounded-2xl sm:rounded-4xl border-[1px] border-[#A6A6A6] gap-2 sm:gap-2.5 hover:bg-[#F4F4F4] hover:border-none">
-      <div className='bg-[#003F31] group-hover:bg-[#5FE089] p-2 sm:p-3 rounded-full flex-shrink-0'>
+      <div className='bg-[var(--brand-primary)] group-hover:bg-[var(--brand-primary-hover)] p-2 sm:p-3 rounded-full flex-shrink-0 transition-colors duration-200'>
         <Image src={icon} alt={name} width={20} height={20} className='w-4 h-4 sm:w-5 sm:h-5'/>
       </div>
       <div className='flex flex-col gap-0.5 sm:gap-1 min-w-0'>
       <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-900 mb-0 truncate">{name}</h3>
       <button className='text-start'>
         <span className={cn(
-        "px-2 sm:px-3 py-0.5 text-[10px] sm:text-xs font-medium rounded-full",
-        isOnline ? "bg-green-100 group-hover:bg-[#5FE089] text-green-800" : "bg-gray-100 text-gray-800"
+        "px-2 sm:px-3 py-0.5 text-[10px] sm:text-xs font-medium rounded-full transition-colors duration-200",
+        isOnline ? "bg-[#ede0f7] group-hover:bg-[var(--brand-primary-hover)] text-[var(--brand-primary)] group-hover:text-white" : "bg-gray-100 text-gray-800"
       )}>
         {isOnline ? 'Online' : 'Offline'}
       </span>
@@ -64,7 +63,7 @@ export default function ConsultOnline() {
   );
   
   return (
-    <div className="w-full mx-auto px-2 sm:px-0">
+    <div className="w-full mx-auto px-2 sm:px-0 bg-white">
       {/* Title - visible on mobile */}
       <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-center block sm:hidden">Consult Online</h2>
       
