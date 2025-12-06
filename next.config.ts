@@ -1,32 +1,15 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'plus.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'fourrays.s3.amazonaws.com',
-      },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'unsplash.com' },
+      { protocol: 'https', hostname: '**.unsplash.com' },
+      { protocol: 'https', hostname: 'fourrays.s3.amazonaws.com' },
     ],
   },
 };
