@@ -179,7 +179,7 @@ export default function DoctorProfile() {
   const reviews = (doctor as any).reviews || [];
 
   return (
-    <main className="w-full">
+    <main className="max-w-[1370px] mx-auto">
      
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
@@ -194,16 +194,17 @@ export default function DoctorProfile() {
           {/* Left – header card, tabs and feedback */}
           <section>
             {/* Header card  */}
-            <Card className="rounded-2xl bg-[#F8F8F8] mb-6">
-              <CardHeader className="gap-4 md:gap-6">
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-                  <div className="relative h-24 w-24 md:h-28 md:w-28 rounded-full overflow-hidden bg-gray-200">
+            <Card className="rounded-3xl bg-[#F8F8F8] mb-6 border-0 shadow-none">
+              <CardHeader className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-8">
+                  {/* Doctor Image */}
+                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 border-2 border-gray-100">
                     {(doctor.profilePicture || doctor.profilePic) ? (
                       <Image
                         src={doctor.profilePicture || doctor.profilePic || ''}
                         alt={`Dr. ${fullName}`}
                         fill
-                        sizes="112px"
+                        sizes="128px"
                         className="object-cover"
                         priority
                       />
@@ -216,53 +217,59 @@ export default function DoctorProfile() {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col gap-2">
-                      <h1 className="font-bold text-[32px] leading-tight text-[#414141]">
-                        Dr. {fullName}
-                      </h1>
-                      <span className="bg-[#E8E8E8] text-[#3D3D3D] text-[12px] px-3 py-1 rounded-full font-medium flex items-center gap-1 w-fit min-w-[120px]">
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="inline">
-                          <circle cx="10" cy="10" r="10" fill={doctor.verified !== false ? "#5FE089" : "#9CA3AF"}/>
-                          {doctor.verified !== false && (
-                            <path d="M6 10l2.5 2.5L14 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          )}
-                        </svg>
-                        {doctor.verified !== false ? 'PMDC Verified' : 'Not Verified'}
+                  
+                  {/* Doctor Info */}
+                  <div className="flex-1 min-w-0 text-center sm:text-left">
+                    {/* Name */}
+                    <h1 className="font-bold text-2xl sm:text-3xl lg:text-[2rem] leading-tight text-[#2D2D2D]">
+                      Dr. {fullName}
+                    </h1>
+                    
+                    {/* PMDC Verified Badge */}
+                    <div className="flex items-center justify-center sm:justify-start mt-2">
+                      <span className="inline-flex items-center text-xs py-0.5 px-1">
+                        <span className={`w-2 h-2 ${doctor.verified !== false ? 'bg-[#4e148c]' : 'bg-gray-400'} rounded-full mr-1.5`}></span>
+                        <span className="text-[#5B5B5B] font-medium">{doctor.verified !== false ? 'PMDC Verified' : 'Not Verified'}</span>
                       </span>
                     </div>
-                    <div className="text-[#52525B] text-[14px] font-medium mt-2">
+                    
+                    {/* Specialization */}
+                    <p className="text-[#5B5B5B] text-sm mt-2">
                       {doctor.specialization}
-                    </div>
+                    </p>
+                    
+                    {/* Qualifications */}
                     {doctor.qualifications && (
-                      <div className="text-[#52525B] text-[14px] mt-1">
+                      <p className="text-[#5B5B5B] text-sm mt-1">
                         {doctor.qualifications}
-                      </div>
+                      </p>
                     )}
-                    <div className="mt-3 flex gap-8">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[12px]  text-[#52525B]">Under 15 Min</span>
-                        <span className="text-[8px] text-[#52525B] ">Wait Time</span>
+                    
+                    {/* Stats Row */}
+                    <div className="mt-4 flex flex-wrap items-center gap-6 justify-center sm:justify-start">
+                      <div>
+                        <p className="text-[#5B5B5B] text-sm font-medium">Under 15 Min</p>
+                        <p className="text-[10px] text-[#8A8A8A]">Wait Time</p>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <span className="text-[12px]  text-[#52525B]">{doctor.experienceYears} Years</span>
-                        <span className="text-[8px] text-[#52525B] ">Experience</span>
+                      <div>
+                        <p className="text-[#5B5B5B] text-sm font-medium">{doctor.experienceYears || doctor.yearsOfExperience || 0} Years</p>
+                        <p className="text-[10px] text-[#8A8A8A]">Experience</p>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <span className="flex items-center gap-1 text-[12px] text-[#52525B]">
-                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#FACC15" xmlns="http://www.w3.org/2000/svg" className="inline">
-                            <path d="M10 15.27L16.18 18l-1.64-7.03L19 7.24l-7.19-.61L10 0 8.19 6.63 1 7.24l5.46 3.73L4.82 18z"/>
-                          </svg>
-                          {displayRating}
-                        </span>
-                        <span className="text-[8px] text-[#52525B] ">{displayReviews} Reviews</span>
+                      <div>
+                        <div className="flex items-center">
+                          <div className="flex">
+                            {[...Array(3)].map((_, i) => (
+                              <Star key={i} className="h-3 w-3 fill-[#FACC15] stroke-none" />
+                            ))}
+                          </div>
+                          <span className="ml-1 text-sm font-medium text-[#5B5B5B]">{displayRating}</span>
+                        </div>
+                        <p className="text-[10px] text-[#8A8A8A]">{displayReviews} Reviews</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </CardHeader>
-             
-
             </Card>
             <DoctorProfileTabs
               servicesTreatementOffered={doctor.servicesTreatementOffered}
@@ -314,7 +321,7 @@ export default function DoctorProfile() {
                     <span>02:00 PM - 03:00 PM</span>
                   </div>
                   <Button
-                    className="w-full bg-[#5FE089] mt-2 py-6 hover:bg-[#51db7f] rounded-full text-black"
+                    className="w-full bg-[#4e148c] mt-2 py-6 hover:bg-[#ff6600] rounded-full text-white"
                     onClick={() => router.push(`/book-appointment?doctorId=${doctor.id}&type=video`)}
                   >
                     Book an Appointment
@@ -353,7 +360,7 @@ export default function DoctorProfile() {
                     <span>02:00 PM - 03:00 PM</span>
                   </div>
                   <Button
-                    className="w-full bg-[#01503F] mt-2 hover:bg-[#15803D] py-6 rounded-full text-white"
+                    className="w-full bg-[#4e148c] mt-2 hover:bg-[#ff6600] py-6 rounded-full text-white"
                     onClick={() => router.push(`/book-appointment?doctorId=${doctor.id}`)}
                   >
                     Book an Appointment
@@ -395,7 +402,7 @@ export default function DoctorProfile() {
                       <span>02:00 PM - 03:00 PM</span>
                     </div>
                     <Button
-                      className="w-full bg-[#5FE089] mt-2 py-6 hover:bg-[#51db7f] rounded-full text-black"
+                      className="w-full bg-[#4e148c] mt-2 py-6 hover:bg-[#ff6600] rounded-full text-white"
                     >
                       Book an Appointment
                     </Button>
@@ -431,7 +438,7 @@ export default function DoctorProfile() {
                       <span>02:00 PM - 03:00 PM</span>
                     </div>
                     <Button
-                      className="w-full bg-[#01503F] mt-2 hover:bg-[#15803D] py-6 rounded-full text-white"
+                      className="w-full bg-[#4e148c] mt-2 hover:bg-[#ff6600] py-6 rounded-full text-white"
                     >
                       Book an Appointment
                     </Button>

@@ -133,8 +133,8 @@ export default function DoctorProfileTabs({
           <div style={{ 
             fontSize: isMobile ? 18 : 22, 
             fontWeight: 600, 
-            color: "#414141", 
-            marginBottom: isMobile ? 12 : 16,
+            color: "#2D2D2D", 
+            marginBottom: isMobile ? 16 : 24,
             paddingRight: isMobile ? 8 : 0
           }}>
             {doctorName
@@ -148,6 +148,7 @@ export default function DoctorProfileTabs({
             justifyContent: "space-between",
             gap: isMobile ? 24 : 0 
           }}>
+            {/* Satisfaction Circle */}
             <div style={{ 
               display: "flex", 
               alignItems: "center", 
@@ -156,78 +157,138 @@ export default function DoctorProfileTabs({
               width: isMobile ? "100%" : "auto"
             }}>
               <div style={{
-                height: isMobile ? 56 : 64,
-                width: isMobile ? 56 : 64,
+                height: isMobile ? 64 : 72,
+                width: isMobile ? 64 : 72,
                 borderRadius: "50%",
-                background: "#01503F",
+                background: "#4e148c",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "#fff",
-                fontWeight: "normal",
-                fontSize: isMobile ? 14 : 16,
+                fontWeight: 500,
+                fontSize: isMobile ? 16 : 18,
                 marginRight: 16,
               }}>
                 {reviewStats?.satisfiedPercent ?? 100}%
               </div>
               <div style={{ textAlign: "left" }}>
-                <div style={{ fontSize: 14, color: "#52525B" }}>
+                <div style={{ fontSize: 14, color: "#5B5B5B" }}>
                   Satisfied out of {reviewStats?.totalPatients ?? 0}
                 </div>
-                <div style={{ fontSize: 14, color: "#52525B" }}>Patients</div>
+                <div style={{ fontSize: 14, color: "#5B5B5B" }}>Patients</div>
               </div>
             </div>
+            
+            {/* Progress Bars */}
             <div style={{ 
-              maxWidth: isMobile ? "100%" : 350, 
+              maxWidth: isMobile ? "100%" : 380, 
               marginLeft: isMobile ? 0 : "auto",
               width: isMobile ? "100%" : "auto"
             }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 16 : 24 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
-                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Doctor Checkup</span>
-                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
-                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 12 : 20 }}>
+                  <span style={{ width: isMobile ? 110 : 130, fontSize: 14, color: "#5B5B5B", whiteSpace: "nowrap" }}>Doctor Checkup</span>
+                  <div style={{ 
+                    width: isMobile ? 100 : 150, 
+                    height: 8, 
+                    borderRadius: 4, 
+                    background: "#E5E5E5",
+                    overflow: "hidden"
+                  }}>
+                    <div style={{ 
+                      width: `${reviewStats?.doctorCheckup ?? 98}%`, 
+                      height: "100%", 
+                      borderRadius: 4, 
+                      background: "#4e148c" 
+                    }}></div>
+                  </div>
+                  <span style={{ width: 40, textAlign: "right", fontSize: 14, color: "#2D2D2D", fontWeight: 500 }}>
                     {reviewStats?.doctorCheckup ?? 98}%
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
-                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Clinic Environment</span>
-                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
-                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 12 : 20 }}>
+                  <span style={{ width: isMobile ? 110 : 130, fontSize: 14, color: "#5B5B5B", whiteSpace: "nowrap" }}>Clinic Environment</span>
+                  <div style={{ 
+                    width: isMobile ? 100 : 150, 
+                    height: 8, 
+                    borderRadius: 4, 
+                    background: "#E5E5E5",
+                    overflow: "hidden"
+                  }}>
+                    <div style={{ 
+                      width: `${reviewStats?.clinicEnvironment ?? 98}%`, 
+                      height: "100%", 
+                      borderRadius: 4, 
+                      background: "#4e148c" 
+                    }}></div>
+                  </div>
+                  <span style={{ width: 40, textAlign: "right", fontSize: 14, color: "#2D2D2D", fontWeight: 500 }}>
                     {reviewStats?.clinicEnvironment ?? 98}%
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 18 }}>
-                  <span style={{ width: isMobile ? 100 : 120, fontSize: 14, color: "#52525B", whiteSpace: "nowrap" }}>Staff Behaviour</span>
-                  <div style={{ width: isMobile ? "calc(100% - 150px)" : 150, height: 8, borderRadius: 4, background: "#01503F", alignSelf: "center", flexGrow: isMobile ? 1 : 0 }}></div>
-                  <span style={{ width: 36, textAlign: "right", fontSize: 14, color: "#222" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 12 : 20 }}>
+                  <span style={{ width: isMobile ? 110 : 130, fontSize: 14, color: "#5B5B5B", whiteSpace: "nowrap" }}>Staff Behaviour</span>
+                  <div style={{ 
+                    width: isMobile ? 100 : 150, 
+                    height: 8, 
+                    borderRadius: 4, 
+                    background: "#E5E5E5",
+                    overflow: "hidden"
+                  }}>
+                    <div style={{ 
+                      width: `${reviewStats?.staffBehaviour ?? 98}%`, 
+                      height: "100%", 
+                      borderRadius: 4, 
+                      background: "#4e148c" 
+                    }}></div>
+                  </div>
+                  <span style={{ width: 40, textAlign: "right", fontSize: 14, color: "#2D2D2D", fontWeight: 500 }}>
                     {reviewStats?.staffBehaviour ?? 98}%
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          <div style={{ marginTop: isMobile ? 24 : 32, maxWidth: isMobile ? "100%" : 400, width: "100%" }}>
-            {/* --- Dynamic reviews from API --- */}
+          
+          {/* Review Cards */}
+          <div style={{ marginTop: isMobile ? 28 : 40, maxWidth: isMobile ? "100%" : 500, width: "100%" }}>
             {reviews && reviews.length > 0 ? (
               reviews.map((review, idx) => (
-                <div key={review.id || idx} style={{ borderRadius: 12, border: "1px solid #CDCDCD", padding: 16, background: "#fff", marginBottom: 16 }}>
-                  <div style={{ fontSize: 14, color: "#414141" }}>
-                    {review.title ? review.title : "Review"}{review.content ? `: ${review.content}` : ""}
+                <div 
+                  key={review.id || idx} 
+                  style={{ 
+                    borderRadius: 12, 
+                    borderLeft: "4px solid #4e148c",
+                    padding: "16px 20px", 
+                    background: "#fff", 
+                    marginBottom: 16,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
+                  }}
+                >
+                  <div style={{ fontSize: 15, color: "#2D2D2D", fontWeight: 500 }}>
+                    {review.title ? review.title : ""}{review.content ? (review.title ? ` ${review.content}` : review.content) : ""}
                   </div>
-                  <div style={{ fontSize: 14, color: "#676767", marginTop: 4 }}>
-                    Verified patient: {review.patient?.id ? `P${review.patient.id}` : "Anonymous"} · {getMonthsAgo(review.createdAt)}
+                  <div style={{ fontSize: 13, color: "#8A8A8A", marginTop: 6 }}>
+                    Verified patient: {review.patient?.id ? `P***${String(review.patient.id).slice(-1)}` : "Anonymous"} . {getMonthsAgo(review.createdAt)}
                   </div>
                 </div>
               ))
             ) : (
               // fallback if no reviews
-              <div style={{ borderRadius: 12, border: "1px solid #CDCDCD", padding: 16, background: "#fff" }}>
-                <div style={{ fontSize: 14, color: "#414141" }}>
-                  One of the best surgeons! 100% recommended
+              <div 
+                style={{ 
+                  borderRadius: 12, 
+                  borderLeft: "4px solid #4e148c",
+                  padding: "16px 20px", 
+                  background: "#fff",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
+                }}
+              >
+                <div style={{ fontSize: 15, color: "#2D2D2D", fontWeight: 500 }}>
+                  One of the best surgeons ! 100% recommended
                 </div>
-                <div style={{ fontSize: 14, color: "#676767", marginTop: 4 }}>
-                  Verified patient: S**a · 5 months ago
+                <div style={{ fontSize: 13, color: "#8A8A8A", marginTop: 6 }}>
+                  Verified patient: S**a . 5 months ago
                 </div>
               </div>
             )}

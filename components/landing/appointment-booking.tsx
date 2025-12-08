@@ -86,6 +86,38 @@ const generateTimeSlots = (startTime: string, endTime: string): string[] => {
 
 const GREEN_PRIMARY = "#5FE089"
 
+// Helper function to categorize slots into morning, afternoon, evening
+const categorizeSlots = (slots: TimeSlot[]) => {
+  const morning: TimeSlot[] = []
+  const afternoon: TimeSlot[] = []
+  const evening: TimeSlot[] = []
+
+  slots.forEach((slot) => {
+    const timeStr = slot.time
+    const isPM = timeStr.includes("PM")
+    const hourMatch = timeStr.match(/^(\d{1,2})/)
+    const hour = hourMatch ? parseInt(hourMatch[1]) : 0
+
+    if (!isPM || hour === 12) {
+      // AM times or 12 PM
+      if (hour < 12 || (hour === 12 && !isPM)) {
+        morning.push(slot)
+      } else {
+        afternoon.push(slot)
+      }
+    } else {
+      // PM times
+      if (hour < 5 || hour === 12) {
+        afternoon.push(slot)
+      } else {
+        evening.push(slot)
+      }
+    }
+  })
+
+  return { morning, afternoon, evening }
+}
+
 function Slot({
   label,
   available = true,
@@ -131,27 +163,28 @@ function SlotRow({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="text-xs text-[#414141]">{title}</div>
-      <div className="flex flex-wrap gap-7">
+    <div className="space-y-4">
+      <div className="text-sm font-medium text-[#5B5B5B]">{title}</div>
+      <div className="flex flex-wrap gap-3">
         {slots.map((slot, idx) => (
-          <div
+          <button
             key={idx}
+            disabled={!slot.available}
+            onClick={() => slot.available && onSlotClick(slot.time)}
             className={`
               transition-all duration-200
-              rounded-md border cursor-pointer px-4 py-2 text-sm font-medium
+              rounded-full border-2 cursor-pointer px-5 py-2.5 text-sm font-medium
               ${
                 slot.available
                   ? selectedSlot === slot.time
-                    ? "bg-[#01503F] text-white border-[#01503F]"
-                    : "bg-white text-[#01503F] border-[#D1D5DB] hover:bg-[#E6F4F1] hover:border-[#01503F]"
+                    ? "bg-[#4e148c] text-white border-[#4e148c]"
+                    : "bg-white text-[#5B5B5B] border-[#E5E5E5] hover:border-[#4e148c] hover:text-[#4e148c]"
                   : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
               }
             `}
-            onClick={() => slot.available && onSlotClick(slot.time)}
           >
             {slot.time}
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -183,32 +216,36 @@ export  function DayTabs({
   }
 
   return (
-    <div className="border-b border-[#E5E7EB] pb-3 px-6 max-w-4xl relative">
+    <div className="border-b border-[#E5E7EB] pb-0 relative">
       {/* Left scroll button */}
       <button
         onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow-sm hover:bg-gray-100 z-10"
+        className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-1.5 rounded-full shadow-sm z-10 transition-colors"
       >
-        <ChevronLeft className="w-5 h-5 text-gray-500" />
+        <ChevronLeft className="w-5 h-5 text-[#5B5B5B]" />
       </button>
 
       <div
         ref={scrollRef}
-        className="overflow-x-auto scroll-smooth no-scrollbar"
+        className="overflow-x-auto scroll-smooth no-scrollbar mx-10"
       >
-        <div className="flex items-center gap-8 min-w-min">
-          {days.map((day, i) => (
+        <div className="flex items-center justify-between min-w-max">
+          {days.slice(0, 7).map((day, i) => (
             <button
               key={i}
               onClick={() => onDaySelect(i)}
-              className={
-                `text-sm pb-2 font-medium transition-colors whitespace-nowrap ` +
-                (i === selectedDay
-                  ? "text-[#01503F] border-b-2 border-[#01503F]"
-                  : "text-[#6B7280] hover:text-[#01503F]")
-              }
+              className={`
+                text-sm py-4 px-6 font-medium transition-all whitespace-nowrap relative
+                ${i === selectedDay
+                  ? "text-[#4e148c]"
+                  : "text-[#5B5B5B] hover:text-[#4e148c]"
+                }
+              `}
             >
               {day.dayName}
+              {i === selectedDay && (
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-[#4e148c] rounded-t-full"></span>
+              )}
             </button>
           ))}
         </div>
@@ -217,9 +254,9 @@ export  function DayTabs({
       {/* Right scroll button */}
       <button
         onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow-sm hover:bg-gray-100 z-10"
+        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-1.5 rounded-full shadow-sm z-10 transition-colors"
       >
-        <ChevronRight className="w-5 h-5 text-gray-500" />
+        <ChevronRight className="w-5 h-5 text-[#5B5B5B]" />
       </button>
 
       <style jsx>{`
@@ -391,17 +428,64 @@ export default function AppointmentBooking() {
 
   return (
     <main className="w-full">
-      <section className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8 py-6 md:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
-          {/* Left side: calendar and slots */}
-          <Card className="rounded-2xl bg-[#F8F8F8]">
-            <CardContent className="p-4 md:p-6">
+      <section className="mx-auto max-w-[1370px]  py-6 md:py-8">
+        {/* Mobile Layout: Reordered with doctor info first */}
+        <div className="lg:hidden space-y-4">
+          {/* Doctor Info Card - Mobile */}
+          <Card className="rounded-2xl bg-[#F8F8F8] border-0 shadow-none">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                {/* Doctor Image with yellow background */}
+                <div className="relative h-16 w-16 overflow-hidden rounded-full bg-[#F5A623] flex-shrink-0">
+                  {doctor.profilePicture || doctor.profilePic ? (
+                    <Image
+                      src={doctor.profilePicture || doctor.profilePic || ""}
+                      alt={`Dr. ${fullName}`}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full w-full text-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="28"
+                        height="28"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Doctor Info */}
+                <div className="flex-1">
+                  <h3 className="text-base font-semibold text-[#2D2D2D]">Dr. {fullName}</h3>
+                  <p className="text-xs text-[#5B5B5B] mt-0.5">{consultationTypeText}</p>
+                  <p className="text-base font-bold text-[#2D2D2D] mt-1">
+                    Fee: Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || "1,500"}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Calendar and Slots - Mobile */}
+          <Card className="rounded-2xl bg-[#F8F8F8] border-0 shadow-none">
+            <CardContent className="p-4">
               {daySchedules.length > 0 ? (
                 <>
                   <DayTabs days={daySchedules} selectedDay={selectedDayIndex} onDaySelect={setSelectedDayIndex} />
 
                   <div className="mt-6 space-y-6">
-                    {currentDaySchedule && (
+                    {currentDaySchedule && currentDaySchedule.hospitals.length > 0 ? (
                       <>
                         {currentDaySchedule.hospitals.map((hospital, idx) => (
                           <SlotRow
@@ -413,12 +497,89 @@ export default function AppointmentBooking() {
                           />
                         ))}
                       </>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500 text-sm">No slots available for this day</div>
                     )}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-gray-500 text-sm">No availability found for this doctor</div>
+              )}
+            </CardContent>
+          </Card>
 
-                    {!currentDaySchedule ||
-                      (currentDaySchedule.hospitals.length === 0 && (
-                        <div className="text-center py-10 text-gray-500">No slots available for this day</div>
-                      ))}
+          {/* Reviews Section - Mobile */}
+          <div className="space-y-3">
+            <div className="text-base font-semibold text-[#414141] px-1">
+              Reviews about Dr. {fullName} {doctor.reviewCount ? `(${doctor.reviewCount})` : ""}
+            </div>
+
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="rounded-xl bg-[#F8F8F8]">
+                <CardContent className="p-4">
+                  <div className="text-[#111827] font-semibold text-sm mb-1">I recommend the doctor</div>
+                  <div className="text-xs text-[#6B7280] mb-2">"Very good"</div>
+                  <div className="text-[10px] text-[#9CA3AF] flex items-center justify-between">
+                    <span>Verified Patient: M*** **n.</span>
+                    <span>5 days ago</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            <div className="flex justify-start">
+              <button
+                className="flex items-center gap-2 border border-[#414141] rounded-[10px] px-4 py-2 text-[#414141] text-[13px] bg-white hover:bg-[#F3F4F6] transition-colors"
+                type="button"
+              >
+                <Image src="/downarrow.svg" alt="Down Arrow" width={16} height={16} />
+                Load More Reviews
+              </button>
+            </div>
+          </div>
+
+          {/* Sticky Confirm Booking Button - Mobile */}
+          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 -mx-4 px-4 border-t border-[#E5E5E5]">
+            <Button
+              className="w-full h-11 rounded-full text-[14px] font-medium bg-[#4e148c] hover:bg-[#ff6600] text-white transition-colors duration-200"
+              disabled={!selectedSlot}
+              onClick={() => {
+                if (!selectedSlot) return
+                router.push(
+                  `/book-appointment/confirm?doctorId=${doctorId}&time=${encodeURIComponent(selectedSlot)}&date=${daySchedules[selectedDayIndex]?.date}`,
+                )
+              }}
+            >
+              Confirm Booking
+            </Button>
+          </div>
+        </div>
+
+        {/* Desktop Layout: Original two-column grid */}
+        <div className="hidden lg:grid grid-cols-[1fr_420px] gap-6">
+          {/* Left side: calendar and slots */}
+          <Card className="rounded-3xl bg-[#F8F8F8] border-0 shadow-none">
+            <CardContent className="p-5 md:p-8">
+              {daySchedules.length > 0 ? (
+                <>
+                  <DayTabs days={daySchedules} selectedDay={selectedDayIndex} onDaySelect={setSelectedDayIndex} />
+
+                  <div className="mt-8 space-y-8">
+                    {currentDaySchedule && currentDaySchedule.hospitals.length > 0 ? (
+                      <>
+                        {currentDaySchedule.hospitals.map((hospital, idx) => (
+                          <SlotRow
+                            key={idx}
+                            title={hospital.hospitalName}
+                            slots={hospital.slots}
+                            selectedSlot={selectedSlot}
+                            onSlotClick={handleSlotClick}
+                          />
+                        ))}
+                      </>
+                    ) : (
+                      <div className="text-center py-10 text-gray-500">No slots available for this day</div>
+                    )}
                   </div>
                 </>
               ) : (
@@ -429,24 +590,25 @@ export default function AppointmentBooking() {
 
           {/* Right side: doctor info and reviews */}
           <div className="space-y-4">
-            <Card className="rounded-2xl bg-[#F8F8F8]">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="relative h-12 w-12 overflow-hidden rounded-full bg-gray-200">
+            <Card className="rounded-3xl bg-[#F8F8F8] border-0 shadow-none">
+              <CardContent className="p-5 md:p-6">
+                <div className="flex items-center gap-5">
+                  {/* Doctor Image with yellow background */}
+                  <div className="relative h-20 w-20 overflow-hidden rounded-full bg-[#F5A623] flex-shrink-0">
                     {doctor.profilePicture || doctor.profilePic ? (
                       <Image
                         src={doctor.profilePicture || doctor.profilePic || ""}
                         alt={`Dr. ${fullName}`}
                         fill
-                        sizes="48px"
+                        sizes="80px"
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full w-full text-gray-400">
+                      <div className="flex items-center justify-center h-full w-full text-white">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
+                          width="32"
+                          height="32"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -460,19 +622,21 @@ export default function AppointmentBooking() {
                       </div>
                     )}
                   </div>
+                  
+                  {/* Doctor Info */}
                   <div className="flex-1">
-                    <div className="text-[#111827] font-semibold">Dr. {fullName}</div>
-                    <div className="text-xs text-[#6B7280]">{consultationTypeText}</div>
-                    <div className="text-sm font-medium mt-2">
-                      Fee: Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || "N/A"}
-                    </div>
+                    <h3 className="text-lg font-semibold text-[#2D2D2D]">Dr. {fullName}</h3>
+                    <p className="text-sm text-[#5B5B5B] mt-0.5">{consultationTypeText}</p>
+                    <p className="text-lg font-bold text-[#2D2D2D] mt-2">
+                      Fee: Rs. {doctor.FeesPerConsultation || doctor.consultationFee?.toLocaleString() || "1,500"}
+                    </p>
                   </div>
                 </div>
+                
                 {/* Confirm Booking Button */}
                 <div className="mt-6">
                   <Button
-                    className="w-full h-10 rounded-full text-[14px] font-medium"
-                    style={{ backgroundColor: "#5FE089", color: "#0A0A0A" }}
+                    className="w-full h-12 rounded-full text-[15px] font-medium bg-[#4e148c] hover:bg-[#ff6600] text-white transition-colors duration-200"
                     disabled={!selectedSlot}
                     onClick={() => {
                       if (!selectedSlot) return

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { postAppointment } from "@/lib/Api/appointment";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { getDoctorProfileByDoctorId } from "@/lib/Api/Doctor/doctor_api";
 import { Button } from "../ui/button";
@@ -11,17 +10,12 @@ import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-const GREEN = "#5FE089";
-
 export default function ConfirmBooking() {
-
-  
   const searchParams = useSearchParams();
   const router = useRouter();
   const [doctor, setDoctor] = useState<any>(null);
   const [doctorLoading, setDoctorLoading] = useState(true);
   const [doctorError, setDoctorError] = useState<string | null>(null);
-  // Fetch doctor profile on mount
 
   const { user } = useAuth();
   const [self, setSelf] = useState(true);
@@ -30,24 +24,14 @@ export default function ConfirmBooking() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState(user?.email);
   const [notes, setNotes] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   // Get booking info from query params
   const doctorId = Number(searchParams.get("doctorId"));
   const appointmentTime = searchParams.get("time") || "";
   const appointmentDate = searchParams.get("date") || "";
-  // Get userId from context or localStorage
-  const userId = user?.id ? Number(user.id) : (() => {
-    if (typeof window !== 'undefined') {
-      const u = localStorage.getItem('user');
-      if (u) try { return Number(JSON.parse(u).id); } catch { return 0; }
-    }
-    return 0;
-  })();
 
-    useEffect(() => {
+  useEffect(() => {
     if (!doctorId) return;
     setDoctorLoading(true);
     getDoctorProfileByDoctorId(doctorId)
@@ -58,7 +42,7 @@ export default function ConfirmBooking() {
 
   return (
     <main className="w-full">
-      <section className="mx-auto w-full max-w-[1280px] px-4 md:px-6 lg:px-8 py-6 md:py-8">
+      <section className="mx-auto w-full max-w-[1370px] px-4 md:px-6 lg:px-8 py-6 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
           {/* Left: Form */}
           <Card className="rounded-2xl bg-[#F8F8F8]">
@@ -73,7 +57,7 @@ export default function ConfirmBooking() {
                   onClick={() => setSelf(true)}
                   className={`px-3 py-1.5 rounded-[12px] text-[14px] font-[600px]  ${
                     self
-                      ? "bg-[#5FE089] text-[#414141] "
+                      ? "bg-[#4e148c] text-white "
                       : "bg-white text-[#6B7280] "
                   }`}
                 >
@@ -84,7 +68,7 @@ export default function ConfirmBooking() {
                   onClick={() => setSelf(false)}
                   className={`px-3 py-1.5 rounded-[12px] text-[14px] font-[600px]  ${
                     !self
-                      ? "bg-[#5FE089] text-[#414141] "
+                      ? "bg-[#4e148c] text-white "
                       : "bg-white text-[#414141] "
                   }`}
                 >
@@ -138,20 +122,20 @@ export default function ConfirmBooking() {
                     onClick={() => setPayment("online")}
                     className={`flex items-center justify-between w-full h-12 rounded-[12px] border mt-6 px-4 text-[14px] ${
                       payment === "online"
-                        ? "bg-white border-[#01503F]"
-                        : "bg-white border-[#01503F]"
+                        ? "bg-white border-[#4e148c]"
+                        : "bg-white border-[#4e148c]"
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       <span
                         className={`inline-flex h-4 w-4 items-center justify-center rounded-full border ${
                           payment === "online"
-                            ? "bg-white border-[#01503F]"
+                            ? "bg-white border-[#4e148c]"
                             : "bg-white border-[#D1D5DB]"
                         }`}
                       >
                         {payment === "online" && (
-                          <span className="h-2.5 w-2.5 rounded-full bg-[#01503F]" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#4e148c]" />
                         )}
                       </span>
                       <span className="text-[#414141]">Online Payment</span>
@@ -210,57 +194,43 @@ export default function ConfirmBooking() {
 
         <div className="mt-5">
                 <Button
-                  className="w-full h-10 rounded-full text-[14px] font-medium"
-                  style={{ backgroundColor: GREEN, color: "#0A0A0A" }}
-                  disabled={loading || !patientName || !phoneNumber ||!notes}
-                 onClick={async () => {
-  // Basic validation
-  if (!patientName?.trim()) {
-    setError("Patient name is required");
-    return;
-  }
-  if (!phoneNumber.trim()) {
-    setError("Phone number is required");
-    return;
-  }
-  if (!notes.trim()) {
-    setError("Notes are required");
-    return;
-  }
+                  className="w-full h-10 rounded-full text-[14px] font-medium bg-[#4e148c] hover:bg-[#ff6600] text-white transition-colors duration-200"
+                  disabled={!patientName || !phoneNumber || !notes}
+                  onClick={() => {
+                    // Basic validation
+                    if (!patientName?.trim()) {
+                      setError("Patient name is required");
+                      return;
+                    }
+                    if (!phoneNumber.trim()) {
+                      setError("Phone number is required");
+                      return;
+                    }
+                    if (!notes.trim()) {
+                      setError("Notes are required");
+                      return;
+                    }
 
-  setLoading(true);
-  setError(null);
-  setSuccess(false);
+                    // Redirect to payment page with all booking data
+                    const params = new URLSearchParams({
+                      doctorId: String(doctorId),
+                      time: appointmentTime,
+                      date: appointmentDate,
+                      patientName: patientName || "",
+                      phoneNumber,
+                      email: email || "",
+                      notes,
+                      appointmentFor: self ? "myself" : "someone else",
+                      paymentMethod: payment,
+                      amount: doctor?.FeesPerConsultation || doctor?.consultationFee || "5000",
+                    });
 
-  try {
-    await postAppointment({
-      patientName,
-      phoneNumber,
-      email: email || "", // optional
-      paymentMethod: payment,
-      amount: doctor.FeesPerConsultation,
-      notes,
-      appointmentDate,
-      appointmentTime,
-      appointmentFor: self ? "myself" : "someone else",
-      doctorId,
-      userId,
-    });
-    setSuccess(true);
-
-    const redirectPath = user?.role === "doctor" ? "/doctor-dashboard" : "/patient-dashboard";
-    setTimeout(() => router.push(redirectPath), 1500);
-  } catch (err: any) {
-    setError(err?.message || "Failed to book appointment");
-  } finally {
-    setLoading(false);
-  }
-}}
+                    router.push(`/book-appointment/payment?${params.toString()}`);
+                  }}
                 >
-                  {loading ? "Booking..." : "Confirm Booking"}
+                  Proceed to Payment
                 </Button>
                 {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
-                {success && <div className="text-green-600 mt-2 text-sm">Appointment booked successfully!</div>}
               </div>
             </CardContent>
           </Card>
