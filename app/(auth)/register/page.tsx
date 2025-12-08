@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { useLocation } from "@/src/contexts/LocationContext";
 import { MapPin } from "lucide-react";
 
-const PRIMARY = "#5fe089"
-const GENDER_BG = "#01503f"
-const GENDER_ACTIVE = "#003227"
+const PRIMARY = "#ff8331"
+const GENDER_BG = "#4e148c"
+const GENDER_ACTIVE = "#ff8331"
 const BORDER = "#BDBDBD"
 
 const RegisterPage = () => {
@@ -648,8 +648,8 @@ for (let entry of formDataToSend.entries()) {
       <div className="w-full max-w-[672px] px-4 md:px-0 pt-14 pb-10">
         {/* Header */}
         <div className="mx-auto flex flex-col items-center gap-[30px] w-full max-w-[560px]">
-          <Image src="/images/logo2.webp" alt="Sehatyar" width={159} height={42} className="object-contain" priority />
-          <h1 className="text-[28px] font-semibold leading-none tracking-tight text-[#343434]">
+          <Image src="/images/logo.svg" alt="Sehatyar" width={200} height={40} className="object-contain" priority />
+          <h1 className="text-[28px] font-semibold leading-none tracking-tight text-[#4e148c]">
             Registration <span style={{ color: PRIMARY }}>Form</span>
           </h1>
         </div>
@@ -657,28 +657,27 @@ for (let entry of formDataToSend.entries()) {
         {step === 1 && (
           <>
             {/* Full Name */}
-            <div className="mt-6">
-              <label className="block text-[12px] font-medium text-[#343434] mb-2">
+            <div className="relative mt-6 mb-6">
+              <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                 Full Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Full name"
-                className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                style={{ borderColor: BORDER }}
+                className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                 value={userFields.fullName}
                 onChange={(e) => setUserFields({ ...userFields, fullName: e.target.value })}
               />
             </div>
 
             {/* Gender */}
-            <div className="mt-4">
-              <div className="inline-flex items-center p-1 rounded-full" style={{ background: GENDER_BG }}>
+            <div className="mt-4 mb-6">
+              <div className="inline-flex items-center p-1 rounded-full" style={{ background: "#4e148c" }}>
                 <button
                   type="button"
                   onClick={() => setGender("male")}
-                  className={`px-5 h-[35px] rounded-full text-white font-semibold transition-colors ${
-                    gender === "male" ? "bg-[#003227]" : ""
+                  className={`px-6 h-[38px] rounded-full text-white font-medium transition-colors ${
+                    gender === "male" ? "bg-[#ff8331]" : ""
                   }`}
                 >
                   Male
@@ -686,8 +685,8 @@ for (let entry of formDataToSend.entries()) {
                 <button
                   type="button"
                   onClick={() => setGender("female")}
-                  className={`px-5 h-[35px] rounded-full text-white font-semibold transition-colors ${
-                    gender === "female" ? "bg-[#003227]" : ""
+                  className={`px-6 h-[38px] rounded-full text-white font-medium transition-colors ${
+                    gender === "female" ? "bg-[#ff8331]" : ""
                   }`}
                 >
                   Female
@@ -696,33 +695,30 @@ for (let entry of formDataToSend.entries()) {
             </div>
 
             {/* Country / City */}
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="relative">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   Country <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Pakistan"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
+                  className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none bg-white text-gray-500"
                   value={userFields.country}
                   onChange={(e) => setUserFields({ ...userFields, country: e.target.value })}
                   disabled
                 />
               </div>
               <div className="relative">
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   City <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     ref={cityInputRef}
                     type="text"
-                    placeholder="Search city..."
-                    className="w-full h-[63px] rounded-[12px] border pl-12 pr-4 text-sm outline-none"
-                    style={{ borderColor: BORDER }}
+                    placeholder="Abbottabad"
+                    className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                     value={userFields.city}
                     onChange={(e) => handleCityInputChange(e.target.value)}
                     onFocus={() => setIsCityFocused(true)}
@@ -755,58 +751,58 @@ for (let entry of formDataToSend.entries()) {
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Email / Phone */}
-              <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+            {/* Email / Phone */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="relative">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
                   placeholder="lendar@gmail.com"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
+                  className="w-full h-[56px] rounded-[11px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                   value={userFields.email}
                   onChange={(e) => setUserFields({ ...userFields, email: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+              <div className="relative">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
                   placeholder="03100057572"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
+                  className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                   value={userFields.phoneNumber}
                   onChange={(e) => setUserFields({ ...userFields, phoneNumber: e.target.value })}
                 />
               </div>
+            </div>
 
-              {/* Password / Confirm Password */}
-              <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+            {/* Password / Confirm Password */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="relative">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
-                  placeholder="Enter the password"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
+                  placeholder="Full name"
+                  className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                   value={userFields.password}
                   onChange={(e) => setUserFields({ ...userFields, password: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="block text-[12px] font-medium text-[#343434] mb-2">
+              <div className="relative">
+                <label className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10">
                   Confirm Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
-                  placeholder="Confirm password"
-                  className="w-full h-[63px] rounded-[12px] border px-4 text-sm outline-none"
-                  style={{ borderColor: BORDER }}
+                  placeholder="Full name"
+                  className="w-full h-[56px] rounded-[12px] border border-gray-300 px-6 text-[15px] outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
                   value={userFields.confirmPassword}
                   onChange={(e) => setUserFields({ ...userFields, confirmPassword: e.target.value })}
                 />
@@ -831,8 +827,8 @@ for (let entry of formDataToSend.entries()) {
                 setPasswordError(null);
                 setStep(2);
               }}
-              className="w-full mt-6 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold"
-              style={{ background: PRIMARY }}
+              className="w-full mt-6 h-[56px] rounded-full text-white font-semibold text-[18px] transition-colors hover:bg-[#3d1070]"
+              style={{ background: "#4e148c" }}
               disabled={
                 !(
                   userFields.fullName.trim() &&
@@ -1059,15 +1055,13 @@ for (let entry of formDataToSend.entries()) {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex-1 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold border"
-                style={{ borderColor: PRIMARY, color: PRIMARY }}
+                className="flex-1 h-[48px] md:h-[54px] rounded-full text-white font-semibold   bg-[#ff6600]"
               >
                 Back
               </button>
               <button
                 type="button"
-                className="flex-1 h-[48px] md:h-[54px] rounded-full text-[#0b3b22] font-semibold"
-                style={{ background: PRIMARY }}
+                className="flex-1 h-[48px] md:h-[54px] rounded-full text-white bg-[#551e91] font-semibold"
                 onClick={handleRegister}
                 disabled={
                   !(
