@@ -7,8 +7,8 @@ import { Toaster, toast } from "react-hot-toast";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { UserRole } from "@/src/types/enums";
 
-const PRIMARY = "#5fe089";
-const BORDER = "#BDBDBD";
+const PRIMARY = "#4e148c";
+const BORDER = "#ff6600";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -102,28 +102,27 @@ const LoginPage = () => {
           {/* Logo */}
           <div className="flex flex-col items-start mb-6">
             <Image
-              src="/images/logo2.webp"
+              src="/images/logo.svg"
               alt="Sehatyar"
-              width={159}
-              height={42}
-              className="object-contain mb-2 w-[120px] sm:w-[159px]"
+              width={200}
+              height={60}
+              className="object-contain mb-2 w-[150px] sm:w-[200px]"
               priority
             />
           </div>
           {/* Title */}
           <h2
-            className="text-[18px] sm:text-[22px] font-semibold mb-8"
-            style={{ color: "#000000" }}
+            className="text-[18px] sm:text-[22px] font-bold mb-8"
+            style={{ color: PRIMARY }}
           >
-            Please Login to your <span style={{ color: PRIMARY }}>Account</span>
+            Please Login to your <span style={{ color: "#ff6600" }}>Account</span>
           </h2>
           {/* Login Form */}
           <form onSubmit={handleLogin}>
-            <div className="mb-5">
+            <div className="relative mb-6 max-w-[400px] lg:max-w-[480px]">
               <label
                 htmlFor="email"
-                className="block text-[14px] sm:text-[16px] mb-2 font-medium"
-                style={{ color: "#000000" }}
+                className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10"
               >
                 Email
               </label>
@@ -131,35 +130,34 @@ const LoginPage = () => {
                 id="email"
                 type="email"
                 placeholder="lendar@gmail.com"
-                className="w-full max-w-[400px] lg:max-w-[480px] h-[48px] rounded-[12px] border px-4 text-[14px] sm:text-[15px] font-normal outline-none"
-                style={{ borderColor: BORDER, color: "#000000" }}
+                className="w-full h-[56px] rounded-[22px] border border-gray-300 px-6 text-[15px] font-normal outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
+                style={{ color: "#000000" }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
               />
             </div>
-            <div className="mb-5">
+            <div className="relative mb-6 max-w-[400px] lg:max-w-[480px]">
               <label
                 htmlFor="password"
-                className="block text-[14px] sm:text-[16px] mb-2 font-medium"
-                style={{ color: "#000000" }}
+                className="absolute -top-3 left-6 bg-white px-2 text-[15px] font-medium text-gray-500 z-10"
               >
                 Password
               </label>
-              <div className="relative max-w-[400px] lg:max-w-[480px]">
+              <div className="relative w-full">
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="**********"
-                  className="w-full h-[48px] rounded-[12px] border px-4 text-[14px] sm:text-[15px] font-normal outline-none"
-                  style={{ borderColor: BORDER, color: "#000000" }}
+                  className="w-full h-[56px] rounded-[22px] border border-gray-300 px-6 text-[15px] font-normal outline-none focus:border-[#4e148c] transition-colors bg-white placeholder:text-gray-400"
+                  style={{ color: "#000000" }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
                   tabIndex={-1}
                   onClick={() => setShowPassword((v) => !v)}
                   disabled={isLoading}
@@ -177,7 +175,7 @@ const LoginPage = () => {
               >
                 <input
                   type="checkbox"
-                  className="mr-2 accent-[#5fe089]"
+                  className="mr-2 accent-[#ff6600]"
                   disabled={isLoading}
                 />
                 Remember me
@@ -199,8 +197,7 @@ const LoginPage = () => {
             {/* Sign In Button */}
             <button
               type="submit"
-              className="w-full max-w-[400px] h-[48px] rounded-[99px] font-semibold text-[15px] sm:text-[16px] bg-[#5fe089] mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ color: "#000000" }}
+              className="w-full max-w-[400px] lg:max-w-[480px] h-[56px] rounded-full font-medium text-[16px] text-white bg-[#4e148c] mb-4 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign in"}
@@ -208,10 +205,9 @@ const LoginPage = () => {
             {/* Sign Up Link */}
             <div className="text-center mb-6 max-w-[400px]">
               <span
-                className="text-[14px] sm:text-base"
-                style={{ color: "#000000" }}
+                className="text-[14px] sm:text-base text-gray-500"
               >
-                Don't have an account?
+                Don't have an account ?
               </span>
               <a
                 href="/register"
@@ -271,17 +267,17 @@ const LoginPage = () => {
         <div
           className="
 					relative
-					lg:min-w-[440px] lg:max-w-[480px] lg:h-[560px]
-					xl:min-w-[720px] xl:max-w-[600px] xl:h-[720px]
-					bg-transparent flex items-center justify-center
+					lg:min-w-[550px] lg:max-w-[650px] lg:h-[560px]
+					xl:min-w-[850px] xl:max-w-[950px] xl:h-[720px]
+					flex items-center justify-center
 					"
         >
-          <div className="absolute inset-0 rounded-[32px] shadow-xl overflow-hidden">
+          <div className="absolute inset-0 rounded-[32px] overflow-hidden">
             <Image
-              src="/images/leftSide.webp"
+              src="/images/login.svg"
               alt="Login Visual"
               fill
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>
