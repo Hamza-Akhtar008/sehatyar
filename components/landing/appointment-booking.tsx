@@ -428,7 +428,7 @@ export default function AppointmentBooking() {
 
   return (
     <main className="w-full">
-      <section className="mx-auto max-w-[1370px]  py-6 md:py-8">
+      <section className="mx-auto max-w-[1370px] py-6 md:py-8">
         {/* Mobile Layout: Reordered with doctor info first */}
         <div className="lg:hidden space-y-4">
           {/* Doctor Info Card - Mobile */}
