@@ -126,7 +126,7 @@ export default function DoctorProfile() {
   if (loading) {
     return (
       <main className="w-full min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4e148c]"></div>
       </main>
     );
   }
@@ -187,7 +187,7 @@ export default function DoctorProfile() {
           font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
       `}</style>
-      <section className="mx-auto w-full max-w-[1450px] px-4 md:px-6 lg:px-8 py-6 md:py-10 plus-jakarta-sans">
+      <section className="mx-auto w-full max-w-[1370px] px-4 md:px-6 lg:px-4 py-6 md:py-10 plus-jakarta-sans">
        
       
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">

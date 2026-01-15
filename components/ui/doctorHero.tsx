@@ -262,8 +262,8 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
             {doctor.availableToday !== false && (
               <div className="flex items-center mt-1.5">
                 <span className="inline-flex items-center text-xs">
-                  <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
-                  <span className="text-green-600 font-medium">Available today</span>
+                  <span className="w-2 h-2 bg-[#4e148c] rounded-full mr-1.5"></span>
+                  <span className="text-[#4e148c] font-medium">Available today</span>
                 </span>
               </div>
             )}
@@ -328,7 +328,7 @@ export default function DoctorHero({ doctors, loading = false, specialization = 
       <div className='my-8 sm:my-9 md:my-10 lg:my-12'>
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4e148c]"></div>
           </div>
         ) : doctors.length > 0 ? (
           <div className='grid grid-cols-1 gap-4 sm:gap-5'>
